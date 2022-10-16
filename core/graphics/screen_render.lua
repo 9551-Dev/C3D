@@ -51,6 +51,5 @@ return {build=function(BUS,quant,dith,scene)
                 t_cat(bg_line,"")
             )
         end
-        print(BUS.ENV.c3d.timer.getFPS())
     end}
 end}
