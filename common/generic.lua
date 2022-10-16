@@ -25,35 +25,6 @@ function generic.piece_string(str)
     return out
 end
 
-function generic.init_grid_point(grid,x,y,z)
-    if not grid[y] then
-        grid[y] = {}
-        if z > 0 then
-            grid[y].n = z
-            grid[y].start = 1
-        else
-            grid[y].n = 1
-            grid[y].start = z
-        end
-    end
-    if not grid[y][z] then
-        grid[y][z] = {}
-        if z > 0 then
-            grid[y][z].n = x
-            grid[y][z].start = 1
-        else
-            grid[y][z].n = 1
-            grid[y][z].start = x
-        end
-    end
-    if y > grid.n then grid.n = y end
-    if y < grid.start then grid.start = y end
-    if z > grid[y].n then grid[y].n = z end
-    if z < grid[y].start then grid[y].start = z end
-    if x > grid[y][z].n then grid[y][z].n = x end
-    if x < grid[y][z].start then grid[y][z].start = x end
-end
-
 generic.events_with_cords = {
     monitor_touch=true,
     mouse_click=true,
