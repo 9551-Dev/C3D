@@ -40,18 +40,13 @@ return function(BUS)
     function graphics.get_bg()
         return BUS.graphics.bg_col
     end
-    function graphics.set_bg(r,g,b,a)
+    function graphics.set_bg(c)
         BUS.graphics.bg_col = c
-    end
-
-    function graphics.blend_mode(mode,alphamode)
-        BUS.graphics.blending.mode = mode or "alpha"
-        BUS.graphics.blending.alphamode = alphamode or "alphamultiply"
     end
 
     function graphics.get_resolution()
         local b = BUS.graphics
-        return b.w*2,b.h*3
+        return b.w,b.h
     end
 
     function graphics.load_texture(image,settings,transparency_map)

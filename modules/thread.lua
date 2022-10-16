@@ -83,7 +83,7 @@ return function(BUS)
         },__tostring=function() return "c3dC_Chanel" end}
     }
 
-    function thread.newThread(code)
+    function thread.new_thread(code)
         local id = generic.uuid4()
 
         if not is_code(code) then
@@ -133,12 +133,12 @@ return function(BUS)
         end
     end
 
-    function thread.newChannel()
+    function thread.new_channel()
         local id = generic.uuid4()
         return GET_CHANNEL(id)
     end
 
-    function thread.getChannel(name)
+    function thread.get_channel(name)
         return GET_CHANNEL(name)
     end
 

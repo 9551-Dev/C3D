@@ -17,11 +17,11 @@ local function build_run(c3d,args)
                     end
                 end
                 if c3d.timer then dt = c3d.timer.step() end
-                if c3d.update then c3d.update(dt) end
+                if c3d.update then c3d.update(c3d.timer.get_average_delta()) end
                 c3d.graphics.clear_buffer(c3d.graphics.get_bg())
                 if c3d.render then c3d.render() end
                 c3d.graphics.render_frame()
-                if c3d.timer then c3d.timer.sleep(0.0001) end
+                if c3d.timer then c3d.timer.sleep(c3d.sys.get_bus().sys.frame_time_min) end
             end
         end
     end

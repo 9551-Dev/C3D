@@ -1,5 +1,6 @@
 # Notice
 
-this is a sort of a fork from LoveCC.
+C3D is highly experimental and WIP library !
+use at your own risk
 
-it has completely diffirent rendering but uses the same codebase since its a great codebase imo :D
+C3D is an advanced 3D rendering library for Computercraft

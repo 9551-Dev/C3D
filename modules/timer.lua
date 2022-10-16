@@ -10,7 +10,7 @@ return function(BUS)
         return BUS.timer.last_delta
     end
 
-    function timer.getDelta()
+    function timer.get_delta()
         return BUS.timer.last_delta
     end
 
@@ -21,7 +21,7 @@ return function(BUS)
         end
     end
 
-    function timer.getTime()
+    function timer.get_time()
         if is_craftos then
             return os.epoch("nano")/1000000000
         else
@@ -29,7 +29,7 @@ return function(BUS)
         end
     end
 
-    function timer.getAverageDelta()
+    function timer.get_average_delta()
         local total = 0
         for k,v in ipairs(BUS.frames) do
             total = total + v.ft

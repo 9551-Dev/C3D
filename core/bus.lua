@@ -18,9 +18,6 @@ return {register_bus=function(ENV)
         mouse={
             last_x=0,
             last_y=0,
-            relative_mode=false,
-            grabbed=false,
-            visible=true,
             held={}
         },
         keyboard={
@@ -31,11 +28,7 @@ return {register_bus=function(ENV)
         instance={},
         object={},
         sys={
-            quantize=false,
-            dither=false,
-            frame_time_min=1/30,
-            reserved_colors={},
-            reserved_spots={}
+            frame_time_min=1/80,
         },
         persperctive={
             near=-0.5,
