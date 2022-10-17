@@ -37,4 +37,4 @@ for k,v in pairs(ls) do
     end)
 end
 parallel.waitForAll(table.unpack(downloads))
-print("Finished downloading GuiH")
+print("Finished downloading C3D")
