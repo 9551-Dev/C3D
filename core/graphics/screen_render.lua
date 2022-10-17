@@ -5,7 +5,7 @@ local make_draw_char = chr.build_drawing_char
 
 local t_cat = table.concat
 
-return {build=function(BUS,quant,dith,scene)
+return {build=function(BUS,scene)
     local busg = BUS.graphics
     return {make_frame=function()
         scene.render()

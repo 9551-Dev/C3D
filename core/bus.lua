@@ -35,6 +35,7 @@ return {register_bus=function(ENV)
             far =1000,
             FOV =50
         },
-        scene={}
+        scene={},
+        camera={}
     }
 end}

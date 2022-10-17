@@ -1,5 +1,6 @@
 return function(a, b)
     local a1,a2,a3,a4 = a[1],a[2],a[3],a[4]
+    if not a3 then error("what",2) end
 
     return  {
         a1*b[1]+a2*b[5]+a3*b[9] +a4*b[13],

@@ -2,7 +2,6 @@ local CEIL,MAX,MIN = math.ceil,math.max,math.min
 
 local int_y  = require("core.3D.math.interpolate_y")
 local get_t  = require("core.3D.math.get_interpolant")
-local lerp   = require("core.3D.math.lerp")
 local int_uv = require("core.3D.math.interpolate_uv")
 
 local bary_c = require("core.3D.geometry.bary_coords")
@@ -12,6 +11,8 @@ return {build=function(BUS)
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
         local v2x,v2y = v2[1],v2[2]
+        local o1,o2,o3 = origin[1],origin[2],origin[3]
+        local o13,o14  = o1[3],o1[4]
         local m0 = (v2x - v0x) / (v2y - v0y)
         local m1 = (v2x - v1x) / (v2y - v1y)
         local y_start = CEIL(v0y - 0.5)
@@ -26,14 +27,14 @@ return {build=function(BUS)
             local x_start = CEIL(px0 - 0.5)
             local x_end   = CEIL(px1 - 0.5)
     
-            local sx_start = int_y(origin[1],origin[2],y)
-            local sx_end   = int_y(origin[1],origin[3],y)
-            local t1 = get_t(origin[1],origin[2],{sx_start,y})
-            local t2 = get_t(origin[1],origin[3],{sx_end,y})
-            local w1 = lerp(origin[1][3],origin[2][3],t1)
-            local w2 = lerp(origin[1][3],origin[3][3],t2)
-            local z1 = lerp(origin[1][4],origin[2][4],t1)
-            local z2 = lerp(origin[1][4],origin[3][4],t2)
+            local sx_start = int_y(o1,o2,y)
+            local sx_end   = int_y(o1,o3,y)
+            local t1 = get_t(o1,o2,sx_start,y)
+            local t2 = get_t(o1,o3,sx_end,y)
+            local w1 = (1 - t1) * o13 + t1 * o2[3]
+            local w2 = (1 - t2) * o13 + t2 * o3[3]
+            local z1 = (1 - t1) * o14 + t1 * o2[4]
+            local z2 = (1 - t2) * o14 + t2 * o3[4]
     
             for x=x_start,x_end do
                 local bary = bary_c(x,y,v0,v1,v2)
@@ -42,7 +43,8 @@ return {build=function(BUS)
                 local t3 = (x - sx_start) / ((div == 0) and 1 or div)
     
     
-                local z = 1/lerp(w1,w2,t3)
+
+                local z = 1/((1 - t3) * w1 + t3 * w2)
 
                 local px_info = {
                     texture = TPIX,
@@ -56,7 +58,7 @@ return {build=function(BUS)
                     px_info.ty = MAX(1,MIN(CEIL(tpos[2]*z*tex.h),tex.h))
                 end
     
-                fragment(x,y,lerp(z1,z2,t3),
+                fragment(x,y,(1 - t3) * z1 + t3 * z2,
                     ps(px_info)
                 )
             end
@@ -67,6 +69,8 @@ return {build=function(BUS)
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
         local v2x,v2y = v2[1],v2[2]
+        local o1,o2,o3 = origin[1],origin[2],origin[3]
+        local o13,o14  = o1[3],o1[4]
         local m0 = (v1x - v0x) / (v1y - v0y)
         local m1 = (v2x - v0x) / (v2y - v0y)
         local y_start = CEIL(v0y - 0.5)
@@ -81,14 +85,14 @@ return {build=function(BUS)
             local x_start = CEIL(px0 - 0.5)
             local x_end   = CEIL(px1 - 0.5)
     
-            local sx_start = int_y(origin[1],origin[2],y)
-            local sx_end   = int_y(origin[1],origin[3],y)
-            local t1 = get_t(origin[1],origin[2],{sx_start,y})
-            local t2 = get_t(origin[1],origin[3],{sx_end,y})
-            local w1 = lerp(origin[1][3],origin[2][3],t1)
-            local w2 = lerp(origin[1][3],origin[3][3],t2)
-            local z1 = lerp(origin[1][4],origin[2][4],t1)
-            local z2 = lerp(origin[1][4],origin[3][4],t2)
+            local sx_start = int_y(o1,o2,y)
+            local sx_end   = int_y(o1,o3,y)
+            local t1 = get_t(o1,o2,sx_start,y)
+            local t2 = get_t(o1,o3,sx_end,y)
+            local w1 = (1 - t1) * o13 + t1 * o2[3]
+            local w2 = (1 - t2) * o13 + t2 * o3[3]
+            local z1 = (1 - t1) * o14 + t1 * o2[4]
+            local z2 = (1 - t2) * o14 + t2 * o3[4]
     
             for x=x_start,x_end do
                 local bary =  bary_c(x,y,v0,v1,v2)
@@ -96,7 +100,7 @@ return {build=function(BUS)
                 local div = sx_end - sx_start
                 local t3 = (x - sx_start) / ((div == 0) and 1 or div)
     
-                local z = 1/lerp(w1,w2,t3)
+                local z = 1/((1 - t3) * w1 + t3 * w2)
     
                 local px_info = {
                     texture = TPIX,
@@ -110,7 +114,7 @@ return {build=function(BUS)
                     px_info.ty = MAX(1,MIN(CEIL(tpos[2]*z*tex.h),tex.h))
                 end
     
-                fragment(x,y,lerp(z1,z2,t3),
+                fragment(x,y,(1 - t3) * z1 + t3 * z2,
                     ps(px_info)
                 )
             end

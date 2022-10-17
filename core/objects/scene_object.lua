@@ -12,7 +12,15 @@ return {add=function(BUS)
                 self.properties.scale_mat = scale_matrice(sx,sy,sz)
                 return self
             end,
+            set_size=function(self,sx,sy,sz)
+                self.properties.scale_mat = scale_matrice(sx,sy,sz)
+                return self
+            end,
             reposition=function(self,x,y,z)
+                self.properties.pos_mat = trans_matrice(x,y,z)
+                return self
+            end,
+            set_position=function(self,x,y,z)
                 self.properties.pos_mat = trans_matrice(x,y,z)
                 return self
             end,

@@ -1,6 +1,6 @@
 local matmul = require("core.3D.math.matmul")
 
-return function(object,prev,geo,prop,efx,out,BUS)
+return function(object,prev,geo,prop,efx,out,BUS,object_texture,camera)
     local transformed_vertices = {}
     local per = BUS.persperctive.matrix
 
@@ -22,12 +22,13 @@ return function(object,prev,geo,prop,efx,out,BUS)
         local final_vertice
 
         if shader then
-            final_vertice = shader(new_vertice,prop,scale,rot,pos,per)
+            final_vertice = shader(new_vertice,prop,scale,rot,pos,camera,per)
         else
             local scaled_vertice     = matmul(new_vertice,scale)
             local rotated_vertice    = matmul(scaled_vertice,rot)
             local translated_vertice = matmul(rotated_vertice,pos)
-            final_vertice            = matmul(translated_vertice,per)
+            local camera_transform   = matmul(matmul(translated_vertice,camera.position),camera.rotation)
+            final_vertice            = matmul(camera_transform,per)
         end
 
         if uvs then

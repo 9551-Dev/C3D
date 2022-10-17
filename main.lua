@@ -76,9 +76,12 @@ return function(ENV,libdir,...)
         end
     end
 
-    BUS.object.texture       = require("core.objects.texture")      .add(BUS)
-    BUS.object.scene_obj     = require("core.objects.scene_object") .add(BUS)
-    BUS.object.generic_shape = require("core.objects.generic_shape").add(BUS)
+    BUS.object.palette        = require("core.objects.palette")       .add(BUS)
+    BUS.object.texture        = require("core.objects.texture")       .add(BUS)
+    BUS.object.scene_obj      = require("core.objects.scene_object")  .add(BUS)
+    BUS.object.generic_shape  = require("core.objects.generic_shape") .add(BUS)
+    BUS.object.camera         = require("core.objects.camera")        .add(BUS)
+    BUS.object.imported_model = require("core.objects.imported_model").add(BUS)
 
     ENV.c3d.timer        = require("modules.timer")       (BUS)
     ENV.c3d.event        = require("modules.event")       (BUS)
@@ -91,6 +94,7 @@ return function(ENV,libdir,...)
     ENV.c3d.persperctive = require("modules.persperctive")(BUS)
     ENV.c3d.geometry     = require("modules.geometry")    (BUS)
     ENV.c3d.shader       = require("modules.shader")      (BUS)
+    ENV.c3d.camera       = require("modules.camera")      (BUS)
 
     require("modules.c3d")(BUS,ENV)
 

@@ -24,22 +24,12 @@ function cUtil.update_palette(terminal)
     end
 end
 
-function cUtil.set_palette(BUS,pal)
+function cUtil.set_palette(pal)
     color_cache = tbls.createNDarray(2)
     for index,v in ipairs(pal) do
         local i = 2^(index-1)
         palette[i] = {v[1],v[2],v[3]}
-        for k,v in pairs(BUS.sys.reserved_spots) do
-            if v[1] == i then
-                palette[i] = v[2]
-            end
-        end
     end
-    return {push=function(to)
-        for k,v in pairs(palette) do
-            to.setPaletteColor(k,v[1],v[2],v[3])
-        end
-    end}
 end
 
 function cUtil.find_closest_color(r,g,b)

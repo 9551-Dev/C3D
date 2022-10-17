@@ -40,5 +40,9 @@ return function(BUS)
         }
     end
 
+    function geometry.load_model(path)
+        return BUS.object.imported_model.new(path)
+    end
+
     return geometry
 end

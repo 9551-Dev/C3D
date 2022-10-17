@@ -20,7 +20,9 @@ return {create=function(BUS,raster)
 
             local o = triangle.object
 
-            if cull_triangle(a,b,c) > 0 then
+            local cull = cull_triangle(a,b,c)
+
+            if cull > 0 or (o.invert_culling and cull < 0) or (o.disable_culling) then
                 raster.triangle(triangle.ps,o,
                     pst(a,w,h),
                     pst(b,w,h),

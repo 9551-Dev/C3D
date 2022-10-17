@@ -3,9 +3,6 @@ local graphics = {}
 local clr = require("common.color_util")
 local tbl = require("common.table_util")
 
-local quantize = require("core.graphics.quantize")
-local dither   = require("core.graphics.dither")
-
 local rasterer = require("core.graphics.rasterize")
 local scrender = require("core.graphics.screen_render")
 
@@ -15,10 +12,8 @@ return function(BUS)
 
     BUS.clr_instance = clr
 
-    local quantizer   = quantize.build(BUS)
-    local ditherer    = dither  .build(BUS)
     local sc_renderer = scrender.build(BUS,
-        quantizer,ditherer,scene_renderer.create(BUS,rasterer.build(BUS))
+        scene_renderer.create(BUS,rasterer.build(BUS))
     )
 
     function graphics.clear_buffer(c)
@@ -49,8 +44,8 @@ return function(BUS)
         return b.w,b.h
     end
 
-    function graphics.load_texture(image,settings,transparency_map)
-        return BUS.object.texture.new(image,settings,transparency_map)
+    function graphics.load_texture(image,settings)
+        return BUS.object.texture.new(image,settings)
     end
 
     return graphics

@@ -1,12 +1,15 @@
 local object = require("core.object")
 
-local tile_object = {
+local texture_object = {
     __index = object.new{
-    },__tostring=function() return "Tile" end
+        get_out=function(this)
+            return this.c3d.option_result
+        end
+    },__tostring=function() return "texture" end
 }
 
 return {add=function(BUS)
-    return {new=function(path)
+    return {new=function(path,options)
         local extension = path:match("^.+(%..+)$")
         local file_path = fs.combine(BUS.instance.gamedir,path)
 
@@ -14,10 +17,15 @@ return {add=function(BUS)
         local parser = require("core.loaders.texture" .. extension)
         package.path = BUS.instance.gamepak
 
-        local data = parser.read(BUS,file_path)
+        local option_result = {}
+        local fin = {}
+        local data = parser.read(BUS,file_path,options or {},option_result,fin)
+        data.c3d = {}
+        data.c3d.option_result = option_result
 
-        data.BUS = BUS
+        local obj = setmetatable(data,texture_object):__build()
+        fin.returns = obj
 
-        return setmetatable(data,tile_object):__build()
+        return obj
     end}
 end}

@@ -5,11 +5,12 @@ local matmul = require("core.3D.math.matmul")
 local RANDOM = math.random
 
 return function(BUS)
-    function shader.default.vertex(new_vertice,properties,scale,rot,pos,per)
+    function shader.default.vertex(new_vertice,properties,scale,rot,pos,camera,per)
         local scaled_vertice     = matmul(new_vertice,scale)
         local rotated_vertice    = matmul(scaled_vertice,rot)
         local translated_vertice = matmul(rotated_vertice,pos)
-        return matmul(translated_vertice,per)
+        local camera_transform   = matmul(matmul(translated_vertice,camera.position),camera.rotation)
+        return matmul(camera_transform,per)
     end
 
     function shader.default.pixel(px_info)
