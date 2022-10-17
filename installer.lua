@@ -22,8 +22,8 @@ for k,v in pairs(ls) do
     table.insert(downloads,function()
         local web = http.get(k)
         local file
-            file = fs.open("./c3d.lua","w")
         if v == "c3d.lua" then
+            file = fs.open("./c3d.lua","w")
         else
             file = fs.open("./C3D/"..v,"w")
         end
