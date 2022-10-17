@@ -27,7 +27,16 @@ local function decode(str)
             uvs[d-1] = tonumber(line_info[2])
             uvs[d]   = tonumber(line_info[3])
         elseif line_info[1] == "f" then
-            for i=2, #line_info do
+            for i=2, 5 do
+                if i == 5 then
+                    local b_orig = b
+                    b = b + 2
+                    local p1 = tris[b_orig-2]
+                    local p2 = tris[b_orig]
+                    tris[b-1] = p1
+                    tris[b]   = p2
+                end
+
                 b = b + 1
                 local split = split_string(line_info[i], "/")
                 tris[b] = tonumber(split[1])
