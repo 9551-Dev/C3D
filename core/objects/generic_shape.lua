@@ -8,6 +8,10 @@ return {add=function(BUS)
                 self[type] = val
                 return self
             end,
+            add_prop=function(self,type,val)
+                self[type] = val
+                return self
+            end,
             push=function(self)
                 return BUS.object.scene_obj.new(self)
             end
