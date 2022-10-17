@@ -125,7 +125,7 @@ if not C3DData.init_ok then error_screen("Internal C3D error: " .. tostring(C3DD
 local errored = true
 
 local function run_f(f)
-    local ok,err = pcall(C3DData.env,{f},"temp/",terminal,init_win,ox,oy)
+    local ok,err = pcall(C3DData.env,{f},"/",terminal,init_win,ox,oy)
     if not ok then error_screen("Runtime error: " .. tostring(err)) end
 end
 
