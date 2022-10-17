@@ -35,12 +35,8 @@ return {read=function(BUS,path_tex,options,option_results,final)
                 fr,fg,fb
             )
 
-            if options.dither then dither.dith(pxels,fr,fg,fb,r,g,b,x,y) end
-            pxels[y][x] = c_util.find_closest_color(
-                px[1],
-                px[2],
-                px[3]
-            )
+            if options.dither then dither.dith(map_color,fr,fg,fb,r,g,b,x,y) end
+            pxels[y][x] = c
         end
     end
 
