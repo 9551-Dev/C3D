@@ -1,4 +1,5 @@
-local object = require("core.object")
+local object   = require("core.object")
+local tbl_util = require("common.table_util")
 
 local scale_matrice = require("core.3D.matrice.scale")
 local rot_matrice   = require("core.3D.matrice.rotation")
@@ -43,6 +44,9 @@ return {add=function(BUS)
             set_geometry_shader=function(self,f)
                 self.effects.gs = f
                 return self
+            end,
+            clone=function(this)
+                return BUS.object.scene_obj.new(tbl_util.deepcopy(this))
             end
         },__tostring=function() return "scene_object" end
     }
