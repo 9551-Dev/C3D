@@ -1,6 +1,6 @@
 fs.makeDir("C3D")
 local github_api = http.get(
-	"https://api.github.com/repos/9551-Dev/C3D/git/trees/main?recursive=1",
+	"https://api.github.com/repos/9551-Dev/C3D/git/trees/master?recursive=1",
 	_G._GIT_API_KEY and {Authorization = 'token ' .. _G._GIT_API_KEY}
 )
 
@@ -10,7 +10,7 @@ local len = 0
 github_api.close()
 for k,v in pairs(list.tree) do
     if v.type == "blob" and v.path:lower():match(".+%.lua") then
-        ls["https://raw.githubusercontent.com/9551-Dev/C3D/main/"..v.path] = v.path
+        ls["https://raw.githubusercontent.com/9551-Dev/C3D/master/"..v.path] = v.path
         len = len + 1
     end
 end
@@ -32,7 +32,8 @@ for k,v in pairs(ls) do
         file.close()
         web.close()
         finished = finished + 1
-        size_gained = size_gained + #("%q"):format(wd)
+        local file_size = #("%q"):format(wd)
+        size_gained = size_gained + file_size
         print("downloading "..v.."  "..tostring(math.ceil(finished*percent)).."% "..tostring(math.ceil(file_size/1024*10)/10).."kB total: "..math.ceil(size_gained/1024).."kB")
     end)
 end
