@@ -63,6 +63,8 @@ return function(ENV,libdir,...)
         local key_h  = key_thread   .make(ENV,BUS)
         local tudp   = tudp_thread  .make(ENV,BUS)
 
+        coroutine.resume(main)
+
         local ok,err = cmgr.start(BUS,function()
             return BUS.running
         end,{},main,event,resize,key_h,tudp)
