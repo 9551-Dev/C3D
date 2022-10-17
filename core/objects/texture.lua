@@ -11,11 +11,11 @@ local texture_object = {
 return {add=function(BUS)
     return {new=function(path,options)
         local extension = path:match("^.+(%..+)$")
-        local file_path = fs.combine(BUS.instance.gamedir,path)
+        local file_path = fs.combine(BUS.instance.scenedir,path)
 
         package.path = BUS.instance.libpak
         local parser = require("core.loaders.texture" .. extension)
-        package.path = BUS.instance.gamepak
+        package.path = BUS.instance.scenepak
 
         local option_result = {}
         local fin = {}

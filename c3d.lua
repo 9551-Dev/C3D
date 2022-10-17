@@ -29,7 +29,7 @@ local function error_screen(err,is_C3D)
             terminal.clear()
             terminal.setCursorPos(3,3)
             terminal.setBackgroundColor(colors.red)
-            terminal.write(C3DData.util.string.ensure_size("Error",w-4))
+            terminal.write(C3DData.util.string.ensure_size("C3D Error",w-4))
 
             terminal.setBackgroundColor(colors.blue)
             if is_C3D then terminal.setBackgroundColor(colors.red) end
@@ -63,7 +63,7 @@ local function error_screen(err,is_C3D)
     end
 end
 
-local function no_game_screen()
+local function no_scene_screen()
     local web = http.get(advice_api)
     local advice = "Try out GuiH !"
     if web then
@@ -91,7 +91,7 @@ local function no_game_screen()
             terminal.setCursorPos(3,3)
             local lines = C3DData.util.draw.respect_newlines(terminal,
                 C3DData.util.string.ensure_line_size(
-                    C3DData.util.string.wrap("No game.",w-4),
+                    C3DData.util.string.wrap("No scene.",w-4),
                 w-4)
             )
 
@@ -120,38 +120,45 @@ local function no_game_screen()
     end
 end
 
-if not C3DData.init_ok then error_screen("Internal error: " .. tostring(C3DData.env),true) end
+if not C3DData.init_ok then error_screen("Internal C3D error: " .. tostring(C3DData.env),true) end
 
 local errored = true
 
-local ok,err = pcall(function()
-    if not next(args) then
-        no_game_screen()
-        errored = true
-    elseif not fs.exists(args[1]) or not fs.isDir(args[1]) then
-        error_screen("Loading error: folder does not exist")
-        errored = true
-    elseif fs.exists(args[1]) and not fs.isDir(args[1]) then
-        error_screen("Loading error: must be ran on a folder")
-        errored = true
-    elseif fs.exists(args[1]) and fs.isDir(args[1]) then
-        local full_path = fs.combine(args[1],"main.lua")
-        if fs.exists(full_path) then
-            local fl = fs.open(full_path,"r")
-            local data = fl.readAll()
-            fl.close()
-            local ok,err = pcall(C3DData.env,{loadfile(full_path)},full_path,terminal,init_win,ox,oy)
-            if not ok then error_screen("Runtime error: " .. tostring(err)) end
-        else
-            error_screen("Loading error: No code to run\nmake sure you have a main.lua file on the top level of the folder")
-        end
-    else errored = false end
-end)
-
-if not ok and not errored then
-    error_screen("Runtime error: " .. err)
-elseif not ok then
-    init_win.setBackgroundColor(colors.black)
-    init_win.clear()
-    init_win.setCursorPos(1,1)
+local function run_f(f)
+    local ok,err = pcall(C3DData.env,{f},"temp/",terminal,init_win,ox,oy)
+    if not ok then error_screen("Runtime error: " .. tostring(err)) end
 end
+
+if not args[2] then
+    local ok,err = pcall(function()
+        if not next(args) then
+            no_scene_screen()
+            errored = true
+        elseif not fs.exists(args[1]) or not fs.isDir(args[1]) then
+            error_screen("Loading error: folder does not exist")
+            errored = true
+        elseif fs.exists(args[1]) and not fs.isDir(args[1]) then
+            error_screen("Loading error: must be ran on a folder")
+            errored = true
+        elseif fs.exists(args[1]) and fs.isDir(args[1]) then
+            local full_path = fs.combine(args[1],"main.lua")
+            if fs.exists(full_path) then
+                local fl = fs.open(full_path,"r")
+                local data = fl.readAll()
+                fl.close()
+                local ok,err = pcall(C3DData.env,{loadfile(full_path)},full_path,terminal,init_win,ox,oy)
+                if not ok then error_screen("Runtime error: " .. tostring(err)) end
+            else
+                error_screen("Loading error: No code to run\nmake sure you have a main.lua file on the top level of the folder")
+            end
+        else errored = false end
+    end)
+
+    if not ok and not errored then
+        error_screen("Runtime error: " .. err)
+    elseif not ok then
+        init_win.setBackgroundColor(colors.black)
+        init_win.clear()
+        init_win.setCursorPos(1,1)
+    end
+else return {run=run_f} end

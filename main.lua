@@ -36,10 +36,10 @@ return function(ENV,libdir,...)
         BUS.graphics.display = screen_init.new(BUS)
         BUS.graphics.event_offset = vector.new(ox,oy)
         BUS.clr_instance.update_palette(terminal)
-        BUS.instance.gamedir = fs.getDir(path) or ""
-        BUS.instance.gamepak = string.format(
+        BUS.instance.scenedir = fs.getDir(path) or ""
+        BUS.instance.scenepak = string.format(
             "/%s/modules/required/?.lua;/%s/?.lua;/rom/modules/main/?.lua",
-            libdir,BUS.instance.gamedir
+            libdir,BUS.instance.scenedir
         )
         BUS.instance.libpak = string.format(
             "/%s/?.lua;/rom/modules/main/?.lua",
@@ -50,7 +50,7 @@ return function(ENV,libdir,...)
         end
         if type(program[1]) == "function" then
             local old_path = package.path
-            ENV.package.path = BUS.instance.gamepak
+            ENV.package.path = BUS.instance.scenepak
             setfenv(program[1],ENV)(table.unpack(args,1,args.n))
             ENV.package.path = old_path
         else

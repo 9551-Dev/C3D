@@ -19,11 +19,11 @@ return {add=function(BUS)
         local obj = {}
 
         local extension = path:match("^.+(%..+)$")
-        local file_path = fs.combine(BUS.instance.gamedir,path)
+        local file_path = fs.combine(BUS.instance.scenedir,path)
 
         package.path = BUS.instance.libpak
         local parser = require("core.loaders.imported_model" .. extension)
-        package.path = BUS.instance.gamepak
+        package.path = BUS.instance.scenepak
 
         obj.DATA = parser.read(BUS,file_path)
 
