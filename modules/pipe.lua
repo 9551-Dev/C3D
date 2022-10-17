@@ -17,7 +17,7 @@ local modes = {
     function(s)
         local out = {}
         local n = 0
-        for c in s:gmatch("[^->.]+]") do
+        for c in s:gmatch("[^%->]+") do
             n = n + 1
             local nam = c:gsub(" ","")
             local res = name_lookup[nam]
@@ -40,9 +40,9 @@ return function(BUS)
     function pipe.set(...)
         local t = {...}
         local mode = 1
-        if type(t) == "string" then
+        if type(t[1]) == "string" then
             mode = 2
-        elseif type(t) == "function" then
+        elseif type(t[1]) == "function" then
             mode = 3
         end
 

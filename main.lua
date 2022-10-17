@@ -99,6 +99,7 @@ return function(ENV,libdir,...)
     ENV.c3d.geometry     = require("modules.geometry")    (BUS)
     ENV.c3d.shader       = require("modules.shader")      (BUS)
     ENV.c3d.camera       = require("modules.camera")      (BUS)
+    ENV.c3d.pipe         = require("modules.pipe")        (BUS)
 
     require("modules.c3d")(BUS,ENV)
 
