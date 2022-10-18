@@ -1,4 +1,4 @@
-local shader = {default={},pixel={},vertex={},geometry={}}
+local shader = {default={},frag={},vertex={},geometry={}}
 
 local matmul = require("core.3D.math.matmul")
 
@@ -13,7 +13,7 @@ return function(BUS)
         return matmul(camera_transform,per)
     end
 
-    function shader.default.pixel(px_info)
+    function shader.default.frag(px_info)
         if px_info.texture then
             return px_info.texture[px_info.ty][px_info.tx]
         end
@@ -25,7 +25,7 @@ return function(BUS)
         return triangle
     end
 
-    function shader.pixel.noise()
+    function shader.frag.noise()
         return 2^(RANDOM(0,1)*15)
     end
 

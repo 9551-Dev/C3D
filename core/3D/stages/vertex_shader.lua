@@ -16,7 +16,7 @@ return function(object,prev,geo,prop,efx,out,BUS,object_texture,camera)
         vertice_index = vertice_index + 1
 
         local new_vertice = {
-            prev[i],prev[i+1],prev[i+2],1,
+            prev[i],prev[i+1],prev[i+2],1,index=vertice_index
         }
 
         local final_vertice

@@ -1,5 +1,5 @@
-return function(ps)
-    if ps then return ps end
+return function(fs)
+    if fs then return fs end
 
     return function(px_info)
         if px_info.texture then

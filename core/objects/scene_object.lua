@@ -33,8 +33,8 @@ return {add=function(BUS)
                 BUS.scene[self.ID] = nil
                 return self
             end,
-            set_pixel_shader=function(self,f)
-                self.effects.ps = f
+            set_frag_shader=function(self,f)
+                self.effects.fs = f
                 return self
             end,
             set_vertex_shader=function(self,f)
