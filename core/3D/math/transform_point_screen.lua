@@ -1,3 +1,5 @@
+local pairs = pairs
+
 return function(p,w,h)
     local inverse_z = 1/p[4]
 

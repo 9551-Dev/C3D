@@ -5,6 +5,8 @@ local modules = {
     vertex       = require("core.3D.stages.vertex")
 }
 
+local pairs = pairs
+
 return {create=function(BUS)
     BUS.pipeline = {
         modules.vertex,

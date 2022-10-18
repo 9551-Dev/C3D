@@ -1,4 +1,4 @@
-local CEIL,MAX,MIN = math.ceil,math.max,math.min
+local CEIL,MAX,MIN,pairs = math.ceil,math.max,math.min,pairs
 
 local int_y  = require("core.3D.math.interpolate_y")
 local get_t  = require("core.3D.math.get_interpolant")
