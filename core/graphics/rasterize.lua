@@ -40,7 +40,7 @@ return {build=function(BUS)
                 local bary = bary_c(x,y,v0,v1,v2)
     
                 local div = sx_end - sx_start
-                local t3 = (x - sx_start) / ((div == 0) and 1 or div)
+                local t3 = (x - sx_start) / ((div == 0) and 5e-50 or div)
     
     
 
@@ -98,7 +98,7 @@ return {build=function(BUS)
                 local bary =  bary_c(x,y,v0,v1,v2)
     
                 local div = sx_end - sx_start
-                local t3 = (x - sx_start) / ((div == 0) and 1 or div)
+                local t3 = (x - sx_start) / ((div == 0) and 5e-50 or div)
     
                 local z = 1/((1 - t3) * w1 + t3 * w2)
     
