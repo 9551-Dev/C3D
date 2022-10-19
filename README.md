@@ -7,4 +7,4 @@ It provides the ability to load .obj files and apply textures.
 
 Examples will be found in the `examples` directory, currently still working on them.
 
-![3D shrek model with a texture](/repository/shrek.png?raw=true "3D shrek model with a texture")
+![3D shrek model with a texture](/shrek.png?raw=true "3D shrek model with a texture")
