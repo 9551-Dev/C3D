@@ -22,6 +22,7 @@ local function build_run(c3d,args)
                 if c3d.render then c3d.render() end
                 c3d.graphics.render_frame()
                 if c3d.timer then c3d.timer.sleep(c3d.sys.get_bus().sys.frame_time_min) end
+                if c3d.postrender then c3d.post_render(c3d.sys.get_bus().graphics.display_source) end
             end
         end
     end
