@@ -57,10 +57,8 @@ return {build=function(BUS)
                 local div = sx_end - sx_start
                 local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)
     
-    
-
                 local z = 1/((1 - t3) * w1 + t3 * w2)
-
+    
                 local frag_data = {
                     texture = TPIX,
                     color = C,
