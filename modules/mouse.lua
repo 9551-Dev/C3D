@@ -2,10 +2,10 @@ local mouse = {}
 
 return function(BUS)
     function mouse.getPosition()
-        return BUS.mouse.last_x*2, BUS.mouse.last_y*3
+        return BUS.mouse.last_x, BUS.mouse.last_y
     end
-    function mouse.getX() return BUS.mouse.last_x*2 end
-    function mouse.getY() return BUS.mouse.last_y*3 end
+    function mouse.getX() return BUS.mouse.last_x end
+    function mouse.getY() return BUS.mouse.last_y end
     function mouse.isDown(...)
         local btn_list = {...}
         for k,key in pairs(btn_list) do
