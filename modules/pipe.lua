@@ -49,5 +49,9 @@ return function(BUS)
         BUS.pipeline = modes[mode](...)
     end
 
+    function pipe.add_type(name,func)
+        name_lookup[name] = func
+    end
+
     return pipe
 end
