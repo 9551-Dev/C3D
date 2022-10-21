@@ -6,7 +6,6 @@ local function build_run(c3d,args)
             local dt = 0
             return function()
                 if c3d.event then
-                    c3d.event.pump()
                     for name, a,b,c,d,e,f in c3d.event.poll() do
                         if name == "quit" then
                             if not c3d.quit or not c3d.quit() then
