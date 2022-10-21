@@ -16,9 +16,9 @@ end
 return function(BUS)
     local objects = {
         thread={__index=object.new{
-            getError  = function(this) return this.error end,
-            isRunning = function(this) return coroutine.status(this.c) == "running" end,
-            start     = function(this,...)
+            get_error  = function(this) return this.error end,
+            is_running = function(this) return coroutine.status(this.c) == "running" end,
+            start      = function(this,...)
                 if not this.started then
                     coroutine.resume(this.c,...)
                     this.started = true
@@ -46,15 +46,14 @@ return function(BUS)
                 return received.value
 
             end,
-            getCount = function(this) return #this.queue end,
-            hasRead  = function(this,id) return not not this.pushed_ids[id] end,
-            peek     = function(this)
+            get_count = function(this) return #this.queue end,
+            has_read  = function(this,id) return not not this.pushed_ids[id] end,
+            peek      = function(this)
                 local v = this.queue[1]
                 if v then return v.value end
                 return nil
             end,
-            performAtomic = function(this,func,...) return func(...) end,
-            pop           = function(this)
+            pop = function(this)
                 local received = table.remove(this.queue,1)
                 if received then
                     this.push_ids[received.id] = true
