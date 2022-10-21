@@ -3,7 +3,7 @@ return {ev="key",run=function(BUS,caller,ev,key_code,is_held)
     if not is_held or BUS.keyboard.key_reapeat then
         BUS.events[#BUS.events+1] = {"keypressed",code,code,is_held}
         if type(caller.keypressed) == "function" then
-            caller.keypressed(code,code,is_held)
+            caller.keypressed(code,is_held)
         end
     end
 end}
