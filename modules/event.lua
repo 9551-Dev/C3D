@@ -22,8 +22,6 @@ return function(BUS)
         end)
     end
 
-    function event.pump() end
-
     function event.push(...)
         add_event_queue(...)
     end
