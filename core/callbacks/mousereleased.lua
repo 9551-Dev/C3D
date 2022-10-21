@@ -24,8 +24,8 @@ return {ev="mouse_up",run=function(BUS,caller,ev,btn,x,y)
         end
     end
 
-    BUS.events[#BUS.events+1] = {"mousereleased",x*2,y*3,btn,false,registered[x][y][btn]}
+    BUS.events[#BUS.events+1] = {"mousereleased",x*2,y*3,btn,registered[x][y][btn]}
     if type(caller.mousereleased) == "function" then
-        caller.mousereleased(x*2,y*3,btn,false,registered[x][y][btn])
+        caller.mousereleased(x*2,y*3,btn,registered[x][y][btn])
     end
 end}
