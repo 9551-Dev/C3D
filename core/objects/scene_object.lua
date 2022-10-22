@@ -1,9 +1,10 @@
 local object   = require("core.object")
 local tbl_util = require("common.table_util")
 
-local scale_matrice = require("core.3D.matrice.scale")
-local rot_matrice   = require("core.3D.matrice.rotation")
-local trans_matrice = require("core.3D.matrice.translate")
+local scale_matrice     = require("core.3D.matrice.scale")
+local euler_rot_matrice = require("core.3D.matrice.rotation_euler")
+local quat_rot_matrice  = require("core.3D.matrice.rotation_quaternion")
+local trans_matrice     = require("core.3D.matrice.translate")
 
 return {add=function(BUS)
 
@@ -25,8 +26,12 @@ return {add=function(BUS)
                 self.properties.pos_mat = trans_matrice(x,y,z)
                 return self
             end,
-            set_rotation=function(self,rx,ry,rz)
-                self.properties.rotation_mat = rot_matrice(rx,ry,rz)
+            set_rotation=function(self,rx,ry,rz,w)
+                if not w then
+                    self.properties.rotation_mat = euler_rot_matrice(rx,ry,rz)
+                else
+                    self.properties.rotation_mat = quat_rot_matrice(rx,ry,rz,w)
+                end
                 return self
             end,
             remove=function(self)
@@ -57,7 +62,7 @@ return {add=function(BUS)
 
         geometry.properties = {
             scale_mat=scale_matrice(1,1,1),
-            rotation_mat=rot_matrice(0,0,0),
+            rotation_mat=euler_rot_matrice(0,0,0),
             pos_mat=trans_matrice(0,0,0)
         }
 

@@ -1,7 +1,8 @@
 local object = require("core.object")
 
-local translate_matrix = require("core.3D.matrice.translate")
-local rotation_matrix  = require("core.3D.matrice.rotation")
+local translate_matrix      = require("core.3D.matrice.translate")
+local euler_rotation_matrix = require("core.3D.matrice.rotation_euler")
+local quat_rotation_matrix  = require("core.3D.matrice.rotation_quaternion")
 
 return {add=function(BUS)
 
@@ -11,10 +12,14 @@ return {add=function(BUS)
                 this.position = translate_matrix(-x,y,-z)
                 return this
             end,
-            set_rotation = function(this,rx,ry,rz)
-                this.rotation = rotation_matrix(-rx,-ry,-rz)
+            set_rotation = function(this,rx,ry,rz,w)
+                if not w then
+                    this.rotation = euler_rotation_matrix(-rx,-ry,-rz)
+                else
+                    this.rotation = quat_rotation_matrix(-rx,-ry,-rz,-w)
+                end
                 return this
-            end
+            end,
         },__tostring=function() return "camera" end
     }
 
