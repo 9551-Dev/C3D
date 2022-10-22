@@ -2,7 +2,7 @@ local args = {...}
 
 local terminal = window.create(term.current(),1,1,term.getSize())
 
-local ok,C3DData = pcall(require,"C3D")
+local ok,C3DData = pcall(require,"libC3D")
 if not ok then error("C3D could not be loaded \n"..C3DData,0) end
 
 local init_win,ox,oy = C3DData.util.window.get_parent_info(terminal)

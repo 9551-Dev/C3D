@@ -25,7 +25,7 @@ for k,v in pairs(ls) do
         if v == "c3d.lua" then
             file = fs.open("./c3d.lua","w")
         else
-            file = fs.open("./C3D/"..v,"w")
+            file = fs.open("./libC3D/"..v,"w")
         end
         local wd = web.readAll()
         file.write(wd)
