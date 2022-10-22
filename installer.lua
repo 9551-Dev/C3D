@@ -1,4 +1,3 @@
-fs.makeDir("C3D")
 local github_api = http.get(
 	"https://api.github.com/repos/9551-Dev/C3D/git/trees/master?recursive=1",
 	_G._GIT_API_KEY and {Authorization = 'token ' .. _G._GIT_API_KEY}
