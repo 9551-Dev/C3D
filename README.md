@@ -2,6 +2,8 @@
 > C3D is **HIGHLY** experimental and is in early stages
 > of development, only use if you know what you are doing.
 
+Documentation: https://c3d.madefor.cc
+
 C3D is an advanced 3D Renderer for ComputerCraft.
 It provides the ability to load .obj files and apply textures.
 
