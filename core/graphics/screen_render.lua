@@ -51,7 +51,5 @@ return {build=function(BUS,scene)
                 t_cat(bg_line,"")
             )
         end
-        term.setCursorPos(1,1)
-        term.write("FPS: "..BUS.c3d.timer.getFPS())
     end}
 end}
