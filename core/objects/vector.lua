@@ -82,11 +82,11 @@ return {add=function(BUS)
                 )
             end,
             round=function(this,decimals)
-                decimals = decimals or 1
+                decimals = decimals or 0
                 return BUS.object.vector.new(
-                    floor(this[1]*10^decimals+0.5)/decimals,
-                    floor(this[2]*10^decimals+0.5)/decimals,
-                    floor(this[3]*10^decimals+0.5)/decimals
+                    floor(this[1]*10^(decimals+1)+0.5)/decimals,
+                    floor(this[2]*10^(decimals+1)+0.5)/decimals,
+                    floor(this[3]*10^(decimals+1)+0.5)/decimals
                 )
             end,
             add=add,
