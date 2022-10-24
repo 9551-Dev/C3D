@@ -10,7 +10,7 @@ local resize_thread = require("core.threads.resize_thread")
 local key_thread    = require("core.threads.key_thread")
 local tudp_thread   = require("core.threads.tupd_thread")
 
-local per_matrix = require("core.3D.matrice.persperctive")
+local per_matrix = require("core.3D.matrice.perspective")
 
 return function(ENV,libdir,...)
     local args = table.pack(...)
@@ -26,10 +26,10 @@ return function(ENV,libdir,...)
         end)
         if not ok then BUS.graphics.monitor = "term_object" end
         local sw,sh = w*2,h*3
-        BUS.persperctive.matrix = per_matrix(sw,sh,
-            BUS.persperctive.near,
-            BUS.persperctive.far,
-            BUS.persperctive.FOV
+        BUS.perspective.matrix = per_matrix(sw,sh,
+            BUS.perspective.near,
+            BUS.perspective.far,
+            BUS.perspective.FOV
         )
         BUS.graphics.w,BUS.graphics.h = sw,sh
         BUS.graphics.display_source = terminal
@@ -96,7 +96,7 @@ return function(ENV,libdir,...)
     ENV.c3d.thread       = require("modules.thread")      (BUS)
     ENV.c3d.sys          = require("modules.sys")         (BUS)
     ENV.c3d.scene        = require("modules.scene")       (BUS)
-    ENV.c3d.persperctive = require("modules.persperctive")(BUS)
+    ENV.c3d.perspective = require("modules.perspective")(BUS)
     ENV.c3d.geometry     = require("modules.geometry")    (BUS)
     ENV.c3d.shader       = require("modules.shader")      (BUS)
     ENV.c3d.camera       = require("modules.camera")      (BUS)

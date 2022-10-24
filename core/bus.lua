@@ -29,7 +29,7 @@ return {register_bus=function(ENV)
         sys={
             frame_time_min=1/40,
         },
-        persperctive={
+        perspective={
             near=-0.5,
             far =1000,
             FOV =50

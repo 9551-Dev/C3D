@@ -1,4 +1,4 @@
-local per_matrix = require("core.3D.matrice.persperctive")
+local per_matrix = require("core.3D.matrice.perspective")
 
 return {make=function(ENV,BUS,terminal)
     local last_x,last_y = terminal.getSize()
@@ -10,10 +10,10 @@ return {make=function(ENV,BUS,terminal)
                 BUS.graphics.w = cx*2
                 BUS.graphics.h = cy*3
                 last_x,last_y = cx,cy
-                BUS.persperctive.matrix = per_matrix(cx*2,cy*3,
-                    BUS.persperctive.near,
-                    BUS.persperctive.far,
-                    BUS.persperctive.FOV
+                BUS.perspective.matrix = per_matrix(cx*2,cy*3,
+                    BUS.perspective.near,
+                    BUS.perspective.far,
+                    BUS.perspective.FOV
                 )
             end
             sleep(0.1)

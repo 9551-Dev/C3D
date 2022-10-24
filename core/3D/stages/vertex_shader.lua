@@ -2,7 +2,7 @@ local matmul = require("core.3D.math.matmul")
 
 return function(object,prev,geo,prop,efx,out,BUS,object_texture,camera)
     local transformed_vertices = {}
-    local per = BUS.persperctive.matrix
+    local per = BUS.perspective.matrix
 
     local scale = prop.scale_mat
     local rot   = prop.rotation_mat
