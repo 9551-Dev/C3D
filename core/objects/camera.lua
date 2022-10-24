@@ -9,7 +9,7 @@ return {add=function(BUS)
     local camera_object = {
         __index = object.new{
             set_position = function(this,x,y,z)
-                this.position = translate_matrix(-x,y,-z)
+                this.position = translate_matrix(-x,-y,-z)
                 return this
             end,
             set_rotation = function(this,rx,ry,rz,w)
