@@ -11,7 +11,8 @@ return function(object,prev,geo,prop,efx,out,BUS)
     local dat = prev or out.tris
 
     for i=1,#dat do
-        local new = shader(dat[i],i)
+        local t = dat[i]
+        local new = shader(t,t.index)
         if new then
             n = n + 1
             output_triangles[n] = new

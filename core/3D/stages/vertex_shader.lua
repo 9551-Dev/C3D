@@ -9,7 +9,10 @@ return function(object,prev,geo,prop,efx,out,BUS,object_texture,camera)
     local pos   = prop.pos_mat
 
     local shader = efx.vs
-    local uvs = geo.uvs
+    local uvs    = geo.uvs
+
+    local normals    = geo.normals
+    local normal_idx = geo.normal_idx
 
     local vertice_index = 0
     for i=1,#prev,3 do

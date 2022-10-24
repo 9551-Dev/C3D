@@ -34,6 +34,10 @@ return {register_bus=function(ENV)
             far =1000,
             FOV =50
         },
+        interactions={
+            running=true,
+            map=ENV.utils.table.createNDarray(1)
+        },
         scene={},
         camera={}
     }

@@ -21,10 +21,10 @@ return {create=function(BUS)
         local pipe_line_size = #pipeline
         local out = {n=0,tris={}}
         for k,object in pairs(BUS.scene) do
-            local object_geometry   = object.geometry
-            local object_effects    = object.effects
-            local object_properties = object.properties
-            local object_texture    = object.texture
+            local object_geometry    = object.geometry
+            local object_effects     = object.effects
+            local object_properties  = object.properties
+            local object_texture     = object.texture
 
             local prev = {}
 

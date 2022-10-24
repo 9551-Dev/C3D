@@ -12,6 +12,9 @@ return {create=function(BUS,raster)
         local w,h = bus_g.w,bus_g.h
 
         local depth_map = tbl.createNDarray(1)
+
+        local INTERACT_MODE  = BUS.interactions.running
+        local SCREEN_OBJECTS = tbl.createNDarray(1)
         
         for i=1,#triangles do
             local triangle = triangles[i]
@@ -30,13 +33,20 @@ return {create=function(BUS,raster)
                     pst(c,w,h),
                     o.texture,
                     function(x,y,z,c)
-                        if not depth_map[x][y] or depth_map[x][y] > z then
+                        local dmx = depth_map[x][y]
+
+                        if not dmx or dmx > z then
                             canv[y][x] = c
                             depth_map[x][y] = z
+
+                            if INTERACT_MODE then
+                                SCREEN_OBJECTS[y][x] = triangle
+                            end
                         end
                     end
                 )
             end
         end
+        if INTERACT_MODE then BUS.interactions.map = SCREEN_OBJECTS end
     end}
 end}

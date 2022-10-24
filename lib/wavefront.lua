@@ -9,10 +9,12 @@ local function split_string(str,delimiter)
 end
 
 local function decode(str)
-    local result = {vertices={},tris={},uvs={}}
-    local vertices,a = result.vertices,0
-    local tris,b     = result.tris,0
-    local uvs,d      = result.uvs,0
+    local result = {vertices={},tris={},uvs={},normals={},normal_idx={}}
+    local vertices,a     = result.vertices,0
+    local tris,b         = result.tris,0
+    local uvs,d          = result.uvs,0
+    local normals,n      = result.normals,0
+    local normal_idx,ndx = result.normal_idx,0
 
     for c in str:gmatch("[^\n]+") do
         local line_info = split_string(c,"% ")
@@ -26,20 +28,36 @@ local function decode(str)
             d = d + 2
             uvs[d-1] = tonumber(line_info[2])
             uvs[d]   = tonumber(line_info[3])
+        elseif line_info[1] == "vn" then
+            n = n + 3
+            normals[n-2] = tonumber(line_info[2])
+            normals[n-1] = tonumber(line_info[3])
+            normals[n]   = tonumber(line_info[4])
         elseif line_info[1] == "f" then
             for i=2,#line_info do
                 if i == 5 then
                     local b_orig = b
+                    local ndx_orig = ndx
                     b = b + 2
-                    local p1 = tris[b_orig-2]
-                    local p2 = tris[b_orig]
-                    tris[b-1] = p1
-                    tris[b]   = p2
+                    ndx = ndx + 2
+
+                    tris[b-1] = tris[b_orig-2]
+                    tris[b]   = tris[b_orig]
+
+                    normal_idx[ndx-1] = normal_idx[ndx_orig-2]
+                    normal_idx[ndx] = normal_idx[ndx_orig]
                 end
 
 
                 b = b + 1
                 local split = split_string(line_info[i], "/")
+                local splt3 = split[3]
+
+                if splt3 ~= "" then
+                    ndx = ndx + 1
+                    normal_idx[ndx] = tonumber(splt3)
+                end
+
                 tris[b] = tonumber(split[1])
             end
         end
