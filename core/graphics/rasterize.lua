@@ -61,8 +61,10 @@ return {build=function(BUS)
     
                 local frag_data = {
                     texture = TPIX,
+                    tex=tex,
                     color = C,
                     x=x,y=y,
+                    z_correct=z
                 }
                 for i=1,num do
                     local nm = naming[i]
@@ -73,6 +75,7 @@ return {build=function(BUS)
                     local tpos = int_uv(bary,v0,v1,v2)
                     frag_data.tx = MAX(1,MIN(CEIL(tpos[1]*z*tex.w),tex.w))
                     frag_data.ty = MAX(1,MIN(CEIL(tpos[2]*z*tex.h),tex.h))
+                    frag_data.tx,frag_data.ty = tpos[1],tpos[2]
                 end
     
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,
@@ -135,8 +138,10 @@ return {build=function(BUS)
     
                 local frag_data = {
                     texture = TPIX,
+                    tex=tex,
                     color = C,
                     x=x,y=y,
+                    z_correct=z
                 }
                 for i=1,num do
                     local nm = naming[i]
@@ -147,6 +152,7 @@ return {build=function(BUS)
                     local tpos = int_uv(bary,v0,v1,v2)
                     frag_data.tx = MAX(1,MIN(CEIL(tpos[1]*z*tex.w),tex.w))
                     frag_data.ty = MAX(1,MIN(CEIL(tpos[2]*z*tex.h),tex.h))
+                    frag_data.tx,frag_data.ty = tpos[1],tpos[2]
                 end
     
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,

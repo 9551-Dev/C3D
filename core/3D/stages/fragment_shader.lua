@@ -1,11 +1,17 @@
+local MAX,MIN,CEIL = math.max,math.min,math.ceil
+
 return function(fs)
     if fs then return fs end
 
-    return function(px_info)
-        if px_info.texture then
-            return px_info.texture[px_info.ty][px_info.tx]
+    return function(frag)
+        if frag.texture then
+            local z = frag.z_correct
+            local x = MAX(1,MIN(CEIL(frag.tx*z*frag.tex.w),frag.tex.w))
+            local y = MAX(1,MIN(CEIL(frag.ty*z*frag.tex.h),frag.tex.h))
+
+            return frag.texture[y][x]
         end
 
-        return px_info.color or colors.red
+        return frag.color or colors.red
     end
 end

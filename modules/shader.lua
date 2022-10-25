@@ -2,7 +2,7 @@ local shader = {default={},frag={},vertex={},geometry={}}
 
 local matmul = require("core.3D.math.matmul")
 
-local RANDOM = math.random
+local RANDOM,MAX,MIN,CEIL = math.random,math.max,math.min,math.ceil
 
 return function(BUS)
     function shader.default.vertex(new_vertice,properties,scale,rot,pos,camera,per)
@@ -13,12 +13,16 @@ return function(BUS)
         return matmul(camera_transform,per)
     end
 
-    function shader.default.frag(px_info)
-        if px_info.texture then
-            return px_info.texture[px_info.ty][px_info.tx]
+    function shader.default.frag(frag)
+        if frag.texture then
+            local z = frag.z_correct
+            local x = MAX(1,MIN(CEIL(frag.tx*z*frag.tex.w),frag.tex.w))
+            local y = MAX(1,MIN(CEIL(frag.ty*z*frag.tex.h),frag.tex.h))
+
+            return frag.texture[y][x]
         end
 
-        return px_info.color or colors.red
+        return frag.color or colors.red
     end
 
     function shader.default.geometry(triangle)
