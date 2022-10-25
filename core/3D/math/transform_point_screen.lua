@@ -13,8 +13,8 @@ return function(p,w,h)
         (-p[2]*inverse_z+1)*h/2,
         inverse_z,
         p[4],
-        p[5]*inverse_z,
-        p[6]*inverse_z,
+        (p[5] or 0)*inverse_z,
+        (p[6] or 0)*inverse_z,
         frag=new_frag
     }
 end

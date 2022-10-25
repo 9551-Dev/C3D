@@ -9,10 +9,6 @@ return function(object,prev,geo,prop,efx,out,BUS,object_texture,camera)
     local pos   = prop.pos_mat
 
     local shader = efx.vs
-    local uvs    = geo.uvs
-
-    local normals    = geo.normals
-    local normal_idx = geo.normal_idx
 
     local vertice_index = 0
     for i=1,#prev,3 do
@@ -32,13 +28,6 @@ return function(object,prev,geo,prop,efx,out,BUS,object_texture,camera)
             local translated_vertice = matmul(rotated_vertice,pos)
             local camera_transform   = matmul(matmul(translated_vertice,camera.position),camera.rotation)
             final_vertice            = matmul(camera_transform,per)
-        end
-
-        if uvs then
-            final_vertice[5] = uvs[vertice_index*2-1] or 0
-            final_vertice[6] = uvs[vertice_index*2]   or 0
-        else
-            final_vertice[5],final_vertice[6] = 0,0
         end
 
         transformed_vertices[vertice_index] = final_vertice

@@ -9,12 +9,13 @@ local function split_string(str,delimiter)
 end
 
 local function decode(str)
-    local result = {vertices={},tris={},uvs={},normals={},normal_idx={}}
+    local result = {vertices={},tris={},uvs={},normals={},normal_idx={},uv_idx={}}
     local vertices,a     = result.vertices,0
     local tris,b         = result.tris,0
     local uvs,d          = result.uvs,0
     local normals,n      = result.normals,0
     local normal_idx,ndx = result.normal_idx,0
+    local uv_idx,udx     = result.uv_idx,0
 
     for c in str:gmatch("[^\n]+") do
         local line_info = split_string(c,"% ")
@@ -38,20 +39,31 @@ local function decode(str)
                 if i == 5 then
                     local b_orig = b
                     local ndx_orig = ndx
+                    local udx_orig = udx
                     b = b + 2
                     ndx = ndx + 2
+                    udx = udx + 2
 
                     tris[b-1] = tris[b_orig-2]
                     tris[b]   = tris[b_orig]
 
                     normal_idx[ndx-1] = normal_idx[ndx_orig-2]
-                    normal_idx[ndx] = normal_idx[ndx_orig]
+                    normal_idx[ndx]   = normal_idx[ndx_orig]
+
+                    uv_idx[udx-1] = uv_idx[udx_orig-2]
+                    uv_idx[udx]   = uv_idx[udx_orig]
                 end
 
 
                 b = b + 1
                 local split = split_string(line_info[i], "/")
+                local splt2 = split[2]
                 local splt3 = split[3]
+
+                if splt2 ~= "" then
+                    udx = udx + 1
+                    uv_idx[udx] = tonumber(splt2)
+                end
 
                 if splt3 ~= "" then
                     ndx = ndx + 1
