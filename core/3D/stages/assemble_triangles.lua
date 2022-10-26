@@ -36,12 +36,12 @@ return function(object,prev,geo,prop,efx,out,BUS)
             c[5],c[6] = uvs[uvc-1],uvs[uvc]
         end
         if nnorm then
-            local norma = normal_indices[i]  *2
-            local normb = normal_indices[i+1]*2
-            local normc = normal_indices[i+2]*2
-            a.norm = {normals[norma-1],normals[norma]}
-            b.norm = {normals[normb-1],normals[normb]}
-            c.norm = {normals[normc-1],normals[normc]}
+            local norma = normal_indices[i]  *3
+            local normb = normal_indices[i+1]*3
+            local normc = normal_indices[i+2]*3
+            a.norm = {normals[norma-2],normals[norma-1],normals[norma]}
+            b.norm = {normals[normb-2],normals[normb-1],normals[normb]}
+            c.norm = {normals[normc-2],normals[normc-1],normals[normc]}
         end
 
         on = frustum_handle(object,out_tris,a,b,c,on,fragment_shader(shader),t_index)
