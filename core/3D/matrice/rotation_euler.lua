@@ -13,9 +13,9 @@ return function(rx,ry,rz)
     local cz = COS(z)
 
     return {
-        cy*cz,-cy*sz,sy,0,
-        (sx*sy*cz) +(cx*sz),(-sx*sy*sz)+(cx*cz),-sx*cy,0,
-        (-cx*sy*cz)+(sx*sz),(cx*sy*sz) +(sx*cz),cx*cy, 0,
+        cy*cz,(sx*sy*cz) +(cx*sz),(-cx*sy*cz)+(sx*sz),0,
+        -cy*sz,(-sx*sy*sz)+(cx*cz),(cx*sy*sz) +(sx*cz),0,
+        sy,-sx*cy,cx*cy,0,
         0,0,0,1
     }
 end

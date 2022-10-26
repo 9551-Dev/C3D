@@ -23,9 +23,9 @@ return function(x,y,z,a)
     local k = (z/lenght)*s
 
     return {
-        1-2*j*j-2*k*k, 2*i*j+2*w*k, 2*i*k-2*w*j, 0,
-        2*i*j-2*w*k, 1-2*i*i-2*k*k, 2*j*k+2*w*i, 0,
-        2*i*k+2*w*j, 2*j*k-2*w*i, 1-2*i*i-2*j*j, 0,
-        0, 0, 0, 1
+        1-2*j*j-2*k*k,2*i*j-2*w*k,2*i*k+2*w*j,0,
+        2*i*j+2*w*k,1-2*i*i-2*k*k,2*j*k-2*w*i,0,
+        2*i*k-2*w*j,2*j*k+2*w*i,1-2*i*i-2*j*j,0,
+        0,0,0,1
     }
 end
