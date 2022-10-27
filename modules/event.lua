@@ -32,8 +32,8 @@ return function(BUS)
 
     function event.wait()
         while #BUS.events < 1 do
-            os.queueEvent("yield")
-            os.pullEvent("yield")
+            os.queueEvent("waiting")
+            os.pullEvent("waiting")
         end
         return grab_event_queue()
     end

@@ -16,7 +16,7 @@ return {make=function(ENV,BUS,terminal)
                     BUS.perspective.FOV
                 )
             end
-            sleep(0.1)
+            coroutine.yield()
         end
     end)
 end}

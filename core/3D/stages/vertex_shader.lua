@@ -26,8 +26,14 @@ return function(object,prev,geo,prop,efx,out,BUS,object_texture,camera)
             local scaled_vertice     = matmul(new_vertice,scale)
             local rotated_vertice    = matmul(scaled_vertice,rot)
             local translated_vertice = matmul(rotated_vertice,pos)
-            local camera_transform   = matmul(matmul(translated_vertice,camera.position),camera.rotation)
-            final_vertice            = matmul(camera_transform,per)
+            local camera_transform
+            if camera.transform then
+                camera_transform = matmul(translated_vertice,camera.transform)
+            else
+                camera_transform = matmul(matmul(translated_vertice,camera.position),camera.rotation)
+            end
+
+            final_vertice = matmul(camera_transform,per)
         end
 
         transformed_vertices[vertice_index] = final_vertice

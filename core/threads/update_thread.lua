@@ -21,7 +21,6 @@ return {make=function(ENV,BUS,args)
                     table.remove(BUS.frames,1)
                 else break end
             end
-            generic.precise_sleep(BUS.sys.frame_time_min)
         end
     end)
 end}

@@ -37,8 +37,8 @@ return function(BUS)
                 if timeout then timed_out = os.epoch("utc") + timeout end
 
                 while #this.queue < 1 or os.epoch("utc") > timed_out do
-                    os.queueEvent("wait")
-                    os.pullEvent("wait")
+                    os.queueEvent("waiting")
+                    os.pullEvent("waiting")
                 end
 
                 local received = table.remove(this.queue,1)
@@ -74,8 +74,8 @@ return function(BUS)
                 if timeout then timed_out = os.epoch("utc") + timeout end
 
                 while not this.push_ids[id] or os.epoch("utc") > timed_out do
-                    os.queueEvent("wait")
-                    os.pullEvent("wait")
+                    os.queueEvent("waiting")
+                    os.pullEvent("waiting")
                 end
                 return not (os.epoch("utc") > timed_out)
             end

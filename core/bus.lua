@@ -27,7 +27,7 @@ return {register_bus=function(ENV)
         instance={},
         object={},
         sys={
-            frame_time_min=1/40,
+            frame_time_min=1/60,
         },
         perspective={
             near=-0.5,

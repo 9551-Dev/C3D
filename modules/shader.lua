@@ -9,7 +9,12 @@ return function(BUS)
         local scaled_vertice     = matmul(new_vertice,scale)
         local rotated_vertice    = matmul(scaled_vertice,rot)
         local translated_vertice = matmul(rotated_vertice,pos)
-        local camera_transform   = matmul(matmul(translated_vertice,camera.position),camera.rotation)
+        local camera_transform
+        if camera.transform then
+            camera_transform = matmul(translated_vertice,camera.transform)
+        else
+            camera_transform = matmul(matmul(translated_vertice,camera.position),camera.rotation)
+        end
         return matmul(camera_transform,per)
     end
 
