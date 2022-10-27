@@ -1,14 +1,16 @@
 local graphics = {}
 
 local clr = require("common.color_util")
-local tbl = require("common.table_util")
 
 local rasterer = require("core.graphics.rasterize")
 local scrender = require("core.graphics.screen_render")
 
 local scene_renderer = require("core.scene_render")
 
+local MAX,CEIL = math.max,math.ceil
+
 return function(BUS)
+    local _,update_perspective = require("modules.perspective")(BUS)
 
     BUS.clr_instance = clr
 
@@ -46,6 +48,11 @@ return function(BUS)
 
     function graphics.load_texture(image,settings)
         return BUS.object.texture.new(image,settings)
+    end
+
+    function graphics.set_pixel_size(size)
+        BUS.graphics.pixel_size = MAX(CEIL(size),1)
+        update_perspective()
     end
 
     return graphics

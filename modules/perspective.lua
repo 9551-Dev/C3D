@@ -8,7 +8,7 @@ return function(BUS)
         local BPER = BUS.perspective
         local BGPS = BUS.graphics
 
-        BPER.matrix = perspective_matrix(BGPS.w,BGPS.h,
+        BPER.matrix = perspective_matrix(BGPS.w/BGPS.pixel_size,BGPS.h/BGPS.pixel_size,
             BPER.near,
             BPER.far,
             BPER.FOV
@@ -29,5 +29,5 @@ return function(BUS)
         update_perspective()
     end
     
-    return perspective
+    return perspective,update_perspective
 end

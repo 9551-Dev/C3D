@@ -26,7 +26,7 @@ return function(ENV,libdir,...)
         end)
         if not ok then BUS.graphics.monitor = "term_object" end
         local sw,sh = w*2,h*3
-        BUS.perspective.matrix = per_matrix(sw,sh,
+        BUS.perspective.matrix = per_matrix(sw/2,sh/2,
             BUS.perspective.near,
             BUS.perspective.far,
             BUS.perspective.FOV

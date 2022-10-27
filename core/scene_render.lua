@@ -9,7 +9,8 @@ return {create=function(BUS,raster)
         local triangles = pipeline.get_triangles()
         local bus_g = BUS.graphics
         local canv = bus_g.buffer
-        local w,h = bus_g.w,bus_g.h
+        local psize = bus_g.pixel_size
+        local w,h = bus_g.w/psize,bus_g.h/psize
 
         local depth_map = tbl.createNDarray(1)
 
@@ -33,14 +34,23 @@ return {create=function(BUS,raster)
                     pst(c,w,h),
                     o.texture,
                     function(x,y,z,c)
-                        local dmx = depth_map[x][y]
+                        x,y = x*psize,y*psize
 
-                        if not dmx or dmx > z then
-                            canv[y][x] = c
-                            depth_map[x][y] = z
+                        for x_offset=0,psize-1 do
+                            for y_offset=0,psize-1 do
+                                local x_pos = x - x_offset
+                                local y_pos = y - y_offset
 
-                            if INTERACT_MODE then
-                                SCREEN_OBJECTS[y][x] = triangle
+                                local dmx = depth_map[x_pos][y_pos]
+
+                                if not dmx or dmx > z then
+                                    canv[y_pos][x_pos] = c
+                                    depth_map[x_pos][y_pos] = z
+
+                                    if INTERACT_MODE then
+                                        SCREEN_OBJECTS[y_pos][x_pos] = triangle
+                                    end
+                                end
                             end
                         end
                     end

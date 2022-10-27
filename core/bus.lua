@@ -9,7 +9,7 @@ return {register_bus=function(ENV)
         graphics={
             buffer=ENV.utils.table.createNDarray(1),
             bg_col=colors.black,
-            blending={mode="alpha",alphamode="alphamultiply"},
+            pixel_size=1
         },
         thread={
             channel={},
@@ -27,7 +27,7 @@ return {register_bus=function(ENV)
         instance={},
         object={},
         sys={
-            frame_time_min=1/60,
+            frame_time_min=1/30,
         },
         perspective={
             near=-0.5,
