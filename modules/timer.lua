@@ -7,7 +7,7 @@ if is_craftos then config.set("mouse_move_throttle",1) end
 return function(BUS)
     function timer.step()
         BUS.timer.last_delta = BUS.timer.temp_delta
-        return BUS.timer.last_delta
+        return BUS.timer.last_delta/1000
     end
 
     function timer.get_delta()

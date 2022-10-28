@@ -1,6 +1,8 @@
 local frustum_handle  = require("core.3D.geometry.clip_cull_frustum")
 local fragment_shader = require("core.3D.stages.fragment_shader")
 
+local tbl_util = require("common.table_util")
+
 local empty = {}
 
 return function(object,prev,geo,prop,efx,out,BUS)
@@ -23,9 +25,9 @@ return function(object,prev,geo,prop,efx,out,BUS)
     for i=1,#tris,3 do
         t_index = t_index + 1
 
-        local a = prev[tris[i]]
-        local b = prev[tris[i+1]]
-        local c = prev[tris[i+2]]
+        local a = tbl_util.make_vertex_copy(prev[tris[i]])
+        local b = tbl_util.make_vertex_copy(prev[tris[i+1]])
+        local c = tbl_util.make_vertex_copy(prev[tris[i+2]])
 
         if nuvs then
             local uva = uv_indices[i]  *2

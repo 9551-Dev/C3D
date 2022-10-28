@@ -17,7 +17,7 @@ local function build_run(c3d,args)
                     end
                 end
                 if c3d.timer then dt = c3d.timer.step() end
-                if c3d.update then c3d.update(c3d.timer.get_average_delta()) end
+                if c3d.update then c3d.update(dt) end
                 ds.setVisible(false)
                 c3d.graphics.clear_buffer(c3d.graphics.get_bg())
 
