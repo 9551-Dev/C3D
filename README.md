@@ -9,4 +9,7 @@ It provides the ability to load .obj files and apply textures.
 
 Examples will be found in the `examples` directory, currently still working on them.
 
+## special thanks to shadyduck#9428 and [Jig487#9466](https://github.com/jig487)
+fr guys thanks for the help and support.
+
 ![3D shrek model with a texture](/shrek.png?raw=true "3D shrek model with a texture")
