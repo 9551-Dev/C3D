@@ -27,7 +27,7 @@ return {create=function(BUS,raster)
             local cull = cull_triangle(a,b,c)
             local cull_invert = o.invert_culling
 
-            if (not cull_invert and cull > 0) or (o.invert_culling and cull < 0) or o.disable_culling then
+            if (not cull_invert and cull < 0) or (o.invert_culling and cull > 0) or o.disable_culling then
                 raster.triangle(triangle.fs,o,
                     pst(a,w,h),
                     pst(b,w,h),
