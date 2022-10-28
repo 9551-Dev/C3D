@@ -75,8 +75,6 @@ return {build=function(BUS)
 
                 if tex then
                     local tpos = int_uv(bary,v0,v1,v2)
-                    frag_data.tx = MAX(1,MIN(CEIL(tpos[1]*z*tex.w),tex.w))
-                    frag_data.ty = MAX(1,MIN(CEIL(tpos[2]*z*tex.h),tex.h))
                     frag_data.tx,frag_data.ty = tpos[1],tpos[2]
                 end
     
@@ -152,8 +150,6 @@ return {build=function(BUS)
 
                 if tex then
                     local tpos = int_uv(bary,v0,v1,v2)
-                    frag_data.tx = MAX(1,MIN(CEIL(tpos[1]*z*tex.w),tex.w))
-                    frag_data.ty = MAX(1,MIN(CEIL(tpos[2]*z*tex.h),tex.h))
                     frag_data.tx,frag_data.ty = tpos[1],tpos[2]
                 end
     

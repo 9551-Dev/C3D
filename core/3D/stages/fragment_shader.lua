@@ -5,11 +5,15 @@ return function(fs)
 
     return function(frag)
         if frag.texture then
-            local z = frag.z_correct
-            local x = MAX(1,MIN(CEIL(frag.tx*z*frag.tex.w),frag.tex.w))
-            local y = MAX(1,MIN(CEIL(frag.ty*z*frag.tex.h),frag.tex.h))
+            local tex = frag.tex
+            local w = tex.w
+            local h = tex.h
 
-            return frag.texture[y][x]
+            local z = frag.z_correct
+            local x = MAX(1,MIN(CEIL(frag.tx*z*w),w))
+            local y = MAX(1,MIN(CEIL(frag.ty*z*h),h))
+
+            return frag.texture[h-y+1][x]
         end
 
         return frag.color or colors.red
