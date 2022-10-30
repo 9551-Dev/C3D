@@ -12,7 +12,8 @@ return {register_bus=function(ENV)
             pixel_size=1,
             stats={
                 frames_drawn=0
-            }
+            },
+            auto_resize=true
         },
         thread={
             channel={},

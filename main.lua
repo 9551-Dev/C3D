@@ -34,6 +34,7 @@ return function(ENV,libdir,...)
         BUS.graphics.w,BUS.graphics.h = sw,sh
         BUS.graphics.display_source = terminal
         BUS.graphics.display = screen_init.new(BUS)
+        BUS.graphics.screen_parent = parent
         BUS.graphics.event_offset = vector.new(ox,oy)
         BUS.clr_instance.update_palette(terminal)
         BUS.instance.scenedir = fs.getDir(path) or ""
@@ -59,7 +60,7 @@ return function(ENV,libdir,...)
 
         local main   = update_thread.make(ENV,BUS,args)
         local event  = event_thread .make(ENV,BUS,args)
-        local resize = resize_thread.make(ENV,BUS,parent)
+        local resize = resize_thread.make(ENV,BUS,function() return BUS.graphics.screen_parent end)
         local key_h  = key_thread   .make(ENV,BUS)
         local tudp   = tudp_thread  .make(ENV,BUS)
 
@@ -70,6 +71,8 @@ return function(ENV,libdir,...)
                 return BUS.running
             end,{},main,event,resize,key_h,tudp)
         end
+
+        if parent.getGraphicsMode and parent.getGraphicsMode() > 0 then parent.setGraphicsMode(0) end
 
         if not ok and ENV.c3d.errorhandler then
             if ENV.c3d.errorhandler(err) then
