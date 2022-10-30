@@ -7,15 +7,21 @@ local t_cat = table.concat
 
 return {build=function(BUS,scene)
     local busg = BUS.graphics
+    local timer = BUS.c3d.timer
     return {make_frame=function()
+        local trendst = os.epoch("utc")
         scene.render()
-        local bgw = BUS.graphics.w
-        local canv = BUS.graphics.buffer
+        local trendet = os.epoch("utc")
+        busg.stats.render_total = trendet-trendst
+
+        local bgw = busg.w
+        local canv = busg.buffer
         local sy = 0
 
-        local set_cursor = BUS.graphics.display_source.setCursorPos
-        local blit_line  = BUS.graphics.display_source.blit
+        local set_cursor = busg.display_source.setCursorPos
+        local blit_line  = busg.display_source.blit
 
+        local sust = os.epoch("utc")
         for y=1,busg.h,3 do
             sy = sy + 1
             local layer_1 = canv[y]
@@ -51,5 +57,9 @@ return {build=function(BUS,scene)
                 t_cat(bg_line,"")
             )
         end
+        local suet = os.epoch("utc")
+        busg.stats.screen_update = suet-sust
+        busg.stats.fps = timer.getFPS()
+        busg.stats.frame_time = timer.get_delta()
     end}
 end}

@@ -55,5 +55,9 @@ return function(BUS)
         update_perspective()
     end
 
+    function graphics.get_stats()
+        return BUS.graphics.stats
+    end
+
     return graphics
 end

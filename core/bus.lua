@@ -9,7 +9,10 @@ return {register_bus=function(ENV)
         graphics={
             buffer=ENV.utils.table.createNDarray(1),
             bg_col=colors.black,
-            pixel_size=1
+            pixel_size=1,
+            stats={
+                frames_drawn=0
+            }
         },
         thread={
             channel={},
