@@ -1,5 +1,6 @@
 local object   = require("core.object")
 local tbl_util = require("common.table_util")
+local generic  = require("common.generic")
 
 local scale_matrice     = require("core.3D.matrice.scale")
 local euler_rot_matrice = require("core.3D.matrice.rotation_euler")
@@ -58,7 +59,7 @@ return {add=function(BUS)
 
     return {new=function(geometry)
 
-        local id = tostring({})
+        local id = generic.uuid4()
 
         geometry.properties = {
             scale_mat=scale_matrice(1,1,1),
