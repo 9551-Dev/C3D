@@ -1,14 +1,19 @@
 local object = require("core.object")
 
-local texture_object = {
-    __index = object.new{
-        get_out=function(this)
-            return this.c3d.option_result
-        end
-    },__tostring=function() return "texture" end
-}
-
 return {add=function(BUS)
+
+        
+    local texture_object = {
+        __index = object.new{
+            get_out=function(this)
+                return this.c3d.option_result
+            end,
+            sprite_sheet=function(this,settings)
+                return BUS.object.sprite_sheet.new(this,settings)
+            end
+        },__tostring=function() return "texture" end
+    }
+
     return {new=function(path,options)
         local extension = path:match("^.+(%..+)$")
         local file_path = fs.combine(BUS.instance.scenedir,path)

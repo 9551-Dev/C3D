@@ -32,6 +32,8 @@ return {register_bus=function(ENV)
         object={},
         sys={
             frame_time_min=1/30,
+            init_time=os.epoch("utc"),
+            run_time=0
         },
         perspective={
             near=-0.5,
@@ -43,6 +45,7 @@ return {register_bus=function(ENV)
             map=ENV.utils.table.createNDarray(1)
         },
         scene={},
-        camera={}
+        camera={},
+        animated_texture={instances={}}
     }
 end}

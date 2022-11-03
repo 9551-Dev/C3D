@@ -1,14 +1,21 @@
 local run = require("core.uloop")
-local generic = require("common.generic")
 
 return {make=function(ENV,BUS,args)
     return coroutine.create(function()
         run(ENV.c3d,args)
         local runner = ENV.c3d.run()
-        local bgs = BUS.graphics.stats
+        local bgs  = BUS.graphics.stats
+        local bsys = BUS.sys
 
         while true do
             local frame_start = os.epoch("utc")
+
+            bsys.run_time = frame_start - bsys.init_time
+
+            for k,v in pairs(BUS.animated_texture.instances) do
+                if v.running then v:__update() end
+            end
+
             runner()
             bgs.frames_drawn = bgs.frames_drawn + 1
             local current_time = os.epoch("utc")

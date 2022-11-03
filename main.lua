@@ -83,13 +83,15 @@ return function(ENV,libdir,...)
         end
     end
 
-    BUS.object.palette        = require("core.objects.palette")       .add(BUS)
-    BUS.object.texture        = require("core.objects.texture")       .add(BUS)
-    BUS.object.scene_obj      = require("core.objects.scene_object")  .add(BUS)
-    BUS.object.generic_shape  = require("core.objects.generic_shape") .add(BUS)
-    BUS.object.camera         = require("core.objects.camera")        .add(BUS)
-    BUS.object.imported_model = require("core.objects.imported_model").add(BUS)
-    BUS.object.vector         = require("core.objects.vector")        .add(BUS)
+    BUS.object.palette          = require("core.objects.palette")         .add(BUS)
+    BUS.object.texture          = require("core.objects.texture")         .add(BUS)
+    BUS.object.scene_obj        = require("core.objects.scene_object")    .add(BUS)
+    BUS.object.generic_shape    = require("core.objects.generic_shape")   .add(BUS)
+    BUS.object.camera           = require("core.objects.camera")          .add(BUS)
+    BUS.object.imported_model   = require("core.objects.imported_model")  .add(BUS)
+    BUS.object.vector           = require("core.objects.vector")          .add(BUS)
+    BUS.object.animated_texture = require("core.objects.animated_texture").add(BUS)
+    BUS.object.sprite_sheet     = require("core.objects.sprite_sheet")    .add(BUS)
 
     ENV.c3d.timer        = require("modules.timer")      (BUS)
     ENV.c3d.event        = require("modules.event")      (BUS)
