@@ -92,6 +92,7 @@ return function(ENV,libdir,...)
     BUS.object.vector           = require("core.objects.vector")          .add(BUS)
     BUS.object.animated_texture = require("core.objects.animated_texture").add(BUS)
     BUS.object.sprite_sheet     = require("core.objects.sprite_sheet")    .add(BUS)
+    BUS.object.raw_mesh         = require("core.objects.raw_mesh")        .add(BUS)
 
     ENV.c3d.timer        = require("modules.timer")      (BUS)
     ENV.c3d.event        = require("modules.event")      (BUS)
