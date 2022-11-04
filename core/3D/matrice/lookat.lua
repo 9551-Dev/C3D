@@ -24,8 +24,8 @@ return function(fromx,fromy,fromz,atx,aty,atz)
         ux,vx,nx,0,
         uy,vy,ny,0,
         uz,vz,nz,0,
-        dot(-fromx,fromy,-fromz,ux,uy,uz),
-        dot(-fromx,fromy,-fromz,vx,vy,vz),
-        dot(-fromx,fromy,-fromz,nx,ny,nz),1
+        -dot(-fromx,fromy,-fromz,ux,uy,uz),
+        -dot(-fromx,fromy,-fromz,vx,vy,vz),
+        -dot(-fromx,fromy,-fromz,nx,ny,nz),1
     }
 end

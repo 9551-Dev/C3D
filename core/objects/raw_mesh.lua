@@ -41,9 +41,9 @@ return {add=function(BUS)
                 local v1,v2,v3    = vertices[1],vertices[2],vertices[3]
                 local uv1,uv2,uv3 = uvs[1],uvs[2],uvs[3]
 
-                local x1,y1,z1 = v1[1],-v1[2],v1[3]
-                local x2,y2,z2 = v2[1],-v2[2],v2[3]
-                local x3,y3,z3 = v3[1],-v3[2],v3[3]
+                local x1,y1,z1 = v1[1],v1[2],v1[3]
+                local x2,y2,z2 = v2[1],v2[2],v2[3]
+                local x3,y3,z3 = v3[1],v3[2],v3[3]
 
                 if not verts[x3][y3][z3] then
                     local n = this.vx + 1
