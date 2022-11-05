@@ -42,6 +42,7 @@ return {create=function(BUS,raster)
             local cull_invert = o.invert_culling
 
             local triangle_pixel_size = triangle.pixel_size or psize
+            local force_z = triangle.z_layer
             local w,h = w_orig/triangle_pixel_size,h_orig/triangle_pixel_size
 
             if (not cull_invert and cull > 0) or (o.invert_culling and cull < 0) or o.disable_culling then
@@ -52,6 +53,8 @@ return {create=function(BUS,raster)
                     pst(c,w,h),
                     triangle.texture,triangle_pixel_size,
                     function(x,y,z,c)
+                        local z = force_z or z
+
                         pixels_rasterized = pixels_rasterized + 1
 
                         x,y = x*triangle_pixel_size,y*triangle_pixel_size

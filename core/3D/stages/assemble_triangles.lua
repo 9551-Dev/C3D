@@ -27,6 +27,7 @@ return function(object,prev,geo,prop,efx,out,BUS)
 
     local pixel_size = object.pixel_size
     local texture = object.texture
+    local z_layer = object.z_layer
 
     local t_index = 0
     for i=1,#tris,3 do
@@ -58,7 +59,7 @@ return function(object,prev,geo,prop,efx,out,BUS)
         if ntexs then tex = ntexs[t_index] end
         if npxsz then pix_size = npxsz[t_index] end
 
-        on = frustum_handle(object,out_tris,a,b,c,on,fragment_shader(shader),t_index,tex,pix_size)
+        on = frustum_handle(object,out_tris,a,b,c,on,fragment_shader(shader),t_index,tex,pix_size,z_layer)
     end
 
     out.n = on

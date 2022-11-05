@@ -42,5 +42,24 @@ return function(BUS)
         return 2^(RANDOM(0,1)*15)
     end
 
+    function shader.vertex.skybox(new_vertice,properties,scale,rot,pos,camera,per)
+        local ct = camera.transform
+
+        local scaled_vertice     = matmul(new_vertice,scale)
+        local rotated_vertice    = matmul(scaled_vertice,rot)
+        local camera_transform
+        if ct then
+            camera_transform = matmul(rotated_vertice,{
+                ct[1],ct[2],ct[3],ct[4],
+                ct[5],ct[6],ct[7],ct[8],
+                ct[9],ct[10],ct[11],ct[12],
+                0,0,0,1
+            })
+        else
+            camera_transform = matmul(matmul(rotated_vertice,camera.position),camera.rotation)
+        end
+        return matmul(camera_transform,per)
+    end
+
     return shader
 end
