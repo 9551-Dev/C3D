@@ -16,7 +16,8 @@ return {create=function(BUS,raster)
 
         local canv = bus_g.buffer
         local psize = bus_g.pixel_size
-        local w,h = bus_g.w/psize,bus_g.h/psize
+        local w_orig = bus_g.w
+        local h_orig = bus_g.h
 
         local depth_map = tbl.createNDarray(1)
 
@@ -40,20 +41,23 @@ return {create=function(BUS,raster)
             local cull = cull_triangle(a,b,c)
             local cull_invert = o.invert_culling
 
+            local triangle_pixel_size = triangle.pixel_size or psize
+            local w,h = w_orig/triangle_pixel_size,h_orig/triangle_pixel_size
+
             if (not cull_invert and cull > 0) or (o.invert_culling and cull < 0) or o.disable_culling then
                 triangles_drawn = triangles_drawn + 1
                 raster.triangle(triangle.fs,o,
                     pst(a,w,h),
                     pst(b,w,h),
                     pst(c,w,h),
-                    triangle.texture,
+                    triangle.texture,triangle_pixel_size,
                     function(x,y,z,c)
                         pixels_rasterized = pixels_rasterized + 1
 
-                        x,y = x*psize,y*psize
+                        x,y = x*triangle_pixel_size,y*triangle_pixel_size
 
-                        for x_offset=0,psize-1 do
-                            for y_offset=0,psize-1 do
+                        for x_offset=0,triangle_pixel_size-1 do
+                            for y_offset=0,triangle_pixel_size-1 do
                                 local x_pos = x - x_offset
                                 local y_pos = y - y_offset
 

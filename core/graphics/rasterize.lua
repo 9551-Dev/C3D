@@ -182,9 +182,8 @@ return {build=function(BUS)
             end
         end
     end
-    return {triangle=function(fs,object,p1,p2,p3,tex,frag)
-        local psize = graphics_bus.pixel_size
-        local w,h   = graphics_bus.w/psize,graphics_bus.h/psize
+    return {triangle=function(fs,object,p1,p2,p3,tex,pixel_size,frag)
+        local w,h   = graphics_bus.w/pixel_size,graphics_bus.h/pixel_size
         local origp1,origp2,origp3 = p1,p2,p3
         if p2[2] < p1[2] then p1,p2 = p2,p1 end
         if p3[2] < p2[2] then p2,p3 = p3,p2 end
