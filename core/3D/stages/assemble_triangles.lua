@@ -15,11 +15,15 @@ return function(object,prev,geo,prop,efx,out,BUS)
     local uvs = geo.uvs
     local uv_indices = geo.uv_idx
 
-    local normals        = geo.normals
-    local normal_indices = geo.normal_idx
+    local normals           = geo.normals
+    local normal_indices    = geo.normal_idx
+    local triangle_textures = geo.texture_idx
 
     local nuvs  = next(uvs or empty) and next(uv_indices or empty)
     local nnorm = next(normals or empty) and next(normal_indices or empty)
+    local ntexs = next(triangle_textures or empty)
+
+    local texture = object.texture
 
     local t_index = 0
     for i=1,#tris,3 do
@@ -46,7 +50,12 @@ return function(object,prev,geo,prop,efx,out,BUS)
             c.norm = {normals[normc-2],normals[normc-1],normals[normc]}
         end
 
-        on = frustum_handle(object,out_tris,a,b,c,on,fragment_shader(shader),t_index)
+        local tex = texture
+        if ntexs then
+            tex = ntexs[t_index]
+        end
+
+        on = frustum_handle(object,out_tris,a,b,c,on,fragment_shader(shader),t_index,tex)
     end
 
     out.n = on

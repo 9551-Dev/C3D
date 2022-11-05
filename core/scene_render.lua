@@ -46,7 +46,7 @@ return {create=function(BUS,raster)
                     pst(a,w,h),
                     pst(b,w,h),
                     pst(c,w,h),
-                    o.texture,
+                    triangle.texture,
                     function(x,y,z,c)
                         pixels_rasterized = pixels_rasterized + 1
 
