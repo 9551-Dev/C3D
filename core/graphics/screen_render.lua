@@ -8,8 +8,8 @@ local type  = _G.type
 
 return {build=function(BUS,scene)
     local busg = BUS.graphics
-    local timer = BUS.c3d.timer
     return {make_frame=function()
+        local timer = BUS.c3d.timer
         local trendst = os.epoch("utc")
         scene.render()
         local trendet = os.epoch("utc")

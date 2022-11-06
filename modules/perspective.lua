@@ -1,9 +1,6 @@
-local perspective = {}
-
 local perspective_matrix = require("core.3D.matrice.perspective")
 
 return function(BUS)
-
     local function update_perspective()
         local BPER = BUS.perspective
         local BGPS = BUS.graphics
@@ -15,19 +12,28 @@ return function(BUS)
         )
     end
 
-    function perspective.set_near_plane(near)
-        BUS.perspective.near = near
-        update_perspective()
-    end
-    function perspective.set_far_plane(far)
-        BUS.perspective.far = far
-        update_perspective()
-    end
+    return function()
+        local perspective = plugin.new("c3d:perspective")
 
-    function perspective.set_fov(fov)
-        BUS.perspective.FOV = fov
-        update_perspective()
-    end
-    
-    return perspective,update_perspective
+        function perspective.register_modules()
+            local module_registry    = c3d.registry.get_module_registry()
+            local perspective_module = module_registry:new_entry("perspective")
+
+            perspective_module:set_entry(c3d.registry.entry("set_near_plane"),function(near)
+                BUS.perspective.near = near
+                update_perspective()
+            end)
+            perspective_module:set_entry(c3d.registry.entry("set_fra_plane"),function(far)
+                BUS.perspective.far = far
+                update_perspective()
+            end)
+
+            perspective_module:set_entry(c3d.registry.entry("set_fov"),function(fov)
+                BUS.perspective.FOV = fov
+                update_perspective()
+            end)
+        end
+
+        perspective:register()
+    end,update_perspective
 end

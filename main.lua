@@ -18,6 +18,8 @@ return function(ENV,libdir,...)
     handlers.attach(ENV)
     BUS.instance.libdir = libdir
 
+    BUS.plugin_internal = require("core.plugin_api").init(BUS)
+
     local function start_execution(program,path,terminal,parent,ox,oy)
 
         local w,h = terminal.getSize()
@@ -49,13 +51,20 @@ return function(ENV,libdir,...)
         for x,y in ENV.utils.table.map_iterator(BUS.graphics.w,BUS.graphics.h) do
             BUS.graphics.buffer[y][x] = colors.black
         end
+        
         if type(program[1]) == "function" then
             local old_path = package.path
             ENV.package.path = BUS.instance.scenepak
+            BUS.plugin_internal.load_registered_modules()
             setfenv(program[1],ENV)(table.unpack(args,1,args.n))
             ENV.package.path = old_path
         else
             error(program[2],0)
+        end
+
+        if type(ENV.c3d.init) == "function" then
+            ENV.c3d.init()
+            BUS.plugin_internal.register_modules()
         end
 
         local main   = update_thread.make(ENV,BUS,args)
@@ -63,6 +72,8 @@ return function(ENV,libdir,...)
         local resize = resize_thread.make(ENV,BUS,function() return BUS.graphics.screen_parent end)
         local key_h  = key_thread   .make(ENV,BUS)
         local tudp   = tudp_thread  .make(ENV,BUS)
+
+        BUS.plugin_internal.load_registered_modules()
 
         local ok,err = coroutine.resume(main)
 
@@ -83,6 +94,8 @@ return function(ENV,libdir,...)
         end
     end
 
+    BUS.object.registry_entry   = require("core.objects.registry_entry")  .add(BUS)
+    BUS.object.plugin           = require("core.objects.plugin")           .add(BUS)
     BUS.object.palette          = require("core.objects.palette")         .add(BUS)
     BUS.object.texture          = require("core.objects.texture")         .add(BUS)
     BUS.object.scene_obj        = require("core.objects.scene_object")    .add(BUS)
@@ -94,21 +107,26 @@ return function(ENV,libdir,...)
     BUS.object.sprite_sheet     = require("core.objects.sprite_sheet")    .add(BUS)
     BUS.object.raw_mesh         = require("core.objects.raw_mesh")        .add(BUS)
 
-    ENV.c3d.timer        = require("modules.timer")      (BUS)
-    ENV.c3d.event        = require("modules.event")      (BUS)
-    ENV.c3d.graphics     = require("modules.graphics")   (BUS)
-    ENV.c3d.keyboard     = require("modules.keyboard")   (BUS)
-    ENV.c3d.mouse        = require("modules.mouse")      (BUS)
-    ENV.c3d.thread       = require("modules.thread")     (BUS)
-    ENV.c3d.sys          = require("modules.sys")        (BUS)
-    ENV.c3d.scene        = require("modules.scene")      (BUS)
-    ENV.c3d.perspective  = require("modules.perspective")(BUS)
-    ENV.c3d.geometry     = require("modules.geometry")   (BUS)
-    ENV.c3d.shader       = require("modules.shader")     (BUS)
-    ENV.c3d.camera       = require("modules.camera")     (BUS)
-    ENV.c3d.pipe         = require("modules.pipe")       (BUS)
-    ENV.c3d.vector       = require("modules.vector")     (BUS)
-    ENV.c3d.interact     = require("modules.interact")   (BUS)
+    ENV.c3d.plugin       = require("modules.plugin")     (BUS,ENV)
+    ENV.c3d.registry     = require("modules.registry")   (BUS)
+    
+    ENV.c3d.plugin.load(require("modules.timer")      (BUS))
+    ENV.c3d.plugin.load(require("modules.event")      (BUS))
+    ENV.c3d.plugin.load(require("modules.graphics")   (BUS))
+    ENV.c3d.plugin.load(require("modules.keyboard")   (BUS))
+    ENV.c3d.plugin.load(require("modules.mouse")      (BUS))
+    ENV.c3d.plugin.load(require("modules.thread")     (BUS))
+    ENV.c3d.plugin.load(require("modules.sys")        (BUS))
+    ENV.c3d.plugin.load(require("modules.scene")      (BUS))
+    ENV.c3d.plugin.load(require("modules.perspective")(BUS))
+    ENV.c3d.plugin.load(require("modules.geometry")   (BUS))
+    ENV.c3d.plugin.load(require("modules.shader")     (BUS))
+    ENV.c3d.plugin.load(require("modules.camera")     (BUS))
+    ENV.c3d.plugin.load(require("modules.pipe")       (BUS))
+    ENV.c3d.plugin.load(require("modules.vector")     (BUS))
+    ENV.c3d.plugin.load(require("modules.interact")   (BUS))
+    ENV.c3d.plugin.load(require("modules.mesh")       (BUS))
+    BUS.plugin_internal.register_modules()
 
     require("modules.c3d")(BUS,ENV)
 

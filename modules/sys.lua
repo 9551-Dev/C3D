@@ -1,20 +1,26 @@
-local sys = {}
-
 local CEIL = math.ceil
 
 return function(BUS)
+    return function()
+        local sys = plugin.new("c3d:system")
 
-    function sys.get_bus()
-        return BUS
+        function sys.register_modules()
+            local module_registry = c3d.registry.get_module_registry()
+            local system_module   = module_registry:new_entry("sys")
+
+            system_module:set_entry(c3d.registry.entry("get_bus"),function()
+                return BUS
+            end)
+
+            system_module:set_entry(c3d.registry.entry("fps_limit"),function(limit)
+                BUS.sys.frame_time_min = 1/limit
+            end)
+
+            system_module:set_entry(c3d.registry.entry("clamp_color"),function(color,limit)
+                return CEIL(color*limit)/limit
+            end)
+        end
+
+        sys:register()
     end
-
-    function sys.fps_limit(limit)
-        BUS.sys.frame_time_min = 1/limit
-    end
-
-    function sys.clamp_color(color,limit)
-        return CEIL(color*limit)/limit
-    end
-
-    return sys
 end

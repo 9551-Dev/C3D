@@ -1,7 +1,11 @@
+local tbl = require("common.table_util")
+
+local empty = {}
+
 local function make_methods(child)
     return setmetatable({
         __build=function(obj)
-            child = obj 
+            child = obj
             return obj
         end,
         type = function() return child.obj_type end,

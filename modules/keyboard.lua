@@ -1,24 +1,31 @@
-local keyboard = {}
-
 return function(BUS)
 
-    function keyboard.has_text_input()
-        return BUS.keyboard.textinput
-    end
-    function keyboard.set_text_input(enable)
-        BUS.keyboard.setinput = enable
-    end
+    return function()
+        local keyboard = plugin.new("keyboard")
 
-    function keyboard.is_down(...)
-        local key_list = {...}
-        for k,key in pairs(key_list) do
-            local held = BUS.keyboard.pressed_keys[keys[key]]
-            if not (held and held[1]) then
-                return false
-            end
+        function keyboard.register_modules()
+            local module_registry = c3d.registry.get_module_registry()
+            local keyboard_module = module_registry:new_entry("keyboard")
+            
+            keyboard_module:set_entry(c3d.registry.entry("has_text_input"),function()
+                return BUS.keyboard.textinput
+            end)
+            keyboard_module:set_entry(c3d.registry.entry("set_text_input"),function(enable)
+                BUS.keyboard.setinput = enable
+            end)
+
+            keyboard_module:set_entry(c3d.registry.entry("is_down"),function(...)
+                local key_list = {...}
+                for k,key in pairs(key_list) do
+                    local held = BUS.keyboard.pressed_keys[keys[key]]
+                    if not (held and held[1]) then
+                        return false
+                    end
+                end
+                return true
+            end)
         end
-        return true
-    end
 
-    return keyboard
+        keyboard:register()
+    end
 end

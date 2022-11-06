@@ -2,8 +2,6 @@ local generic = require("common.generic")
 
 local object = require("core.object")
 
-local thread = {}
-
 local function is_code(input)
     local _,newlines   = input:gsub("\n","\n")
     local _,semicolons = input:gsub(";",";")
@@ -82,38 +80,6 @@ return function(BUS)
         },__tostring=function() return "c3dC_Chanel" end}
     }
 
-    function thread.new_thread(code)
-        local id = generic.uuid4()
-
-        if not is_code(code) then
-            local selected_path = fs.combine(BUS.instance.scenedir,code)
-            local file,reason = fs.open(selected_path,"r")
-            if file then
-                code = file.readAll()
-            else return false,reason end
-        end
-
-        local func,msg = load(code or "","Thread error","t",BUS.ENV)
-
-        if func then
-
-            BUS.thread.coro[id] = setmetatable({
-                c = coroutine.create(function(...)
-                    coroutine.yield()
-                    func(...)
-                end),
-                started=false,
-
-                obj_type="Thread",
-                stored_in=BUS.thread.coro,
-                under=id,
-                object=BUS.thread.coro[id]
-            },objects.thread):__build()
-
-            return BUS.thread.coro[id]
-        else return false,msg end
-    end
-
     local function GET_CHANNEL(name)
         if BUS.thread.channel[name] then
             return BUS.thread.channel[name]
@@ -132,14 +98,53 @@ return function(BUS)
         end
     end
 
-    function thread.new_channel()
-        local id = generic.uuid4()
-        return GET_CHANNEL(id)
-    end
+    return function()
+        local thread = plugin.new("c3d:thread")
 
-    function thread.get_channel(name)
-        return GET_CHANNEL(name)
-    end
+        function thread.register_modules()
+            local module_registry = c3d.registry.get_module_registry()
+            local thread_module   = module_registry:new_entry("thread")
 
-    return thread
+            thread_module:set_entry(c3d.registry.entry("new_thread"),function(code)
+                local id = generic.uuid4()
+
+                if not is_code(code) then
+                    local selected_path = fs.combine(BUS.instance.scenedir,code)
+                    local file,reason = fs.open(selected_path,"r")
+                    if file then
+                        code = file.readAll()
+                    else return false,reason end
+                end
+
+                local func,msg = load(code or "","Thread error","t",BUS.ENV)
+
+                if func then
+
+                    BUS.thread.coro[id] = setmetatable({
+                        c = coroutine.create(function(...)
+                            coroutine.yield()
+                            func(...)
+                        end),
+                        started=false,
+
+                        obj_type="Thread",
+                        stored_in=BUS.thread.coro,
+                        under=id,
+                        object=BUS.thread.coro[id]
+                    },objects.thread):__build()
+
+                    return BUS.thread.coro[id]
+                else return false,msg end
+            end)
+
+            thread_module:set_entry(c3d.registry.entry("new_channel"),function()
+                local id = generic.uuid4()
+                return GET_CHANNEL(id)
+            end)
+
+            thread_module:set_entry(c3d.registry.entry("get_channel"),function(name)
+                return GET_CHANNEL(name)
+            end)
+        end
+    end
 end

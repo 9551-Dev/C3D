@@ -1,30 +1,38 @@
-local interact = {}
 local floor = math.floor
 
 return function(BUS)
     local bus_interactions = BUS.interactions
 
-    function interact.enable(state)
-        BUS.interactions.running = state
-    end
+    return function()
+        local interact = plugin.new("c3d:interact")
 
-    function interact.get_triangle(x,y)
-        local map = bus_interactions.map
-        return map[floor(y)*3][floor(x)*2]
-    end
-    function interact.get_object(x,y)
-        local map = bus_interactions.map
-        return map[floor(y)*3][floor(x)*2].object
-    end
+        function interact.register_modules()
+            local module_registry = c3d.registry.get_module_registry()
+            local interact_module = module_registry:new_entry("interact")
 
-    function interact.get_triangle_pixel(x,y)
-        local map = bus_interactions.map
-        return map[floor(y)][floor(x)]
-    end
-    function interact.get_object_pixel(x,y)
-        local map = bus_interactions.map
-        return map[floor(y)][floor(x)].object
-    end
+            interact_module:set_entry(c3d.registry.entry("enable"),function(state)
+                BUS.interactions.running = state
+            end)
 
-    return interact
+            interact_module:set_entry(c3d.registry.entry("get_triangle"),function(x,y)
+                local map = bus_interactions.map
+                return map[floor(y)*3][floor(x)*2]
+            end)
+            interact_module:set_entry(c3d.registry.entry("get_object"),function(x,y)
+                local map = bus_interactions.map
+                return map[floor(y)*3][floor(x)*2].object
+            end)
+
+            interact_module:set_entry(c3d.registry.entry("get_triangle_pixel"),function(x,y)
+                local map = bus_interactions.map
+                return map[floor(y)][floor(x)]
+            end)
+            interact_module:set_entry(c3d.registry.entry("get_object_pixel"),function(x,y)
+                local map = bus_interactions.map
+                return map[floor(y)][floor(x)].object
+            end)
+        end
+
+        interact:register()
+    end
 end
