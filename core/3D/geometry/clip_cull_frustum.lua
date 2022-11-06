@@ -1,7 +1,15 @@
 local clip_1 = require("core.3D.clipping.clip_1_vertex")
 local clip_2 = require("core.3D.clipping.clip_2_vertices")
 
+local function clone_vertex(vertex)
+    return {
+        vertex[1],vertex[2],vertex[3],vertex[4],vertex[5],vertex[6],norm=vertex.norm,frag=vertex.frag
+    }
+end
+
 return function(object,tri_list,a,b,c,n,fs,index,triangle_texture,pixel_size,z_layer)
+    a,b,c = clone_vertex(a),clone_vertex(b),clone_vertex(c)
+
     local v1x,v1y,v1z,v1w = a[1],a[2],a[3],a[4]
     local v2x,v2y,v2z,v2w = b[1],b[2],b[3],b[4]
     local v3x,v3y,v3z,v3w = c[1],c[2],c[3],c[4]

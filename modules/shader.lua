@@ -28,7 +28,7 @@ return function(BUS)
                     ct1,ct2,ct3,ct4 = matmul(cp1,cp2,cp3,cp4,cam_rotation)
                 end
 
-                return {matmul(ct1,ct2,ct3,ct4,per)}
+                return matmul(ct1,ct2,ct3,ct4,per)
             end
 
             function default.frag(frag)
@@ -69,7 +69,7 @@ return function(BUS)
                 else
                     ct1,ct2,ct3,ct4 = matmul(matmul(rx1,ry2,ry3,ry4,cam_position),cam_rotation)
                 end
-                return {matmul(ct1,ct2,ct3,ct4,per)}
+                return matmul(ct1,ct2,ct3,ct4,per)
             end
 
             shader_module:set_entry(c3d.registry.entry("default"),default)

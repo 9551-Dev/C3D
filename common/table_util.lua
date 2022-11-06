@@ -102,29 +102,4 @@ function tbls.create_blit_array(count)
     return out
 end
 
-function tbls.make_vertex_copy(vertex)
-
-    local v15 = vertex[5]
-    local v17 = vertex[7]
-
-    local new_vertex = {
-        vertex[1],
-        vertex[2],
-        vertex[3],
-        vertex[4],
-        0,0,0,0,
-        frag = vertex.frag
-    }
-
-    if v15 then
-        new_vertex[5] = vertex[5] or 0
-        new_vertex[5] = vertex[6] or 0
-    end if v17 then
-        new_vertex[5] = vertex[7] or 0
-        new_vertex[5] = vertex[8] or 0
-    end
-
-    return new_vertex
-end
-
 return tbls
