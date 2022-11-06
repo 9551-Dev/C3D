@@ -15,17 +15,20 @@ return function(BUS)
             local vertex = {}
             local frag = {}
 
-            function default.vertex(new_vertice,properties,scale,rot,pos,camera,per)
-                local scaled_vertice     = matmul(new_vertice,scale)
-                local rotated_vertice    = matmul(scaled_vertice,rot)
-                local translated_vertice = matmul(rotated_vertice,pos)
-                local camera_transform
-                if camera.transform then
-                    camera_transform = matmul(translated_vertice,camera.transform)
+            function default.vertex(x,y,z,w,properties,scale,rot,pos,per,cam_transform,cam_position,cam_rotation)
+
+                local sc1,sc2,sc3,sc4    = matmul(x,y,z,w,scale)
+                local rx1,ry2,ry3,ry4    = matmul(sc1,sc2,sc3,sc4,rot)
+                local tl1,tl2,tl3,tl4    = matmul(rx1,ry2,ry3,ry4,pos)
+                local ct1,ct2,ct3,ct4
+                if cam_transform then
+                    ct1,ct2,ct3,ct4 = matmul(tl1,tl2,tl3,tl4,cam_transform)
                 else
-                    camera_transform = matmul(matmul(translated_vertice,camera.position),camera.rotation)
+                    local cp1,cp2,cp3,cp4 = matmul(tl1,tl2,tl3,tl4,cam_position)
+                    ct1,ct2,ct3,ct4 = matmul(cp1,cp2,cp3,cp4,cam_rotation)
                 end
-                return matmul(camera_transform,per)
+
+                return {matmul(ct1,ct2,ct3,ct4,per)}
             end
 
             function default.frag(frag)
@@ -52,23 +55,21 @@ return function(BUS)
                 return 2^(RANDOM(0,1)*15)
             end
 
-            function vertex.skybox(new_vertice,properties,scale,rot,pos,camera,per)
-                local ct = camera.transform
-
-                local scaled_vertice     = matmul(new_vertice,scale)
-                local rotated_vertice    = matmul(scaled_vertice,rot)
-                local camera_transform
-                if ct then
-                    camera_transform = matmul(rotated_vertice,{
-                        ct[1],ct[2],ct[3],ct[4],
-                        ct[5],ct[6],ct[7],ct[8],
-                        ct[9],ct[10],ct[11],ct[12],
+            function vertex.skybox(x,y,z,w,properties,scale,rot,pos,per,cam_transform,cam_position,cam_rotation)
+                local sc1,sc2,sc3,sc4    = matmul(x,y,z,w,scale)
+                local rx1,ry2,ry3,ry4    = matmul(sc1,sc2,sc3,sc4,rot)
+                local ct1,ct2,ct3,ct4
+                if cam_transform then
+                    ct1,ct2,ct3,ct4 = matmul(rx1,ry2,ry3,ry4,{
+                        cam_transform[1],cam_transform[2], cam_transform[3], cam_transform[4],
+                        cam_transform[5],cam_transform[6], cam_transform[7], cam_transform[8],
+                        cam_transform[9],cam_transform[10],cam_transform[11],cam_transform[12],
                         0,0,0,1
                     })
                 else
-                    camera_transform = matmul(matmul(rotated_vertice,camera.position),camera.rotation)
+                    ct1,ct2,ct3,ct4 = matmul(matmul(rx1,ry2,ry3,ry4,cam_position),cam_rotation)
                 end
-                return matmul(camera_transform,per)
+                return {matmul(ct1,ct2,ct3,ct4,per)}
             end
 
             shader_module:set_entry(c3d.registry.entry("default"),default)
