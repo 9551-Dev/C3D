@@ -32,7 +32,7 @@ function lib_cmgr.start(BUS,toggle,thread_pointer,main_thread,...)
                 local ok,ret = coroutine.resume(main_thread,unpack_ev(ev))
                 if ok then main_filter = ret end
                 if not ok and coroutine.status(main_thread) == "dead" then
-                    e = "Error in main thread"..newline..tostring(ret)
+                    e = "Error in main thread "..newline..tostring(ret)
                     e_thread = main_thread
                 end
             end
