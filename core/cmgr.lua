@@ -70,11 +70,11 @@ function lib_cmgr.start(BUS,toggle,thread_pointer,main_thread,...)
     local disp =  BUS.graphics.screen_parent
 
     BUS.log("[CMGR]> Restoring palette and graphics mode",BUS.log.info)
-    if disp.getGraphicsMode and disp.getGraphicsMode() == true then disp.setGraphicsMode(0) end
+    if disp.getGraphicsMode and disp.getGraphicsMode() then disp.setGraphicsMode(0) end
 
     for i=0,15 do
         local c = 2^i
-        disp.setPaletteColor(c,term.nativePaletteColor(c))
+        BUS.graphics.display_source.setPaletteColor(c,term.nativePaletteColor(c))
     end
 
     if toggle() then return false,e,e_thread end

@@ -141,7 +141,7 @@ return function(ENV,libdir,...)
             log:dump()
         end
 
-        if parent.getGraphicsMode and parent.getGraphicsMode() == true then parent.setGraphicsMode(0) end
+        if parent.getGraphicsMode and parent.getGraphicsMode() then parent.setGraphicsMode(0) end
 
         if not ok and ENV.c3d.errorhandler then
             if ENV.c3d.errorhandler(err) then
