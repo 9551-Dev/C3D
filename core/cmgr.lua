@@ -78,7 +78,7 @@ function lib_cmgr.start(BUS,toggle,thread_pointer,main_thread,...)
         BUS.graphics.display_source.setPaletteColor(c,term.nativePaletteColor(c))
     end
 
-    if toggle() then return false,e,e_thread end
+    if toggle() then return false,tostring(e),e_thread end
     return true
 end
 

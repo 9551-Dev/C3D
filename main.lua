@@ -121,7 +121,7 @@ return function(ENV,libdir,...)
                 local trace = "NO MORE INFO"
                 if err_thread then trace = debug.traceback(err_thread) end
 
-                log("[ A FATAL ERROR HAS OCCURED ] -> " .. err:gsub("\n",""),log.fatal)
+                log("[ A FATAL ERROR HAS OCCURED ] -> " .. tostring(err or ""):gsub("\n",""),log.fatal)
                 for str in string.gmatch(trace:gsub("\t","%    "), "([^\n]+)") do
                     log(str,log.warn)
                 end
@@ -133,7 +133,7 @@ return function(ENV,libdir,...)
             log:dump()
         else
             local trace = debug.traceback(main)
-            log("[ C3D INIT FAILED ] -> "..err,log.fatal)
+            log("[ C3D INIT FAILED ] -> "..tostring(err or ""),log.fatal)
             for str in string.gmatch(trace:gsub("\t","%    "), "([^\n]+)") do
                 log(str,log.warn)
             end

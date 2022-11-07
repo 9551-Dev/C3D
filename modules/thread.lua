@@ -146,5 +146,7 @@ return function(BUS)
                 return GET_CHANNEL(name)
             end)
         end
+
+        thread:register()
     end
 end
