@@ -3,6 +3,7 @@ local per_matrix = require("core.3D.matrice.perspective")
 return {make=function(ENV,BUS,terminal_getter)
 
     BUS.log("   - Created screen resize handler thread",BUS.log.success)
+    BUS.log:dump()
 
     local terminal = terminal_getter()
     local last_x,last_y = terminal.getSize()

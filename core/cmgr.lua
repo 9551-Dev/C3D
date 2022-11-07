@@ -13,6 +13,7 @@ end
 function lib_cmgr.start(BUS,toggle,thread_pointer,main_thread,...)
 
     BUS.log("[CMGR]> Starting",BUS.log.info)
+    BUS.log:dump()
 
     local static_threads = {...}
     local static_thread_filters = {}

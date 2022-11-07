@@ -1,6 +1,7 @@
 return {make=function(ENV,BUS)
 
     BUS.log("   - Created thread updater thread",BUS.log.success)
+    BUS.log:dump()
 
     return coroutine.create(function()
         while true do

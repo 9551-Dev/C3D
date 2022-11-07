@@ -16,6 +16,7 @@ end
 return {make=function(ENV,BUS,args)
 
     BUS.log("   - Created event handler thread",BUS.log.success)
+    BUS.log:dump()
 
     return coroutine.create(function()
         while true do
