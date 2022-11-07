@@ -1,6 +1,9 @@
 local run = require("core.uloop")
 
 return {make=function(ENV,BUS,args)
+
+    BUS.log("   - Created main update thread",BUS.log.success)
+
     return coroutine.create(function()
         run(ENV.c3d,args)
         local runner = ENV.c3d.run()

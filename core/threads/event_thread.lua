@@ -14,6 +14,9 @@ local function unpack_ev(ev)
 end
 
 return {make=function(ENV,BUS,args)
+
+    BUS.log("   - Created event handler thread",BUS.log.success)
+
     return coroutine.create(function()
         while true do
             local ev = table.pack(os.pullEventRaw())

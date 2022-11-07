@@ -10,16 +10,20 @@ local function unpack_ev(e)
     return table.unpack(e,1,e.n)
 end
 
-function lib_cmgr.start(ENV,toggle,thread_pointer,main_thread,...)
+function lib_cmgr.start(BUS,toggle,thread_pointer,main_thread,...)
+
+    BUS.log("[CMGR]> Starting",BUS.log.info)
+
     local static_threads = {...}
     local static_thread_filters = {}
     local main_filter
     local e
+    local e_thread
     while coroutine.status(main_thread) ~= "dead" and type(e) == "nil" and toggle() do
         local ev = table.pack(os.pullEventRaw())
         if ev[1] == "terminate" then
-            if type(ENV.c3d.quit)  == "function" then
-                if not ENV.c3d.quit() then
+            if type(BUS.c3d.quit)  == "function" then
+                if not BUS.c3d.quit() then
                     e = "Terminated"
                 end
             else e = "Terminated" end
@@ -29,6 +33,7 @@ function lib_cmgr.start(ENV,toggle,thread_pointer,main_thread,...)
                 if ok then main_filter = ret end
                 if not ok and coroutine.status(main_thread) == "dead" then
                     e = "Error in main thread"..newline..tostring(ret)
+                    e_thread = main_thread
                 end
             end
             for k,v in pairs(static_threads) do
@@ -39,6 +44,7 @@ function lib_cmgr.start(ENV,toggle,thread_pointer,main_thread,...)
                         if ok then static_thread_filters[k] = ret end
                         if not ok and coroutine.status(v) == "dead" then
                             e = ret
+                            e_thread = v
                         end
                     else static_threads[k] = nil end
                 end
@@ -51,6 +57,7 @@ function lib_cmgr.start(ENV,toggle,thread_pointer,main_thread,...)
                         if ok then thread_pointer[k].filter = ret end
                         if not ok and coroutine.status(v.coro) == "dead" then
                             e = ret
+                            e_thread = v.coro
                         end
                     else thread_pointer[k] = nil end
                 end
@@ -58,14 +65,19 @@ function lib_cmgr.start(ENV,toggle,thread_pointer,main_thread,...)
         end
     end
 
-    local disp =  ENV.c3d.sys.get_bus().graphics.display_source
+    BUS.log("[CMGR]> Stopping execution",BUS.log.warn)
+
+    local disp =  BUS.graphics.screen_parent
+
+    BUS.log("[CMGR]> Restoring palette and graphics mode",BUS.log.info)
+    if disp.getGraphicsMode and disp.getGraphicsMode() == true then disp.setGraphicsMode(0) end
 
     for i=0,15 do
         local c = 2^i
         disp.setPaletteColor(c,term.nativePaletteColor(c))
     end
 
-    if toggle() then return false,e end
+    if toggle() then return false,e,e_thread end
     return true
 end
 

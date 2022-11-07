@@ -1,6 +1,9 @@
 local per_matrix = require("core.3D.matrice.perspective")
 
 return {make=function(ENV,BUS,terminal_getter)
+
+    BUS.log("   - Created screen resize handler thread",BUS.log.success)
+
     local terminal = terminal_getter()
     local last_x,last_y = terminal.getSize()
     if terminal.getGraphicsMode then last_x,last_y = terminal.getSize(terminal.getGraphicsMode()) end

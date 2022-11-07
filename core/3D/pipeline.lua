@@ -6,6 +6,7 @@ local modules = {
 }
 
 local pairs = pairs
+local epoch = os.epoch
 
 return {create=function(BUS)
     BUS.pipeline = {
@@ -15,11 +16,19 @@ return {create=function(BUS)
         modules.geometry_sh,
     }
 
+    BUS.log("  - Inicialized rendering pipeline",BUS.log.info)
+
     return {get_triangles = function()
         local pipeline = BUS.pipeline
         local camera   = BUS.camera
         local pipe_line_size = #pipeline
         local out = {n=0,tris={}}
+        
+        local timings = {}
+        for stage=1,pipe_line_size do
+            timings[stage] = 0
+        end
+
         for k,object in pairs(BUS.scene) do
             local object_geometry    = object.geometry
             local object_effects     = object.effects
@@ -28,8 +37,11 @@ return {create=function(BUS)
 
             local prev = {}
 
-            for i=1,pipe_line_size do
-                prev = pipeline[i](
+            for stage=1,pipe_line_size do
+
+                local stage_begin = epoch("utc")
+
+                prev = pipeline[stage](
                     object,
                     prev,
                     object_geometry,
@@ -40,8 +52,15 @@ return {create=function(BUS)
                     object_texture,
                     camera
                 )
+
+                local stage_end = epoch("utc")
+
+                timings[stage] = timings[stage] + stage_end-stage_begin
             end
         end
+
+        BUS.graphics.stats.pipe = timings
+
         return out.tris
     end}
 end}

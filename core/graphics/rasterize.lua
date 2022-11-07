@@ -11,6 +11,9 @@ local fragment_shader_data   = {}
 local empty_table = {}
 
 return {build=function(BUS)
+
+    BUS.log("  - Inicialized triangle rasterizer",BUS.log.info)
+
     local graphics_bus = BUS.graphics
 
     local function draw_flat_top_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h)

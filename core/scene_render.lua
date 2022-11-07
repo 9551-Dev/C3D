@@ -5,6 +5,8 @@ local tbl           = require("common.table_util")
 return {create=function(BUS,raster)
     local pipeline = require("core.3D.pipeline").create(BUS)
 
+    BUS.log("  - Inicialized scene renderer",BUS.log.info)
+
     return {render=function()
         local pipe_st = os.epoch("utc")
         local triangles = pipeline.get_triangles()

@@ -98,9 +98,8 @@ function draw.build_drawing_char(a,b,c,d,e,f)
 
     if sortable[1][1] == arr[6] then
         return s_char(n),sortable[2][1],arr[6]
-    else
-        return s_char(n),sortable[1][1],arr[6]
     end
+    return s_char(n),sortable[1][1],arr[6]
 end
 
 return draw

@@ -22,5 +22,7 @@ return {new=function(BUS)
 
     b.buffer  = t_util.createNDarray(1)
 
+    BUS.log("Created new screen object",BUS.log.info)
+
     return setmetatable(vals,methods):__build()
 end}

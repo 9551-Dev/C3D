@@ -7,6 +7,9 @@ local t_cat = table.concat
 local type  = _G.type
 
 return {build=function(BUS,scene)
+
+    BUS.log("  - Inicialized screen renderer",BUS.log.info)
+
     local busg = BUS.graphics
     return {make_frame=function()
         local timer = BUS.c3d.timer
@@ -26,12 +29,12 @@ return {build=function(BUS,scene)
         if type(BUS.c3d.screen_render) == "function" then
             BUS.c3d.screen_render(busg.display_source,busg.w,busg.h,canv)
         else
+            local char_line,fg_line,bg_line = {},{},{}
             for y=1,busg.h,3 do
                 sy = sy + 1
                 local layer_1 = canv[y]
                 local layer_2 = canv[y+1]
                 local layer_3 = canv[y+2]
-                local char_line,fg_line,bg_line = {},{},{}
                 local n = 0
                 for x=1,bgw,2 do
                     local xp1 = x+1

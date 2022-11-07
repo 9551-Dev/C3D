@@ -9,12 +9,13 @@ return {register_bus=function(ENV)
         frames={},
         events={},
         running=true,
+        debug=false,
         graphics={
             buffer=ENV.utils.table.createNDarray(1),
             bg_col=colors.black,
             pixel_size=1,
             stats={
-                frames_drawn=0
+                frames_drawn=0,
             },
             auto_resize=true
         },
@@ -61,10 +62,38 @@ return {register_bus=function(ENV)
         animated_texture={instances={}}
     }
 
+    local log = require("lib.logger").create_log(BUS)
+
+    BUS.log = log
+
+    log("[-- Starting C3D --]",log.info)
+    log("[ Loaded data bus ]",log.success)
+
+    local seen = {[BUS.log]=true,[BUS.c3d]=true,[BUS.ENV]=true}
+
+    local function printout(dist,val)
+        log:dump()
+        for k,v in pairs(val) do
+            if type(v) == "table" and not seen[v] then
+                log((" "):rep(dist).."|"..k..("("..tostring(v)..")"),log.debug)
+                seen[v] = true
+                printout(dist+1,v)
+            else
+                log((" "):rep(dist).."|"..k.." -> "..tostring(v),log.debug)
+            end
+        end
+        if next(val) then log("",log.debug) end
+    end
+    printout(1,BUS)
+    log("",log.info)
+
     local module_registry_entry = {
         __index=object.new{
             set_entry=function(this,registry_entry,value)
                 local id = ENV.utils.generic.uuid4()
+
+                log("Created new entry in registry "..this.__rest.name.." -> "..registry_entry.name,log.debug)
+
                 this.__rest.entries[registry_entry.id] = value
                 this.__rest.entry_lookup[registry_entry.name] = registry_entry
                 this.__rest.name_lookup[registry_entry.id] = registry_entry.name
@@ -75,6 +104,10 @@ return {register_bus=function(ENV)
     local module_registry_methods =  {
         __index=object.new{
             new_entry=function(this,name)
+
+                log("Created new module registry entry -> "..name)
+                log:dump()
+
                 local id = ENV.utils.generic.uuid4()
 
                 local dat = {}
@@ -95,6 +128,10 @@ return {register_bus=function(ENV)
 
     BUS.registry.module_registry = setmetatable({entries={},entry_lookup={}},module_registry_methods):__build()
     BUS.registry.plugin_registry = setmetatable({entries={},entry_lookup={}},{})
+    log("[ Loaded plugin system ]",log.success)
+    log("")
+
+    log:dump()
 
     return BUS
 end}
