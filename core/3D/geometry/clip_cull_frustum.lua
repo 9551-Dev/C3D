@@ -46,7 +46,7 @@ return function(object,tri_list,a,b,c,n,fs,index,triangle_texture,pixel_size,z_l
         clip_1(object,n,tri_list,c,a,b,fs,index,triangle_texture,pixel_size,z_layer)
     else
         n = n + 1
-        tri_list[n] = {a,b,c,fs=fs,object=object,index=index,texture=triangle_texture,pixel_size=pixel_size,z_layer=z_layer}
+        tri_list[n] = {a,b,c,fs=fs,object=object,index=index,texture=triangle_texture,pixel_size=pixel_size,z_layer=z_layer,orig1=a,orig2=b,orig3=c}
     end
     return n
 end

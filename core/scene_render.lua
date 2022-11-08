@@ -78,7 +78,7 @@ return {create=function(BUS,raster)
                                 end
                             end
                         end
-                    end
+                    end,triangle.orig1,triangle.orig2,triangle.orig3
                 )
             end
         end

@@ -16,7 +16,7 @@ return {build=function(BUS)
 
     local graphics_bus = BUS.graphics
 
-    local function draw_flat_top_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h)
+    local function draw_flat_top_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
         local v2x,v2y = v2[1],v2[2]
@@ -81,6 +81,10 @@ return {build=function(BUS)
                 fragment_shader_data.x         = x
                 fragment_shader_data.y         = y
                 fragment_shader_data.z_correct = z
+                fragment_shader_data.v1        = stv1
+                fragment_shader_data.v2        = stv2
+                fragment_shader_data.v3        = stv3
+
 
                 local frag_data
                 if make_fragment then frag_data = {} end
@@ -101,7 +105,7 @@ return {build=function(BUS)
         end
     end
     
-    local function draw_flat_bottom_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h)
+    local function draw_flat_bottom_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
         local v2x,v2y = v2[1],v2[2]
@@ -166,6 +170,9 @@ return {build=function(BUS)
                 fragment_shader_data.x         = x
                 fragment_shader_data.y         = y
                 fragment_shader_data.z_correct = z
+                fragment_shader_data.v1        = stv1
+                fragment_shader_data.v2        = stv2
+                fragment_shader_data.v3        = stv3
 
                 local frag_data
                 if make_fragment then frag_data = {} end
@@ -185,7 +192,7 @@ return {build=function(BUS)
             end
         end
     end
-    return {triangle=function(fs,object,p1,p2,p3,tex,pixel_size,frag)
+    return {triangle=function(fs,object,p1,p2,p3,tex,pixel_size,frag,stv1,stv2,stv3)
         local w,h   = graphics_bus.w/pixel_size,graphics_bus.h/pixel_size
         local origp1,origp2,origp3 = p1,p2,p3
         if p2[2] < p1[2] then p1,p2 = p2,p1 end
@@ -193,20 +200,20 @@ return {build=function(BUS)
         if p2[2] < p1[2] then p1,p2 = p2,p1 end
         if p1[2] == p2[2] then
             if p2[1] < p1[1] then p1,p2 = p2,p1 end
-            draw_flat_top_triangle(fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h)
+            draw_flat_top_triangle(fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
         elseif p2[2] == p3[2] then
             if p3[1] < p2[1] then p2,p3 = p3,p2 end
-            draw_flat_bottom_triangle(fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h)
+            draw_flat_bottom_triangle(fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
         else
             local alpha_split = (p2[2]-p1[2]) / (p3[2]-p1[2])
             local split_vertex = int_vertex(p1,p3,alpha_split)
             
             if p2[1] < split_vertex[1] then
-                draw_flat_bottom_triangle(fs,object,p1,p2,split_vertex,tex,origp1,origp2,origp3,frag,w,h)
-                draw_flat_top_triangle   (fs,object,p2,split_vertex,p3,tex,origp1,origp2,origp3,frag,w,h)
+                draw_flat_bottom_triangle(fs,object,p1,p2,split_vertex,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+                draw_flat_top_triangle   (fs,object,p2,split_vertex,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
             else
-                draw_flat_bottom_triangle(fs,object,p1,split_vertex,p2,tex,origp1,origp2,origp3,frag,w,h)
-                draw_flat_top_triangle   (fs,object,split_vertex,p2,p3,tex,origp1,origp2,origp3,frag,w,h)
+                draw_flat_bottom_triangle(fs,object,p1,split_vertex,p2,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+                draw_flat_top_triangle   (fs,object,split_vertex,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
             end
         end
     end}

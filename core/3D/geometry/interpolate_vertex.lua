@@ -8,7 +8,7 @@ return function(v1,v2,alpha)
         (1 - alpha) * v1[2] + alpha * v2[2],
         (1 - alpha) * v1[3] + alpha * v2[3],
         (1 - alpha) * v1[4] + alpha * v2[4],
-        0,0,0,0
+        0,0,0,0,
     }
 
     if v15 then
