@@ -37,14 +37,14 @@ return function(object,prev,geo,prop,efx,out,BUS)
     for i=1,#tris,3 do
         t_index = t_index + 1
 
-        local t1_vindex = tris[i]  *5
-        local t2_vindex = tris[i+1]*5
-        local t3_vindex = tris[i+2]*5
+        local t1_vindex = tris[i]  *6
+        local t2_vindex = tris[i+1]*6
+        local t3_vindex = tris[i+2]*6
 
-        VERT_1.frag,VERT_1[1],VERT_1[2],VERT_1[3],VERT_1[4] = prev[t1_vindex-4],prev[t1_vindex-3],prev[t1_vindex-2],prev[t1_vindex-1],prev[t1_vindex]
-        VERT_2.frag,VERT_2[1],VERT_2[2],VERT_2[3],VERT_2[4] = prev[t2_vindex-4],prev[t2_vindex-3],prev[t2_vindex-2],prev[t2_vindex-1],prev[t2_vindex]
-        VERT_3.frag,VERT_3[1],VERT_3[2],VERT_3[3],VERT_3[4] = prev[t3_vindex-4],prev[t3_vindex-3],prev[t3_vindex-2],prev[t3_vindex-1],prev[t3_vindex]
-
+        VERT_1.val,VERT_1.frag,VERT_1[1],VERT_1[2],VERT_1[3],VERT_1[4] = prev[t1_vindex-5],prev[t1_vindex-4],prev[t1_vindex-3],prev[t1_vindex-2],prev[t1_vindex-1],prev[t1_vindex]
+        VERT_2.val,VERT_2.frag,VERT_2[1],VERT_2[2],VERT_2[3],VERT_2[4] = prev[t2_vindex-5],prev[t2_vindex-4],prev[t2_vindex-3],prev[t2_vindex-2],prev[t2_vindex-1],prev[t2_vindex]
+        VERT_3.val,VERT_3.frag,VERT_3[1],VERT_3[2],VERT_3[3],VERT_3[4] = prev[t3_vindex-5],prev[t3_vindex-4],prev[t3_vindex-3],prev[t3_vindex-2],prev[t3_vindex-1],prev[t3_vindex]
+        
         if nuvs then
             local uva = uv_indices[i]  *2
             local uvb = uv_indices[i+1]*2

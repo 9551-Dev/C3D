@@ -3,7 +3,7 @@ local clip_2 = require("core.3D.clipping.clip_2_vertices")
 
 local function clone_vertex(vertex)
     return {
-        vertex[1],vertex[2],vertex[3],vertex[4],vertex[5],vertex[6],norm=vertex.norm,frag=vertex.frag
+        vertex[1],vertex[2],vertex[3],vertex[4],vertex[5],vertex[6],norm=vertex.norm,frag=vertex.frag,val=vertex.val
     }
 end
 
