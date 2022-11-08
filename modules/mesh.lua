@@ -8,7 +8,7 @@ return function(BUS)
             local mesh_module     = module_registry:new_entry("mesh")
 
             mesh_module:set_entry(c3d.registry.entry("new"),function()
-                return c3d.object.raw_mesh.new()
+                return BUS.object.raw_mesh.new()
             end)
         end
 
