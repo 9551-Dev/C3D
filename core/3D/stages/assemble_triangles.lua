@@ -1,5 +1,5 @@
-local frustum_handle  = require("core.3D.geometry.clip_cull_frustum")
 local fragment_shader = require("core.3D.stages.fragment_shader")
+local frustum_clip    = require("core.3D.geometry.clip_cull_frustum")
 
 local tbl_util = require("common.table_util")
 
@@ -10,6 +10,8 @@ local VERT_2 = {}
 local VERT_3 = {}
 
 return function(object,prev,geo,prop,efx,out,BUS)
+    local frustum_handle = frustum_clip.init(BUS)
+
     local on = out.n
     local out_tris = out.tris
 
@@ -72,12 +74,14 @@ return function(object,prev,geo,prop,efx,out,BUS)
 
         local tex = texture
         local pix_size = pixel_size
-        if ntexs then tex = ntexs[t_index] end
-        if npxsz then pix_size = npxsz[t_index] end
+        if ntexs then tex = triangle_textures[t_index] end
+        if npxsz then pix_size = pixel_sizes[t_index] end
     
-        on = frustum_handle(object,out_tris,
-            VERT_1,VERT_2,VERT_3,
-        on,fragment_shader(shader),t_index,tex,pix_size,z_layer)
+        if not BUS.c3d.keyboard.is_down("space") then
+            on = frustum_handle(object,out_tris,
+                VERT_1,VERT_2,VERT_3,
+            on,fragment_shader(shader),t_index,tex,pix_size,z_layer)
+        end
     end
 
     out.n = on

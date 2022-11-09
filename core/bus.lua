@@ -59,7 +59,9 @@ return {register_bus=function(ENV)
         },
         scene={},
         camera={},
-        animated_texture={instances={}}
+        animated_texture={instances={}},
+        mem={},
+        m_n=0
     }
 
     local log = require("lib.logger").create_log(BUS)

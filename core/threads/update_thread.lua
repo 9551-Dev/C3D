@@ -21,6 +21,7 @@ return {make=function(ENV,BUS,args)
             end
 
             runner()
+            BUS.m_n = 0
             bgs.frames_drawn = bgs.frames_drawn + 1
             local current_time = os.epoch("utc")
             local frame_time = current_time-frame_start

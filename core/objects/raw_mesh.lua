@@ -10,6 +10,7 @@ return {add=function(BUS)
                 local geometry = {
                     vertices=this.vertice_geo_list,
                     uvs=this.uv_geo_list,
+                    texture_idx=this.triangle_textures,
                     tris={},uv_idx={},normals={},normal_idx={},
                 }
 
@@ -32,7 +33,7 @@ return {add=function(BUS)
 
                 return {geometry=geometry}
             end,
-            add_triangle=function(this,vertices,uvs)
+            add_triangle=function(this,vertices,uvs,texture)
                 local verts = this.vertices
                 local uvcor = this.uvs
                 local vglis = this.vertice_geo_list
@@ -125,6 +126,8 @@ return {add=function(BUS)
                     uvcor[u3][v3]
                 }
 
+                this.triangle_textures[this.tx] = texture
+
                 return this
             end
         },__tostring=function() return "raw_mesh" end
@@ -135,6 +138,7 @@ return {add=function(BUS)
             vertices=tbl.createNDarray(2),
             vertice_geo_list={},
             uv_geo_list={},
+            triangle_textures={},
             uvs=tbl.createNDarray(1),
             triangles={},
             vx=0,ux=0,tx=0
