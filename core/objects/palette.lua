@@ -1,5 +1,7 @@
 local object = require("core.object")
 
+local quant_util = require("core.graphics.quantize")
+
 return {add=function(BUS)
 
     local palette_object = {
@@ -10,6 +12,21 @@ return {add=function(BUS)
                 end
                 return this.fin.returns
             end,
+            add=function(this,to_add)
+                local tpal = this.pal
+                local extend = #tpal
+                for k,v in pairs(to_add.pal) do
+                    extend = extend + 1
+                    tpal[extend] = v
+                end
+
+                return this
+            end,
+            quantize=function(this,amount)
+                this.pal = quant_util.quantize_palette(this.pal,amount)
+
+                return this
+            end,
             get=function(this)
                 return this.pal
             end
@@ -17,6 +34,8 @@ return {add=function(BUS)
     }
 
     return {new=function(palette,returns)
+        palette = palette or {}
+
         local obj = {term=BUS.graphics.display_source,pal=palette,fin=returns}
 
         return setmetatable(obj,palette_object):__build()

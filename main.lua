@@ -197,6 +197,7 @@ return function(ENV,libdir,...)
     ENV.c3d.plugin.load(require("modules.interact")   (BUS))
     ENV.c3d.plugin.load(require("modules.mesh")       (BUS))
     ENV.c3d.plugin.load(require("modules.log")        (BUS))
+    ENV.c3d.plugin.load(require("modules.palette")    (BUS))
 
     BUS.plugin_internal.register_modules()
 
