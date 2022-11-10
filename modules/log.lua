@@ -23,8 +23,8 @@ return function(BUS)
                 log_api:dump()
             end)
 
-            log_module:set_entry(c3d.registry.entry("log_bus_state"),function()
-                local seen = {[BUS.log]=true,[BUS.c3d]=true,[BUS.ENV]=true,[BUS.graphics.buffer]=true}
+            log_module:set_entry(c3d.registry.entry("bus_state"),function()
+                local seen = {[BUS.log]=true,[BUS.c3d]=true,[BUS.ENV]=true,[BUS.graphics.buffer]=true,[BUS.mem]=true}
                 local function printout(dist,val)
                     for k,v in pairs(val) do
                         if type(v) == "table" and not seen[v] then
@@ -41,7 +41,7 @@ return function(BUS)
                 log_api("",log_api.info)
             end)
 
-            log_module:set_entry(c3d.registry.entry("log_table"),function(t,typ)
+            log_module:set_entry(c3d.registry.entry("table"),function(t,typ)
                 local seen = {}
                 local function printout(dist,val)
                     for k,v in pairs(val) do

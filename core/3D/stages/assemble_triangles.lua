@@ -1,6 +1,8 @@
 local fragment_shader = require("core.3D.stages.fragment_shader")
 local frustum_clip    = require("core.3D.geometry.clip_cull_frustum")
 
+local memory_handle = require("core.mem_manager")
+
 local tbl_util = require("common.table_util")
 
 local empty = {}
@@ -11,6 +13,7 @@ local VERT_3 = {}
 
 return function(object,prev,geo,prop,efx,out,BUS)
     local frustum_handle = frustum_clip.init(BUS)
+    local mem_manager = memory_handle.get(BUS)
 
     local on = out.n
     local out_tris = out.tris
@@ -63,9 +66,18 @@ return function(object,prev,geo,prop,efx,out,BUS)
             local norma = normal_indices[i]  *3
             local normb = normal_indices[i+1]*3
             local normc = normal_indices[i+2]*3
-            VERT_1.norm = {normals[norma-2],normals[norma-1],normals[norma]}
-            VERT_2.norm = {normals[normb-2],normals[normb-1],normals[normb]}
-            VERT_3.norm = {normals[normc-2],normals[normc-1],normals[normc]}
+
+            local normal_1 = mem_manager.get_table()
+            local normal_2 = mem_manager.get_table()
+            local normal_3 = mem_manager.get_table()
+
+            normal_1[1],normal_1[2],normal_1[3] = normals[norma-2],normals[norma-1],normals[norma]
+            normal_2[1],normal_2[2],normal_2[3] = normals[normb-2],normals[normb-1],normals[normb]
+            normal_3[1],normal_3[2],normal_3[3] = normals[normc-2],normals[normc-1],normals[normc]
+
+            VERT_1.norm = normal_1
+            VERT_2.norm = normal_2
+            VERT_3.norm = normal_3
         else
             VERT_1.norm = nil
             VERT_2.norm = nil
@@ -77,11 +89,9 @@ return function(object,prev,geo,prop,efx,out,BUS)
         if ntexs then tex = triangle_textures[t_index] end
         if npxsz then pix_size = pixel_sizes[t_index] end
     
-        if not BUS.c3d.keyboard.is_down("space") then
-            on = frustum_handle(object,out_tris,
-                VERT_1,VERT_2,VERT_3,
-            on,fragment_shader(shader),t_index,tex,pix_size,z_layer)
-        end
+        on = frustum_handle(object,out_tris,
+            VERT_1,VERT_2,VERT_3,
+        on,fragment_shader(shader),t_index,tex,pix_size,z_layer)
     end
 
     out.n = on

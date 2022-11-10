@@ -7,6 +7,8 @@ local int_uv = require("core.3D.math.interpolate_uv")
 local bary_c     = require("core.3D.geometry.bary_coords")
 local int_vertex = require("core.3D.geometry.interpolate_vertex")
 
+local memory_manager = require("core.mem_manager")
+
 local fragment_shader_data   = {}
 local empty_table = {}
 
@@ -15,6 +17,8 @@ return {build=function(BUS)
     BUS.log("  - Inicialized triangle rasterizer",BUS.log.info)
 
     local graphics_bus = BUS.graphics
+
+    local mem_handle = memory_manager.get(BUS)
 
     local function draw_flat_top_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
         local v0x,v0y = v0[1],v0[2]
@@ -55,9 +59,9 @@ return {build=function(BUS)
             local num = 0
             local make_fragment = false
             if o1frag then for k,v in pairs(o1frag) do
-                temp_interpolants1 = {}
-                temp_interpolants2 = {}
-                naming = {}
+                temp_interpolants1 = mem_handle.get_table()
+                temp_interpolants2 = mem_handle.get_table()
+                naming = mem_handle.get_table()
                 if o2frag[k] and o3frag[k] then
                     make_fragment = true
                     num = num + 1
@@ -87,7 +91,7 @@ return {build=function(BUS)
 
 
                 local frag_data
-                if make_fragment then frag_data = {} end
+                if make_fragment then frag_data = mem_handle.get_table() end
                 for i=1,num do
                     local nm = naming[i]
                     frag_data[nm] = ((1 - t3) * temp_interpolants1[nm] + t3 * temp_interpolants2[nm])*z
@@ -144,9 +148,9 @@ return {build=function(BUS)
             local make_fragment = false
             local num = 0
             if o1frag then for k,v in pairs(o1frag) do
-                temp_interpolants1 = {}
-                temp_interpolants2 = {}
-                naming = {}
+                temp_interpolants1 = mem_handle.get_table()
+                temp_interpolants2 = mem_handle.get_table()
+                naming = mem_handle.get_table()
                 if o2frag[k] and o3frag[k] then
                     make_fragment = true
                     num = num + 1
@@ -175,7 +179,7 @@ return {build=function(BUS)
                 fragment_shader_data.v3        = stv3
 
                 local frag_data
-                if make_fragment then frag_data = {} end
+                if make_fragment then frag_data = mem_handle.get_table() end
                 for i=1,num do
                     local nm = naming[i]
                     frag_data[nm] = ((1 - t3) * temp_interpolants1[nm] + t3 * temp_interpolants2[nm])*z

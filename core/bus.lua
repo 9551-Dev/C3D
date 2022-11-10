@@ -35,7 +35,7 @@ return {register_bus=function(ENV)
         instance={},
         object={},
         sys={
-            frame_time_min=1/30,
+            frame_time_min=0,
             init_time=os.epoch("utc"),
             run_time=0
         },

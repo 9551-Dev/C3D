@@ -6,9 +6,13 @@ local make_draw_char = chr.build_drawing_char
 local t_cat = table.concat
 local type  = _G.type
 
+local memory_manager = require("core.mem_manager")
+
 return {build=function(BUS,scene)
 
     BUS.log("  - Inicialized screen renderer",BUS.log.info)
+
+    local mem_handle = memory_manager.get(BUS)
 
     local busg = BUS.graphics
     return {make_frame=function()
@@ -29,7 +33,7 @@ return {build=function(BUS,scene)
         if type(BUS.c3d.screen_render) == "function" then
             BUS.c3d.screen_render(busg.display_source,busg.w,busg.h,canv)
         else
-            local char_line,fg_line,bg_line = {},{},{}
+            local char_line,fg_line,bg_line = mem_handle.get_table(),mem_handle.get_table(),mem_handle.get_table()
             for y=1,busg.h,3 do
                 sy = sy + 1
                 local layer_1 = canv[y]
