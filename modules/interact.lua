@@ -20,7 +20,9 @@ return function(BUS)
             end)
             interact_module:set_entry(c3d.registry.entry("get_object"),function(x,y)
                 local map = bus_interactions.map
-                return map[floor(y)*3][floor(x)*2].object
+                local triangle = map[floor(y)*3][floor(x)*2]
+                if triangle then return triangle.object end
+                return nil
             end)
 
             interact_module:set_entry(c3d.registry.entry("get_triangle_pixel"),function(x,y)

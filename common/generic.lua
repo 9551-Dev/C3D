@@ -13,6 +13,9 @@ function generic.precise_sleep(t)
         os.queueEvent("waiting")
         os.pullEvent("waiting")
     end
+
+    os.queueEvent("waiting")
+    os.pullEvent("waiting")
 end
 
 function generic.piece_string(str)
