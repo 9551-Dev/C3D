@@ -32,7 +32,7 @@ local modes = {
 return function(BUS)
 
     return function()
-        local pipe = plugin.new("c3d:pipe")
+        local pipe = plugin.new("c3d:module->pipe")
         
         function pipe.register_modules()
             local module_registry = c3d.registry.get_module_registry()

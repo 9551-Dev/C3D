@@ -1,7 +1,7 @@
 return function(BUS)
 
     return function()
-        local keyboard = plugin.new("keyboard")
+        local keyboard = plugin.new("c3d:module->keyboard")
 
         function keyboard.register_modules()
             local module_registry = c3d.registry.get_module_registry()

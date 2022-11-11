@@ -72,6 +72,7 @@ return function(ENV,libdir,...)
             local old_path = package.path
             ENV.package.path = BUS.instance.scenepak
             BUS.plugin_internal.load_registered_modules()
+            BUS.plugin_internal.load_registered_objects()
             setfenv(program[1],ENV)(table.unpack(args,1,args.n))
             ENV.package.path = old_path
             log("Succesfully loaded program",log.success)
@@ -87,6 +88,7 @@ return function(ENV,libdir,...)
             log("Found c3d.init. re-registering plugins.",log.info)
             ENV.c3d.init()
             BUS.plugin_internal.register_modules()
+            BUS.plugin_internal.register_objects()
             log("Successfuly registered plugins",log.success)
         end
 
@@ -98,7 +100,11 @@ return function(ENV,libdir,...)
 
         if type(ENV.c3d.init) == "function" then
             BUS.plugin_internal.load_registered_modules()
+            BUS.plugin_internal.load_registered_objects()
         end
+
+        BUS.plugin_internal.finalize_load()
+        log("Finished plugin loading.",log.success)
 
         log("[ Resuming and getting data from the loaded program ]",log.info)
         local ok,err = coroutine.resume(main)
@@ -160,24 +166,26 @@ return function(ENV,libdir,...)
         log:dump()
     end
 
-    log("[ Loading internal objects.. ]",log.info)
-    BUS.object.registry_entry   = require("core.objects.registry_entry")  .add(BUS)
-    BUS.object.plugin           = require("core.objects.plugin")          .add(BUS)
-    BUS.object.palette          = require("core.objects.palette")         .add(BUS)
-    BUS.object.texture          = require("core.objects.texture")         .add(BUS)
-    BUS.object.scene_obj        = require("core.objects.scene_object")    .add(BUS)
-    BUS.object.generic_shape    = require("core.objects.generic_shape")   .add(BUS)
-    BUS.object.camera           = require("core.objects.camera")          .add(BUS)
-    BUS.object.imported_model   = require("core.objects.imported_model")  .add(BUS)
-    BUS.object.vector           = require("core.objects.vector")          .add(BUS)
-    BUS.object.animated_texture = require("core.objects.animated_texture").add(BUS)
-    BUS.object.sprite_sheet     = require("core.objects.sprite_sheet")    .add(BUS)
-    BUS.object.raw_mesh         = require("core.objects.raw_mesh")        .add(BUS)
-
     log("[ Loading plugin api modules.. ]",log.info)
     log("",log.info)
-    ENV.c3d.plugin       = require("modules.plugin")     (BUS,ENV)
-    ENV.c3d.registry     = require("modules.registry")   (BUS)
+    ENV.c3d.plugin   = require("modules.plugin")  (BUS,ENV)
+    ENV.c3d.registry = require("modules.registry")(BUS)
+    log("[ Loading plugin api objects.. ]",log.info)
+    BUS.object.registry_entry = require("core.objects.registry_entry").add(BUS)
+    BUS.object.plugin         = require("core.objects.plugin")        .add(BUS)
+
+    log("[ Loading internal objects.. ]",log.info)
+    ENV.c3d.plugin.load(require("core.objects.palette")         .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.texture")         .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.scene_object")    .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.generic_shape")   .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.camera")          .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.imported_model")  .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.vector")          .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.animated_texture").add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.sprite_sheet")    .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.raw_mesh")        .add(BUS))
+    BUS.plugin_internal.register_objects()
     
     log("[ Loading internal modules.. ]",log.info)
     ENV.c3d.plugin.load(require("modules.timer")      (BUS))
@@ -198,7 +206,6 @@ return function(ENV,libdir,...)
     ENV.c3d.plugin.load(require("modules.mesh")       (BUS))
     ENV.c3d.plugin.load(require("modules.log")        (BUS))
     ENV.c3d.plugin.load(require("modules.palette")    (BUS))
-
     BUS.plugin_internal.register_modules()
 
     require("modules.c3d")(BUS,ENV)

@@ -2,35 +2,40 @@ local object = require("core.object")
 
 return {add=function(BUS)
 
-        
-    local texture_object = {
-        __index = object.new{
-            get_out=function(this)
+    return function()
+        local texture = plugin.new("c3d:object->texture")
+
+        function texture.register_objects()
+            local object_registry = c3d.registry.get_object_registry()
+            local texture_object  = object_registry:new_entry("texture")
+
+            texture_object:set_entry(c3d.registry.entry("get_out"),function(this)
                 return this.c3d.option_result
-            end,
-            sprite_sheet=function(this,settings)
+            end)
+            texture_object:set_entry(c3d.registry.entry("sprite_sheet"),function(this,settings)
                 return BUS.object.sprite_sheet.new(this,settings)
-            end
-        },__tostring=function() return "texture" end
-    }
+            end)
+            
+            texture_object:constructor(function(path,options)
+                local extension = path:match("^.+(%..+)$")
+                local file_path = fs.combine(BUS.instance.scenedir,path)
 
-    return {new=function(path,options)
-        local extension = path:match("^.+(%..+)$")
-        local file_path = fs.combine(BUS.instance.scenedir,path)
+                package.path = BUS.instance.libpak
+                local parser = require("core.loaders.texture" .. extension)
+                package.path = BUS.instance.scenepak
 
-        package.path = BUS.instance.libpak
-        local parser = require("core.loaders.texture" .. extension)
-        package.path = BUS.instance.scenepak
+                local option_result = {}
+                local fin = {}
+                local data = parser.read(BUS,file_path,options or {},option_result,fin)
+                data.c3d = {}
 
-        local option_result = {}
-        local fin = {}
-        local data = parser.read(BUS,file_path,options or {},option_result,fin)
-        data.c3d = {}
-        data.c3d.option_result = option_result
+                data.c3d.option_result = option_result
+                fin.returns = data
 
-        local obj = setmetatable(data,texture_object):__build()
-        fin.returns = obj
+                return data
+            end)
+        end
 
-        return obj
-    end}
+        texture:register()
+    end
 end}

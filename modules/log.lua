@@ -1,7 +1,7 @@
 return function(BUS)
 
     return function()
-        local log = plugin.new("c3d:log")
+        local log = plugin.new("c3d:module->log")
 
         function log.register_modules()
             local module_registry = c3d.registry.get_module_registry()

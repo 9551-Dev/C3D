@@ -2,7 +2,7 @@ local CEIL = math.ceil
 
 return function(BUS)
     return function()
-        local sys = plugin.new("c3d:system")
+        local sys = plugin.new("c3d:module->system")
 
         function sys.register_modules()
             local module_registry = c3d.registry.get_module_registry()

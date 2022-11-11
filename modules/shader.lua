@@ -5,7 +5,7 @@ local RANDOM,MAX,MIN,CEIL = math.random,math.max,math.min,math.ceil
 return function(BUS)
 
     return function()
-        local shader = plugin.new("c3d:shader")
+        local shader = plugin.new("c3d:module->shader")
 
         function shader.register_modules()
             local module_registry = c3d.registry.get_module_registry()

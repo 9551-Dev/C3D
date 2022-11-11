@@ -8,7 +8,7 @@ return function(BUS)
     end
 
     return function()
-        local event = plugin.new("c3d:event")
+        local event = plugin.new("c3d:module->event")
 
         function event.register_modules()
             local module_registry = c3d.registry.get_module_registry()

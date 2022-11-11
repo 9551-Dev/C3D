@@ -13,7 +13,7 @@ return function(BUS)
     end
 
     return function()
-        local perspective = plugin.new("c3d:perspective")
+        local perspective = plugin.new("c3d:module->perspective")
 
         function perspective.register_modules()
             local module_registry    = c3d.registry.get_module_registry()

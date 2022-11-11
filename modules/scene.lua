@@ -1,13 +1,13 @@
 return function(BUS)
     return function()
-        local scene = plugin.new("c3d:scene")
+        local scene = plugin.new("c3d:module->scene")
 
         function scene.register_modules()
             local module_registry = c3d.registry.get_module_registry()
             local scene_module    = module_registry:new_entry("scene")
 
             scene_module:set_entry(c3d.registry.entry("add_geometry"),function(geom)
-                return BUS.object.scene_obj.new(geom)
+                return BUS.object.scene_object.new(geom)
             end)
         end
 

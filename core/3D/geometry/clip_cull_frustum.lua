@@ -1,10 +1,13 @@
-local clip_1 = require("core.3D.clipping.clip_1_vertex")
-local clip_2 = require("core.3D.clipping.clip_2_vertices")
+local clip_1_build = require("core.3D.clipping.clip_1_vertex")
+local clip_2_build = require("core.3D.clipping.clip_2_vertices")
 
 local mem_manager = require("core.mem_manager")
 
 return {init=function(BUS)
     local mem = mem_manager.get(BUS)
+
+    local clip_1 = clip_1_build.init(BUS)
+    local clip_2 = clip_2_build.init(BUS)
 
     local function clone_vertex(a,b,c,d,vertex)
         local new_vertex = mem.get_table()

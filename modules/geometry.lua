@@ -3,7 +3,7 @@ return function(BUS)
     local s = 0.5
 
     return function()
-        local geometry = plugin:new("c3d:geometry")
+        local geometry = plugin.new("c3d:module->geometry")
 
         function geometry.register_modules()
             local module_registry = c3d.registry.get_module_registry()

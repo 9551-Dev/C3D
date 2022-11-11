@@ -1,6 +1,6 @@
 return function(BUS)
     return function()
-        local mouse = plugin.new("c3d:mouse")
+        local mouse = plugin.new("c3d:module->mouse")
 
         function mouse.register_modules()
             local module_registry = c3d.registry.get_module_registry()

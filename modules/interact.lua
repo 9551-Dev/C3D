@@ -4,7 +4,7 @@ return function(BUS)
     local bus_interactions = BUS.interactions
 
     return function()
-        local interact = plugin.new("c3d:interact")
+        local interact = plugin.new("c3d:module->interact")
 
         function interact.register_modules()
             local module_registry = c3d.registry.get_module_registry()

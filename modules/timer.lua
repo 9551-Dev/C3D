@@ -5,7 +5,7 @@ if is_craftos then config.set("mouse_move_throttle",1) end
 
 return function(BUS)
     return function()
-        local timer = plugin.new("c3d:timer")
+        local timer = plugin.new("c3d:module->timer")
 
         function timer.register_modules()
             local module_registry = c3d.registry.get_module_registry()

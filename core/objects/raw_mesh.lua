@@ -4,9 +4,14 @@ local tbl = require("common.table_util")
 
 return {add=function(BUS)
 
-    local raw_mesh_object = {
-        __index = object.new{
-            make_geometry=function(this)
+    return function()
+        local raw_mesh = plugin.new("c3d:object->raw_mesh")
+
+        function raw_mesh.register_objects()
+            local object_registry = c3d.registry.get_object_registry()
+            local raw_mesh_object = object_registry:new_entry("raw_mesh")
+
+            raw_mesh_object:set_entry(c3d.registry.entry("make_geometry"),function(this)
                 local geometry = {
                     vertices=this.vertice_geo_list,
                     uvs=this.uv_geo_list,
@@ -32,8 +37,9 @@ return {add=function(BUS)
                 end
 
                 return {geometry=geometry}
-            end,
-            add_triangle=function(this,vertices,uvs,texture)
+            end)
+
+            raw_mesh_object:set_entry(c3d.registry.entry("add_triangle"),function(this,vertices,uvs,texture)
                 local verts = this.vertices
                 local uvcor = this.uvs
                 local vglis = this.vertice_geo_list
@@ -129,21 +135,23 @@ return {add=function(BUS)
                 this.triangle_textures[this.tx] = texture
 
                 return this
-            end
-        },__tostring=function() return "raw_mesh" end
-    }
+            end)
 
-    return {new=function(palette,returns)
-        local obj = {
-            vertices=tbl.createNDarray(2),
-            vertice_geo_list={},
-            uv_geo_list={},
-            triangle_textures={},
-            uvs=tbl.createNDarray(1),
-            triangles={},
-            vx=0,ux=0,tx=0
-        }
+            raw_mesh_object:constructor(function()
+                local obj = {
+                    vertices=tbl.createNDarray(2),
+                    vertice_geo_list={},
+                    uv_geo_list={},
+                    triangle_textures={},
+                    uvs=tbl.createNDarray(1),
+                    triangles={},
+                    vx=0,ux=0,tx=0
+                }
+        
+                return obj
+            end)
+        end
 
-        return setmetatable(obj,raw_mesh_object):__build()
-    end}
+        raw_mesh:register()
+    end
 end}

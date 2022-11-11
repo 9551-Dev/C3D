@@ -20,7 +20,7 @@ return function(BUS)
 
 
     return function()
-        local graphics = plugin.new("c3d:graphics")
+        local graphics = plugin.new("c3d:module->graphics")
 
         function graphics.register_modules()
             local module_registry = c3d.registry.get_module_registry()

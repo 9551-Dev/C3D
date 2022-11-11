@@ -1,13 +1,15 @@
 return function(BUS)
-    local new_camera = BUS.object.camera.new()
-        :set_position(0,0,0)
-        :set_rotation(0,0,0)
-
-    BUS.camera = new_camera
-
-
     return function()
-        local camera = plugin.new("c3d:camera")
+        local camera = plugin.new("c3d:module->camera")
+
+        function camera.on_init_finish()
+            local new_camera = BUS.object.camera.new()
+                :set_position(0,0,0)
+                :set_rotation(0,0,0)
+
+            BUS.camera = new_camera
+        end
+
 
         function camera.register_modules()
             local module_registry = c3d.registry.get_module_registry()

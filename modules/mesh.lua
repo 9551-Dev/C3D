@@ -1,7 +1,7 @@
 return function(BUS)
 
     return function()
-        local mesh = plugin.new("c3d:mesh")
+        local mesh = plugin.new("c3d:module->mesh")
 
         function mesh.register_modules()
             local module_registry = c3d.registry.get_module_registry()

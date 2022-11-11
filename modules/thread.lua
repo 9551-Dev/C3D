@@ -99,7 +99,7 @@ return function(BUS)
     end
 
     return function()
-        local thread = plugin.new("c3d:thread")
+        local thread = plugin.new("c3d:module->thread")
 
         function thread.register_modules()
             local module_registry = c3d.registry.get_module_registry()

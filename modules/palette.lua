@@ -1,6 +1,6 @@
 return function(BUS)
     return function()
-        local palette = plugin.new("c3d:palette")
+        local palette = plugin.new("c3d:module->palette")
 
         function palette.register_modules()
             local module_registry = c3d.registry.get_module_registry()

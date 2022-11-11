@@ -9,7 +9,7 @@ return {register_bus=function(ENV)
         frames={},
         events={},
         running=true,
-        debug=false,
+        debug=true,
         graphics={
             buffer=ENV.utils.table.createNDarray(1),
             bg_col=colors.black,
@@ -56,7 +56,9 @@ return {register_bus=function(ENV)
         registry={
             module_registry=setmetatable({},{__tostring=function() return "module_registry" end}),
             plugin_registry=setmetatable({},{__tostring=function() return "plugin_registry" end}),
+            object_registry=setmetatable({},{__tostring=function() return "object_registry" end})
         },
+        triggers={on_full_load={}},
         scene={},
         camera={},
         animated_texture={instances={}},
@@ -92,15 +94,31 @@ return {register_bus=function(ENV)
     local module_registry_entry = {
         __index=object.new{
             set_entry=function(this,registry_entry,value)
-                local id = ENV.utils.generic.uuid4()
-
-                log("Created new entry in registry "..this.__rest.name.." -> "..registry_entry.name,log.debug)
+                log("Created new entry in module registry -> "..this.__rest.name.." -> "..registry_entry.name,log.debug)
 
                 this.__rest.entries[registry_entry.id] = value
                 this.__rest.entry_lookup[registry_entry.name] = registry_entry
                 this.__rest.name_lookup[registry_entry.id] = registry_entry.name
             end,
         },__tostring=function() return "module_registry_entry" end
+    }
+
+    local object_registry_entry = {
+        __index=object.new{
+            set_entry=function(this,registry_entry,value)
+                log("Created new entry in object registry -> "..this.__rest.name.." -> "..registry_entry.name,log.debug)
+
+                this.__rest.entries[registry_entry.id] = value
+                this.__rest.entry_lookup[registry_entry.name] = registry_entry
+                this.__rest.name_lookup[registry_entry.id] = registry_entry.name
+            end,
+            set_metadata=function(this,name,val)
+                rawset(this.__rest.metadata,name,val)
+            end,
+            constructor=function(this,constructor_method)
+                this.__rest.constructor = constructor_method
+            end
+        },__tostring=function() return "object_registry_entry" end
     }
 
     local module_registry_methods =  {
@@ -128,7 +146,33 @@ return {register_bus=function(ENV)
         },__tostring=function() return "module_registry" end
     }
 
+    local object_registry_methods = {
+        __index=object.new{
+            new_entry=function(this,name)
+
+                log("Created new object registry entry -> "..name)
+                log:dump()
+
+                local id = ENV.utils.generic.uuid4()
+
+                local dat = {}
+                dat.__rest = {name=name,entries={},entry_lookup=dat,name_lookup={},metadata={}}
+
+                this.entries[id] = dat
+                this.entry_lookup[name] = id
+
+                return setmetatable(dat,object_registry_entry):__build()
+            end,
+            get=function(this,id)
+                local entry = this.entries[id]
+
+                return setmetatable(entry,object_registry_entry):__build()
+            end
+        },__tostring=function() return "object_registry" end
+    }
+
     BUS.registry.module_registry = setmetatable({entries={},entry_lookup={}},module_registry_methods):__build()
+    BUS.registry.object_registry = setmetatable({entries={},entry_lookup={}},object_registry_methods):__build()
     BUS.registry.plugin_registry = setmetatable({entries={},entry_lookup={}},{})
     log("[ Loaded plugin system ]",log.success)
     log("")

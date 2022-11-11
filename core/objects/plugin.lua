@@ -13,15 +13,25 @@ return {add=function(BUS)
     local plugin_methods = {
         __index = object.new{
             register=function(this)
+                BUS.log("Registering plugin -> " .. this.PLUGID,BUS.log.debug)
+                BUS.log:dump()
+                if type(this.on_init_finish) == "function" then
+                    BUS.triggers.on_full_load[#BUS.triggers.on_full_load+1] = this.on_init_finish
+                end
+                if type(this.register_objects) == "function" then
+                    local oload = attach_register(this.register_objects,"OBJECT",BUS.registry.object_registry.entry_lookup)
+                    BUS.plugin.objects[this.order][this.id] = oload
+                end
                 if type(this.register_modules) == "function" then
                     local mload = attach_register(this.register_modules,"MODULE",BUS.registry.module_registry.entry_lookup)
                     BUS.plugin.modules[this.order][this.id] = mload
                 end
+
             end,
             set_load_order=function(n)
                 this.order = n
             end,
-            get_c3d_bus=function()
+            get_bus=function()
                 return BUS
             end,
             get_plugin_bus=function(this)

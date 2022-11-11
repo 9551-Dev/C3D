@@ -4,15 +4,20 @@ local quant_util = require("core.graphics.quantize")
 
 return {add=function(BUS)
 
-    local palette_object = {
-        __index = object.new{
-            apply_palette=function(this)
+    return function()
+        local palette = plugin.new("c3d:object->palette")
+
+        function palette.register_objects()
+            local object_registry = c3d.registry.get_object_registry()
+            local palette_object  = object_registry:new_entry("palette")
+
+            palette_object:set_entry(c3d.registry.entry("apply_palette"),function(this)
                 for k,v in ipairs(this.pal) do
                     this.term.setPaletteColor(2^(k-1),v[1],v[2],v[3])
                 end
                 return this.fin.returns
-            end,
-            add=function(this,to_add)
+            end)
+            palette_object:set_entry(c3d.registry.entry("add"),function(this,to_add)
                 local tpal = this.pal
                 local extend = #tpal
                 for k,v in pairs(to_add.pal) do
@@ -21,23 +26,25 @@ return {add=function(BUS)
                 end
 
                 return this
-            end,
-            quantize=function(this,amount)
+            end)
+            palette_object:set_entry(c3d.registry.entry("quantize"),function(this,amount)
                 this.pal = quant_util.quantize_palette(this.pal,amount)
 
                 return this
-            end,
-            get=function(this)
+            end)
+            palette_object:set_entry(c3d.registry.entry("get"),function(this)
                 return this.pal
-            end
-        },__tostring=function() return "palette" end
-    }
+            end)
 
-    return {new=function(palette,returns)
-        palette = palette or {}
+            palette_object:constructor(function(palette,returns)
+                palette = palette or {}
 
-        local obj = {term=BUS.graphics.display_source,pal=palette,fin=returns}
+                local obj = {term=BUS.graphics.display_source,pal=palette,fin=returns}
 
-        return setmetatable(obj,palette_object):__build()
-    end}
+                return obj
+            end)
+        end
+
+        palette:register()
+    end
 end}
