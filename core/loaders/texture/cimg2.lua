@@ -11,11 +11,7 @@ return {read=function(BUS,path_tex,options)
         for k2,v2 in pairs(v1) do
             local s = v2:sub(2,2)
 
-            if s == "f" then
-                as_transparency[k2][k1] = true
-            else
-                as_transparency[k2][k1] = false
-            end
+            as_transparency[k2][k1] = s == "f"
 
             map[k2][k1] = 2^tonumber(s,16)
         end
