@@ -24,7 +24,8 @@ return {create=function(BUS,raster)
         local depth_map = tbl.createNDarray(1)
 
         local INTERACT_MODE  = BUS.interactions.running
-        local SCREEN_OBJECTS = tbl.createNDarray(1)
+        local SCREEN_OBJECTS   = tbl.createNDarray(1)
+        local SCREEN_OBJECTS_Z = tbl.createNDarray(1)
 
         local tri_count = #triangles
         bus_g.stats.triangles_proccesed = tri_count
@@ -51,13 +52,16 @@ return {create=function(BUS,raster)
                     local y_pos = y - y_offset
 
                     local dmx = depth_map[x_pos][y_pos]
+                    local dox = SCREEN_OBJECTS_Z[x_pos][y_pos]
 
                     if not dmx or dmx < z then
                         if not is_transparent then
                             canv[y_pos][x_pos] = c
                             depth_map[x_pos][y_pos] = z
                         end
-
+                    end
+                    if not dox or dox < z then
+                        SCREEN_OBJECTS_Z[x_pos][y_pos] = z
                         if INTERACT_MODE then
                             SCREEN_OBJECTS[y_pos][x_pos] = _triangle
                         end
