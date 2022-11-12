@@ -8,8 +8,9 @@ if not ok then error("C3D could not be loaded \n"..C3DData,0) end
 local init_win,ox,oy = C3DData.util.window.get_parent_info(terminal)
 local advice_api = "https://api.adviceslip.com/advice"
 
-local function error_screen(err,is_C3D)
-    local trace = debug.traceback()
+local function error_screen(err,is_C3D,trace_func)
+    local trace = ""
+    if trace_func then trace = debug.traceback(trace_func) end
     local tid = os.startTimer(0.1)
     local last = {init_win.getSize()}
     while true do
@@ -125,8 +126,8 @@ if not C3DData.init_ok then error_screen("Internal C3D error: " .. tostring(C3DD
 local errored = true
 
 local function run_f(f)
-    local ok,err = pcall(C3DData.env,{f},"/main.lua",terminal,init_win,ox,oy)
-    if not ok then error_screen("Runtime error: " .. tostring(err)) end
+    local ok,err,trace_function = C3DData.env({f},"/main.lua",terminal,init_win,ox,oy)
+    if not ok then error_screen("Runtime error: " .. tostring(err),false,trace_function) end
 end
 
 if not args[2] then
@@ -143,8 +144,8 @@ if not args[2] then
         elseif fs.exists(args[1]) and fs.isDir(args[1]) then
             local full_path = fs.combine(args[1],"main.lua")
             if fs.exists(full_path) then
-                local ok,err = pcall(C3DData.env,{loadfile(full_path)},full_path,terminal,init_win,ox,oy)
-                if not ok then error_screen("Runtime error: " .. tostring(err)) end
+                local ok,err,trace_function = C3DData.env({loadfile(full_path)},full_path,terminal,init_win,ox,oy)
+                if not ok then error_screen("Runtime error: " .. tostring(err),false,trace_function) end
             else
                 error_screen("Loading error: No code to run\nmake sure you have a main.lua file on the top level of the folder")
             end

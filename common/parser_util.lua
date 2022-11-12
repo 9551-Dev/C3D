@@ -1,13 +1,19 @@
 local parse = {}
 
 function parse.stack_trace(trace)
+    trace = trace:gsub("stack traceback:","")
     local res = ""
-    for c in trace:gmatch("(%[C%].-)\n") do
-        res = res .. c .. "\n"
+
+    local noted_libc3d = false
+    for c in trace:gmatch(".-\n") do
+        if not c:match("libC3D/") then
+            res = res .. c .. "\n"
+        elseif not noted_libc3d then
+            noted_libc3d = true
+            res = res .. "(libC3D/..)"
+        end
     end
-    for c in trace:gmatch("(in function.-)\n") do
-        res = res .. c .. "\n"
-    end
+
     return res
 end
 

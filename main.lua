@@ -73,13 +73,14 @@ return function(ENV,libdir,...)
             ENV.package.path = BUS.instance.scenepak
             BUS.plugin_internal.load_registered_modules()
             BUS.plugin_internal.load_registered_objects()
-            setfenv(program[1],ENV)(table.unpack(args,1,args.n))
+            local program_main = setfenv(program[1],ENV)
+            program_main(table.unpack(args,1,args.n))
             ENV.package.path = old_path
             log("Succesfully loaded program",log.success)
         else
             log("Failed to load program -> "..program[2],log.fatal)
             log:dump()
-            error(program[2],0)
+            return false,program[2]
         end
 
         log:dump()
@@ -112,6 +113,7 @@ return function(ENV,libdir,...)
 
         log:dump()
 
+        local load_error = false
         if ok then
             log("[ C3D INIT SUCCESSFUL ]",log.success)
             log("[ STARTING EXECUTION ]",log.info)
@@ -135,9 +137,11 @@ return function(ENV,libdir,...)
                 log:dump()
             else
                 log("[ C3D EXITED NORMALLY ]",log.success)
+                return true
             end
             log:dump()
         else
+            load_error = true
             local trace = debug.traceback(main)
             log("[ C3D INIT FAILED ] -> "..tostring(err or ""),log.fatal)
             for str in string.gmatch(trace:gsub("\t","%    "), "([^\n]+)") do
@@ -153,17 +157,19 @@ return function(ENV,libdir,...)
             if ENV.c3d.errorhandler(err) then
                 log("[ C3D -> goodbye. ]",log.info)
                 log:dump()
-                error(err,2)
+                return false,err,load_error and main or err_thread
             end
         elseif not ok then
             log("[ C3D -> goodbye. ]",log.info)
             log:dump()
-            error(err,2)
+            return false,err,load_error and main or err_thread
         end
 
         log("",log.info)
         log("[ C3D -> goodbye. ]",log.info)
         log:dump()
+
+        return true,"Fine"
     end
 
     log("[ Loading plugin api modules.. ]",log.info)
