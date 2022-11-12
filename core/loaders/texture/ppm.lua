@@ -35,7 +35,7 @@ return {read=function(BUS,path_tex,options,option_results,final)
             local px = map_color[y][x]
             local fr,fg,fb = px[1],px[2],px[3]
 
-            trans[y][x] = (fr+fg+fb)/3 > 0.5
+            trans[y][x] = (fr+fg+fb)/3 < 0.5
 
             local c,r,g,b = c_util.find_closest_color(
                 fr,fg,fb
