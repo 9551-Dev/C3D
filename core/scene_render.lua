@@ -33,6 +33,39 @@ return {create=function(BUS,raster)
 
         
         local rastst = os.epoch("utc")
+
+        local _force_z
+        local _triangle_pixel_size
+        local _triangle
+
+        local function render_pixel(x,y,z,c,visible)
+            local z = _force_z or z
+
+            pixels_rasterized = pixels_rasterized + 1
+
+            x,y = x*_triangle_pixel_size,y*_triangle_pixel_size
+
+            for x_offset=0,_triangle_pixel_size-1 do
+                for y_offset=0,_triangle_pixel_size-1 do
+                    local x_pos = x - x_offset
+                    local y_pos = y - y_offset
+
+                    local dmx = depth_map[x_pos][y_pos]
+
+                    if not dmx or dmx < z then
+                        if visible then
+                            canv[y_pos][x_pos] = c
+                            depth_map[x_pos][y_pos] = z
+                        end
+
+                        if INTERACT_MODE then
+                            SCREEN_OBJECTS[y_pos][x_pos] = _triangle
+                        end
+                    end
+                end
+            end
+        end
+
         for i=1,tri_count do
             local triangle = triangles[i]
 
@@ -43,9 +76,11 @@ return {create=function(BUS,raster)
             local cull = cull_triangle(a,b,c)
             local cull_invert = o.invert_culling
 
-            local triangle_pixel_size = triangle.pixel_size or psize
-            local force_z = triangle.z_layer
-            local w,h = w_orig/triangle_pixel_size,h_orig/triangle_pixel_size
+            _triangle_pixel_size = triangle.pixel_size or psize
+            _force_z = triangle.z_layer
+            _triangle = triangle
+
+            local w,h = w_orig/_triangle_pixel_size,h_orig/_triangle_pixel_size
 
             if (not cull_invert and cull > 0) or (o.invert_culling and cull < 0) or o.disable_culling then
                 triangles_drawn = triangles_drawn + 1
@@ -53,32 +88,9 @@ return {create=function(BUS,raster)
                     pst(a,w,h),
                     pst(b,w,h),
                     pst(c,w,h),
-                    triangle.texture,triangle_pixel_size,
-                    function(x,y,z,c)
-                        local z = force_z or z
-
-                        pixels_rasterized = pixels_rasterized + 1
-
-                        x,y = x*triangle_pixel_size,y*triangle_pixel_size
-
-                        for x_offset=0,triangle_pixel_size-1 do
-                            for y_offset=0,triangle_pixel_size-1 do
-                                local x_pos = x - x_offset
-                                local y_pos = y - y_offset
-
-                                local dmx = depth_map[x_pos][y_pos]
-
-                                if not dmx or dmx < z then
-                                    canv[y_pos][x_pos] = c
-                                    depth_map[x_pos][y_pos] = z
-
-                                    if INTERACT_MODE then
-                                        SCREEN_OBJECTS[y_pos][x_pos] = triangle
-                                    end
-                                end
-                            end
-                        end
-                    end,triangle.orig1,triangle.orig2,triangle.orig3
+                    triangle.texture,_triangle_pixel_size,
+                    render_pixel,
+                    triangle.orig1,triangle.orig2,triangle.orig3
                 )
             end
         end

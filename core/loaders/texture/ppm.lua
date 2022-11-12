@@ -15,10 +15,13 @@ return {read=function(BUS,path_tex,options,option_results,final)
     local res = {
         w=map_color.w,
         h=map_color.h,
-        pixels=tbl.createNDarray(1)
+        pixels=tbl.createNDarray(1),
+        as_transparency=tbl.createNDarray(1),
+        transparency_map=options.transparency
     }
 
     local pxels = res.pixels
+    local trans = res.as_transparency
 
     if options.quantize_amount then
         local mc = map_color
@@ -31,6 +34,9 @@ return {read=function(BUS,path_tex,options,option_results,final)
         for x=1,map_color.w do
             local px = map_color[y][x]
             local fr,fg,fb = px[1],px[2],px[3]
+
+            trans[y][x] = (fr+fg+fb)/3 > 0.5
+
             local c,r,g,b = c_util.find_closest_color(
                 fr,fg,fb
             )

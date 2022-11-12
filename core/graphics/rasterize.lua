@@ -4,8 +4,8 @@ local int_y  = require("core.3D.math.interpolate_y")
 local get_t  = require("core.3D.math.get_interpolant")
 local int_uv = require("core.3D.math.interpolate_uv")
 
-local bary_c     = require("core.3D.geometry.bary_coords")
-local int_vertex = require("core.3D.geometry.interpolate_vertex")
+local barycentric_coordinates = require("core.3D.geometry.bary_coords")
+local int_vertex              = require("core.3D.geometry.interpolate_vertex")
 
 local memory_manager = require("core.mem_manager")
 
@@ -74,7 +74,7 @@ return {build=function(BUS)
             end end
     
             for x=x_start,x_end do
-                local bary_a,bary_b,bary_c = bary_c(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
+                local bary_a,bary_b,bary_c = barycentric_coordinates(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
     
                 local div = sx_end - sx_start
                 local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)
@@ -163,7 +163,7 @@ return {build=function(BUS)
             end end
     
             for x=x_start,x_end do
-                local bary_a,bary_b,bary_c =  bary_c(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
+                local bary_a,bary_b,bary_c =  barycentric_coordinates(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
     
                 local div = sx_end - sx_start
                 local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)

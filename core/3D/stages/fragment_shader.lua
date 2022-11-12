@@ -5,15 +5,19 @@ local function default_fragment(frag)
         local tex = frag.tex
         local w = tex.w
         local h = tex.h
+        local t = tex.transparency_map.as_transparency
 
         local z = frag.z_correct
         local x = MAX(1,MIN(CEIL(frag.tx*z*w),w))
         local y = MAX(1,MIN(CEIL(frag.ty*z*h),h))
 
-        return frag.texture[h-y+1][x]
+        local is_visible = true
+        if t then is_visible = t[h-y+1][x] end
+
+        return frag.texture[h-y+1][x],is_visible
     end
 
-    return frag.color or colors.red
+    return frag.color or colors.red,true
 end
 
 return function(fs)

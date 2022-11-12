@@ -1,18 +1,31 @@
 local tbl = require("common.table_util")
 
-return {read=function(BUS,path_tex)
+return {read=function(BUS,path_tex,options)
     local fl = fs.open(path_tex,"r")
     local map = tbl.createNDarray(1)
+
+    local as_transparency = tbl.createNDarray(1)
+
     local cm = textutils.unserialize(fl.readAll())
     for k1,v1 in pairs(cm) do
         for k2,v2 in pairs(v1) do
-            map[k2][k1] = 2^tonumber(string.sub(v2,2,2),16)
+            local s = v2:sub(2,2)
+
+            if s == "f" then
+                as_transparency[k2][k1] = true
+            else
+                as_transparency[k2][k1] = false
+            end
+
+            map[k2][k1] = 2^tonumber(s,16)
         end
     end
     local res = {
         w=#map[#map],
         h=#map,
-        pixels=map
+        pixels=map,
+        as_transparency=as_transparency,
+        transparency=options.transparency
     }
     return res
 end}
