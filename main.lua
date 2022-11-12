@@ -90,6 +90,7 @@ return function(ENV,libdir,...)
             ENV.c3d.init()
             BUS.plugin_internal.register_modules()
             BUS.plugin_internal.register_objects()
+            BUS.plugin_internal.register_threads()
             log("Successfuly registered plugins",log.success)
         end
 
@@ -102,6 +103,7 @@ return function(ENV,libdir,...)
         if type(ENV.c3d.init) == "function" then
             BUS.plugin_internal.load_registered_modules()
             BUS.plugin_internal.load_registered_objects()
+            BUS.plugin_internal.load_registered_threads()
         end
 
         BUS.plugin_internal.finalize_load()
@@ -123,7 +125,7 @@ return function(ENV,libdir,...)
 
             ok,err,err_thread = cmgr.start(BUS,function()
                 return BUS.running
-            end,{},main,event,resize,key_h,tudp)
+            end,BUS.threads,main,event,resize,key_h,tudp)
 
             if not ok then
                 local trace = "NO MORE INFO"

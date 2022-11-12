@@ -1,7 +1,5 @@
 local registry = {}
 
-local object = require("core.object")
-
 local memory_manager = require("core.mem_manager")
 
 return function(BUS)
@@ -17,6 +15,9 @@ return function(BUS)
     end
     function registry.get_object_registry()
         return BUS.registry.object_registry
+    end
+    function registry.get_thread_registry()
+        return BUS.registry.thread_registry
     end
 
     function registry.entry(name,value)

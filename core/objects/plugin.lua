@@ -26,6 +26,9 @@ return {add=function(BUS)
                     local mload = attach_register(this.register_modules,"MODULE",BUS.registry.module_registry.entry_lookup)
                     BUS.plugin.modules[this.order][this.id] = mload
                 end
+                if type(this.register_threads) == "function" then
+                    BUS.plugin.threads[this.order][this.id] = this.register_threads
+                end
 
             end,
             set_load_order=function(n)

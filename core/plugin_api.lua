@@ -72,6 +72,32 @@ return {init=function(BUS)
         end
         BUS.log:dump()
     end
+
+    function methods.register_threads()
+        BUS.log("[ Registering loaded threads.. ]",BUS.log.info)
+        for k,v in tbl.iterate_order(BUS.plugin.threads) do
+            for id,loader in pairs(v) do 
+                BUS.plugin.modules[k][id] = nil
+                local ok,err = pcall(loader,0)
+                if not ok then
+                    BUS.log("Error registering thread. "..tostring(err),BUS.log.error)
+                end
+            end
+        end
+    end
+    function methods.load_registered_threads()
+        BUS.log("[ Loading registered threads ]",BUS.log.info)
+        local busmoddata = BUS.registry.thread_registry
+        for object_name,reg_entry in pairs(busmoddata.entry_lookup) do
+            local object_entry = busmoddata.entries[reg_entry.id]
+
+            BUS.log("loaded registered thread -> "..object_name,BUS.log.debug)
+            BUS.threads[object_name] = {
+                coro = coroutine.create(object_entry)
+            }
+        end
+    end
+
     function methods.finalize_load()
         BUS.log("Finalizing plugin loading..",BUS.log.info)
         for k,v in pairs(BUS.triggers.on_full_load) do

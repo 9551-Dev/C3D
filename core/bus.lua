@@ -34,6 +34,7 @@ return {register_bus=function(ENV)
         },
         instance={},
         object={},
+        threads={},
         sys={
             frame_time_min=0,
             init_time=os.epoch("utc"),
@@ -51,12 +52,14 @@ return {register_bus=function(ENV)
         plugin={
             modules=ENV.utils.table.createNDarray(1),
             objects=ENV.utils.table.createNDarray(1),
+            threads=ENV.utils.table.createNDarray(1),
             plugin_bus={}
         },
         registry={
             module_registry=setmetatable({},{__tostring=function() return "module_registry" end}),
             plugin_registry=setmetatable({},{__tostring=function() return "plugin_registry" end}),
-            object_registry=setmetatable({},{__tostring=function() return "object_registry" end})
+            object_registry=setmetatable({},{__tostring=function() return "object_registry" end}),
+            thread_registry=setmetatable({},{__tostring=function() return "thread_registry" end})
         },
         triggers={on_full_load={}},
         scene={},
@@ -96,9 +99,9 @@ return {register_bus=function(ENV)
             set_entry=function(this,registry_entry,value)
                 log("Created new entry in module registry -> "..this.__rest.name.." -> "..registry_entry.name,log.debug)
 
-                this.__rest.entries[registry_entry.id] = value
+                this.__rest.entries     [registry_entry.id]   = value
                 this.__rest.entry_lookup[registry_entry.name] = registry_entry
-                this.__rest.name_lookup[registry_entry.id] = registry_entry.name
+                this.__rest.name_lookup [registry_entry.id]   = registry_entry.name
             end,
         },__tostring=function() return "module_registry_entry" end
     }
@@ -171,8 +174,21 @@ return {register_bus=function(ENV)
         },__tostring=function() return "object_registry" end
     }
 
+    local thread_registry_methods = {
+        __index=object.new{
+            set_entry=function(this,registry_entry,value)
+                log("Created new entry in thread registry -> "..registry_entry.name,log.debug)
+
+                this.entries     [registry_entry.id]   = value
+                this.entry_lookup[registry_entry.name] = registry_entry
+                this.name_lookup [registry_entry.id]   = registry_entry.name
+            end,
+        },__tostring=function() return "thread_registry" end
+    }
+
     BUS.registry.module_registry = setmetatable({entries={},entry_lookup={}},module_registry_methods):__build()
     BUS.registry.object_registry = setmetatable({entries={},entry_lookup={}},object_registry_methods):__build()
+    BUS.registry.thread_registry = setmetatable({entries={},entry_lookup={},name_lookup={}},thread_registry_methods):__build()
     BUS.registry.plugin_registry = setmetatable({entries={},entry_lookup={}},{})
     log("[ Loaded plugin system ]",log.success)
     log("")

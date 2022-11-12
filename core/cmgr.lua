@@ -53,7 +53,7 @@ function lib_cmgr.start(BUS,toggle,thread_pointer,main_thread,...)
             for k,v in pairs(thread_pointer) do
                 local filter = v.filter
                 if ev[1] == filter or not filter then
-                    if coroutine.status(v) ~= "dead" then
+                    if coroutine.status(v.coro) ~= "dead" then
                         local ok,ret = coroutine.resume(v.coro,unpack_ev(ev))
                         if ok then thread_pointer[k].filter = ret end
                         if not ok and coroutine.status(v.coro) == "dead" then
