@@ -12,13 +12,13 @@ local function default_fragment(frag)
         local x = MAX(1,MIN(CEIL(frag.tx*z*w),w))
         local y = MAX(1,MIN(CEIL(frag.ty*z*h),h))
 
-        local is_visible = true
-        if t then is_visible = t[h-y+1][x] end
+        local is_transparent = false
+        if t then is_transparent = t[h-y+1][x] end
 
-        return frag.texture[h-y+1][x],is_visible
+        return frag.texture[h-y+1][x],is_transparent
     end
 
-    return frag.color or colors.red,true
+    return frag.color or colors.red
 end
 
 return function(fs)

@@ -38,7 +38,7 @@ return {create=function(BUS,raster)
         local _triangle_pixel_size
         local _triangle
 
-        local function render_pixel(x,y,z,c,visible)
+        local function render_pixel(x,y,z,c,is_transparent)
             local z = _force_z or z
 
             pixels_rasterized = pixels_rasterized + 1
@@ -53,7 +53,7 @@ return {create=function(BUS,raster)
                     local dmx = depth_map[x_pos][y_pos]
 
                     if not dmx or dmx < z then
-                        if visible then
+                        if not is_transparent then
                             canv[y_pos][x_pos] = c
                             depth_map[x_pos][y_pos] = z
                         end
