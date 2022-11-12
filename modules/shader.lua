@@ -2,6 +2,8 @@ local matmul = require("core.3D.math.matmul")
 
 local RANDOM,MAX,MIN,CEIL = math.random,math.max,math.min,math.ceil
 
+local empty = {}
+
 return function(BUS)
 
     return function()
@@ -36,7 +38,7 @@ return function(BUS)
                     local tex = frag.tex
                     local w = tex.w
                     local h = tex.h
-                    local t = tex.transparency_map.as_transparency
+                    local t = (tex.transparency_map or empty).as_transparency
             
                     local z = frag.z_correct
                     local x = MAX(1,MIN(CEIL(frag.tx*z*w),w))
