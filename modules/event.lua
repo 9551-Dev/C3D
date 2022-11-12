@@ -1,3 +1,5 @@
+local generic = require("common.generic")
+
 return function(BUS)
 
     local function grab_event_queue()
@@ -41,6 +43,41 @@ return function(BUS)
                     os.pullEvent("waiting")
                 end
                 return grab_event_queue()
+            end)
+
+            event_module:set_entry(c3d.registry.entry("listen"),function(_filter,f,name,on_finish)
+                if not type(f) == "function" then return end
+                if not (type(_filter) == "table" or type(_filter) == "string") then _filter = {} end
+                if type(_filter) == "table" then
+                    local lookupified = {}
+                    for k,v in pairs(_filter) do
+                        lookupified[v] = true
+                    end
+                    _filter = lookupified
+                end
+
+                local id = name or generic.uuid4()
+                local listener = {filter=_filter,code=f,finish=on_finish}
+                BUS.triggers.event_listeners[id] = listener
+                return setmetatable(listener,{__index={
+                    kill=function()
+                        BUS.triggers.event_listeners[id] = nil
+                        BUS.triggers.paused_listeners[id] = nil
+                    end,
+                    pause=function()
+                        BUS.triggers.paused_listeners[id] = listener
+                        BUS.triggers.event_listeners[id] = nil
+                    end,
+                    resume=function()
+                        local listener = BUS.triggers.paused_listeners[id] or BUS.triggers.event_listeners[id]
+                        if listener then
+                            BUS.triggers.event_listeners[id] = listener
+                            BUS.triggers.paused_listeners[id] = nil
+                        end
+                    end
+                },__tostring=function()
+                    return "C3D.EVENT_LISTENER."..id
+                end})
             end)
         end
 

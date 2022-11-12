@@ -61,7 +61,11 @@ return {register_bus=function(ENV)
             object_registry=setmetatable({},{__tostring=function() return "object_registry" end}),
             thread_registry=setmetatable({},{__tostring=function() return "thread_registry" end})
         },
-        triggers={on_full_load={}},
+        triggers={
+            on_full_load    ={},
+            event_listeners ={},
+            paused_listeners={}
+        },
         scene={},
         camera={},
         animated_texture={instances={}},

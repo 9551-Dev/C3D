@@ -13,7 +13,7 @@ local function unpack_ev(ev)
     return table.unpack(ev,1,ev.n)
 end
 
-return {make=function(ENV,BUS,args)
+return {make=function(ENV,BUS)
 
     BUS.log("   - Created event handler thread",BUS.log.success)
     BUS.log:dump()
@@ -42,6 +42,17 @@ return {make=function(ENV,BUS,args)
             if ev[1] == "mouse_drag" then mousemoved:check_change(BUS,ENV.c3d,ev[3],ev[4]) end
 
             if ENV.c3d.on_event then ENV.c3d.on_event(unpack_ev(ev)) end
+
+            local listeners = {}
+            for k,v in pairs(BUS.triggers.event_listeners) do
+                local filter = v.filter
+                if type(filter) == "string" then filter = {[v.filter]=true} end
+                if filter[ev[1]] or filter == ev[1] or (not next(filter)) then
+                    v.code(table.unpack(ev,_G.type(v.filter) ~= "table" and 2 or 1,ev.n))
+                    table.insert(listeners,v.finish)
+                end
+            end
+            for k,v in pairs(listeners) do v() end
         end
     end)
 end}
