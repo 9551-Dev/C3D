@@ -11,3 +11,6 @@
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Miscellaneous
+*.log
