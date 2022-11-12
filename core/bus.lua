@@ -41,7 +41,7 @@ return {register_bus=function(ENV)
             run_time=0
         },
         perspective={
-            near=0,
+            near=0.1,
             far =1000,
             FOV =50
         },

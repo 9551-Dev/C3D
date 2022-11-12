@@ -13,7 +13,7 @@ return {init=function(BUS)
         local new_vertex = mem.get_table()
 
         new_vertex[1],new_vertex[2],new_vertex[3],new_vertex[4] = a,b,c,d
-        new_vertex[5],new_vertex[6] = vertex[5],vertex[6]
+        new_vertex[5],new_vertex[6],new_vertex[7],new_vertex[8] = vertex[5],vertex[6],vertex[7],vertex[8]
         new_vertex.norm = vertex.norm
         new_vertex.frag = vertex.frag
         new_vertex.val  = vertex.val

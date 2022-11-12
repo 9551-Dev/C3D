@@ -33,7 +33,7 @@ return {build=function(BUS,scene)
         if type(BUS.c3d.screen_render) == "function" then
             BUS.c3d.screen_render(busg.display_source,busg.w,busg.h,canv)
         else
-            local char_line,fg_line,bg_line = mem_handle.get_table(),mem_handle.get_table(),mem_handle.get_table()
+            local char_line,fg_line,bg_line = {},{},{}
             for y=1,busg.h,3 do
                 sy = sy + 1
                 local layer_1 = canv[y]

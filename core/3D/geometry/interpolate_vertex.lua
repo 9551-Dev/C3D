@@ -9,13 +9,13 @@ return {init=function(BUS)
         local v15 = v1[5]
         local v17 = v1[7]
 
-        local vert = {
-            (1 - alpha) * v1[1] + alpha * v2[1],
-            (1 - alpha) * v1[2] + alpha * v2[2],
-            (1 - alpha) * v1[3] + alpha * v2[3],
-            (1 - alpha) * v1[4] + alpha * v2[4],
-            0,0,0,0
-        }
+        local vert = memory_handle.get_table()
+
+        vert[1] = (1 - alpha) * v1[1] + alpha * v2[1]
+        vert[2] = (1 - alpha) * v1[2] + alpha * v2[2]
+        vert[3] = (1 - alpha) * v1[3] + alpha * v2[3]
+        vert[4] = (1 - alpha) * v1[4] + alpha * v2[4]
+        vert[5],vert[6],vert[7],vert[8] = 0,0,0,0
 
         if v15 then
             vert[5] = (1 - alpha) * v15   + alpha * (v2[5] or 0)
