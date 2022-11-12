@@ -1,4 +1,3 @@
-local object   = require("core.object")
 local tbl_util = require("common.table_util")
 local generic  = require("common.generic")
 
@@ -57,7 +56,7 @@ return {add=function(BUS)
                 return self
             end)
             scene_object_object:set_entry(c3d.registry.entry("clone"),function(self)
-                return BUS.object.scene_object.new(tbl_util.deepcopy(this))
+                return BUS.object.scene_object.new(tbl_util.deepcopy(self))
             end)
 
             scene_object_object:constructor(function(geometry)
