@@ -177,7 +177,7 @@ return {register_bus=function(ENV)
     local thread_registry_methods = {
         __index=object.new{
             set_entry=function(this,registry_entry,value)
-                log("Created new entry in thread registry -> "..registry_entry.name,log.debug)
+                log("Created new thread registry entry -> "..registry_entry.name,log.info)
 
                 this.entries     [registry_entry.id]   = value
                 this.entry_lookup[registry_entry.name] = registry_entry
