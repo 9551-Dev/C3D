@@ -78,7 +78,7 @@ return function(BUS)
                 update_perspective()
             end)
 
-            graphics_module:set_entry(c3d.registry.entry("change_terminal"),function(term,resize)
+            graphics_module:set_entry(c3d.registry.entry("change_terminal"),function(term,block_resize)
                 local init_win,ox,oy = win.get_parent_info(term)
 
                 local terminal = window.create(term,1,1,term.getSize())
@@ -95,12 +95,16 @@ return function(BUS)
                 end)
                 if not ok then BUS.graphics.monitor = "term_object" end
 
-                if not resize then
+                if not block_resize then
                     BUS.graphics.w = w
                     BUS.graphics.h = h
                 end
 
                 update_perspective()
+            end)
+
+            graphics_module:set_entry(c3d.registry.entry("set_pixel"),function(x,y,c)
+                BUS.graphics.buffer[y][x] = c
             end)
         end
 
