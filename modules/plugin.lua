@@ -30,9 +30,13 @@ return function(BUS,ENV)
 
     function plugin.register()
         BUS.plugin_internal.register_modules()
+        BUS.plugin_internal.register_objects()
+        BUS.plugin_internal.register_threads()
     end
     function plugin.load_registered()
         BUS.plugin_internal.load_registered_modules()
+        BUS.plugin_internal.load_registered_objects()
+        BUS.plugin_internal.load_registered_threads()
     end
 
     function plugin.refinalize()
