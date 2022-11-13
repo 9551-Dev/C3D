@@ -1,4 +1,4 @@
-local object = require("core.object")
+local obj_decode = require("core.loaders.imported_model.obj")
 
 return {add=function(BUS)
 
@@ -18,17 +18,12 @@ return {add=function(BUS)
                 return BUS.object.generic_shape.new(this.DATA)
             end)
 
+            imported_model_object:define_decoder(".obj",obj_decode)
+
             imported_model_object:constructor(function(path)
                 local obj = {}
 
-                local extension = path:match("^.+(%..+)$")
-                local file_path = fs.combine(BUS.instance.scenedir,path)
-
-                package.path = BUS.instance.libpak
-                local parser = require("core.loaders.imported_model" .. extension)
-                package.path = BUS.instance.scenepak
-
-                obj.DATA = parser.read(BUS,file_path)
+                obj.DATA = imported_model_object:read_file(path)
 
                 return obj
             end)

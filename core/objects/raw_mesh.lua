@@ -1,5 +1,3 @@
-local object = require("core.object")
-
 local tbl = require("common.table_util")
 
 return {add=function(BUS)

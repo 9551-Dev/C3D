@@ -7,7 +7,7 @@ local c_util = require("common.color_util")
 local quantize = require("core.graphics.quantize")
 local dither   = require("core.graphics.dither")
 
-return {read=function(BUS,path_tex,options,option_results,final)
+return {read=function(path_tex,BUS,options,option_results,final)
     c_util.update_palette(BUS.graphics.display_source)
 
     local map_color = ppm(path_tex)

@@ -124,6 +124,14 @@ return {register_bus=function(ENV)
             end,
             constructor=function(this,constructor_method)
                 this.__rest.constructor = constructor_method
+            end,
+            define_decoder=function(this,extension,decoder)
+                this.__rest.file_handlers[extension] = decoder.read
+            end,
+            read_file=function(this,path,...)
+                local extension = path:match("^.+(%..+)$")
+                local file_path = fs.combine(BUS.instance.scenedir,path)
+                return this.__rest.file_handlers[extension](file_path,...)
             end
         },__tostring=function() return "object_registry_entry" end
     }
@@ -163,7 +171,7 @@ return {register_bus=function(ENV)
                 local id = ENV.utils.generic.uuid4()
 
                 local dat = {}
-                dat.__rest = {name=name,entries={},entry_lookup=dat,name_lookup={},metadata={}}
+                dat.__rest = {name=name,entries={},entry_lookup=dat,name_lookup={},metadata={},file_handlers={}}
 
                 this.entries[id] = dat
                 this.entry_lookup[name] = id

@@ -1,5 +1,3 @@
-local object = require("core.object")
-
 local quant_util = require("core.graphics.quantize")
 
 return {add=function(BUS)

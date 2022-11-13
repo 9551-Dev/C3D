@@ -1,4 +1,6 @@
-local object = require("core.object")
+local cimg2_decode = require("core.loaders.texture.cimg2")
+local ppm_decode   = require("core.loaders.texture.ppm")
+local nfp_decode   = require("core.loaders.texture.nfp")
 
 return {add=function(BUS)
 
@@ -15,18 +17,17 @@ return {add=function(BUS)
             texture_object:set_entry(c3d.registry.entry("sprite_sheet"),function(this,settings)
                 return BUS.object.sprite_sheet.new(this,settings)
             end)
+
+            texture_object:define_decoder(".cimg2",cimg2_decode)
+            texture_object:define_decoder(".ppm",ppm_decode)
+            texture_object:define_decoder(".nfp",nfp_decode)
             
             texture_object:constructor(function(path,options)
-                local extension = path:match("^.+(%..+)$")
-                local file_path = fs.combine(BUS.instance.scenedir,path)
-
-                package.path = BUS.instance.libpak
-                local parser = require("core.loaders.texture" .. extension)
-                package.path = BUS.instance.scenepak
-
                 local option_result = {}
                 local fin = {}
-                local data = parser.read(BUS,file_path,options or {},option_result,fin)
+
+                local data = texture_object:read_file(path,BUS,options or {},option_result,fin)
+                
                 data.c3d = {}
 
                 data.c3d.option_result = option_result

@@ -1,6 +1,6 @@
 local tbl = require("common.table_util")
 
-return {read=function(BUS,path_tex,options)
+return {read=function(path_tex,BUS,options)
     local file = fs.open(path_tex,"r")
     local file_data = file.readAll()
     file.close()
