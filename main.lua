@@ -74,9 +74,17 @@ return function(ENV,libdir,...)
             BUS.plugin_internal.load_registered_modules()
             BUS.plugin_internal.load_registered_objects()
             local program_main = setfenv(program[1],ENV)
-            program_main(table.unpack(args,1,args.n))
+            local ok,err = pcall(function() 
+                program_main(table.unpack(args,1,args.n))
+            end)
             ENV.package.path = old_path
-            log("Succesfully loaded program",log.success)
+            if ok then
+                log("Succesfully loaded program",log.success)
+            else
+                log("Failed to init loaded program -> "..err,log.fatal)
+                log:dump()
+                return false,err
+            end
         else
             log("Failed to load program -> "..program[2],log.fatal)
             log:dump()
