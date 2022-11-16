@@ -23,7 +23,7 @@ return function(BUS)
                 BUS.perspective.near = near
                 update_perspective()
             end)
-            perspective_module:set_entry(c3d.registry.entry("set_fra_plane"),function(far)
+            perspective_module:set_entry(c3d.registry.entry("set_far_plane"),function(far)
                 BUS.perspective.far = far
                 update_perspective()
             end)

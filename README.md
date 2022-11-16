@@ -1,6 +1,4 @@
 # C3D
-> C3D is **HIGHLY** experimental and is in early stages
-> of development, only use if you know what you are doing.
 
 Documentation: https://c3d.madefor.cc
 
