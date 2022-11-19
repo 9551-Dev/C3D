@@ -34,7 +34,7 @@ return {add=function(BUS)
                     uvs[t3]   = tri[6]
                 end
 
-                return {geometry=geometry}
+                return BUS.object.generic_shape.new{geometry=geometry}
             end)
 
             raw_mesh_object:set_entry(c3d.registry.entry("add_triangle"),function(this,vertices,uvs,texture)
