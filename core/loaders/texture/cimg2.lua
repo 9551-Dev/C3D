@@ -24,7 +24,6 @@ return {read=function(path_tex,BUS,options)
         h=#map,
         pixels=map,
         as_transparency=as_transparency,
-        transparency_map=options.transparency
     }
     return res
 end}

@@ -26,8 +26,8 @@ return function(BUS)
                 BUS.camera:set_transform(transform)
             end)
 
-            camera_module:set_entry(c3d.registry.entry("lookat"),function(fromx,fromy,fromz,atx,aty,atz)
-                BUS.camera:lookat_transform(fromx,fromy,fromz,atx,aty,atz)
+            camera_module:set_entry(c3d.registry.entry("lookat"),function(fromx,fromy,fromz,atx,aty,atz,near_plane_offset)
+                BUS.camera:lookat_transform(fromx,fromy,fromz,atx,aty,atz,near_plane_offset)
             end)
 
             camera_module:set_entry(c3d.registry.entry("make"),function(x,y,z,rx,ry,rz,w)

@@ -1,4 +1,4 @@
-local CEIL,MAX,MIN,pairs = math.ceil,math.max,math.min,pairs
+local CEIL,MAX,MIN,ABS,SQRT,pairs = math.ceil,math.max,math.min,math.abs,math.sqrt,pairs
 
 local int_y  = require("core.3D.math.interpolate_y")
 local get_t  = require("core.3D.math.get_interpolant")
@@ -101,7 +101,21 @@ return {build=function(BUS)
                 fragment_shader_data.data = frag_data
 
                 if tex then
-                    fragment_shader_data.tx,fragment_shader_data.ty = int_uv(bary_a,bary_b,bary_c,v0u,v0v,v1u,v1v,v2u,v2v)
+                    local thisu,thisv = int_uv(bary_a,bary_b,bary_c,v0u,v0v,v1u,v1v,v2u,v2v)
+                    fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
+
+                    local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v0x,v0y,v1x,v1y,v2x,v2y)
+                    local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x,y+1,v0x,v0y,v1x,v1y,v2x,v2y)
+
+                    local uright,vright = int_uv(bary_aright,bary_bright,bary_cright,v0u,v0v,v1u,v1v,v2u,v2v)
+                    local udown ,vdown  = int_uv(bary_adown,bary_bdown,bary_cdown,v0u,v0v,v1u,v1v,v2u,v2v)
+
+                    local L = MAX(
+                        SQRT((ABS(thisu-uright)*tex.w)^2+(ABS(thisv-vright)*tex.h)^2),
+                        SQRT((ABS(thisv-vdown) *tex.h)^2+(ABS(thisu-udown) *tex.w)^2)
+                    )
+
+                    fragment_shader_data.mipmap_level = L
                 end
     
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,
@@ -189,7 +203,21 @@ return {build=function(BUS)
                 fragment_shader_data.data = frag_data
 
                 if tex then
-                    fragment_shader_data.tx,fragment_shader_data.ty = int_uv(bary_a,bary_b,bary_c,v0u,v0v,v1u,v1v,v2u,v2v)
+                    local thisu,thisv = int_uv(bary_a,bary_b,bary_c,v0u,v0v,v1u,v1v,v2u,v2v)
+                    fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
+
+                    local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v0x,v0y,v1x,v1y,v2x,v2y)
+                    local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x,y+1,v0x,v0y,v1x,v1y,v2x,v2y)
+
+                    local uright,vright = int_uv(bary_aright,bary_bright,bary_cright,v0u,v0v,v1u,v1v,v2u,v2v)
+                    local udown ,vdown  = int_uv(bary_adown,bary_bdown,bary_cdown,v0u,v0v,v1u,v1v,v2u,v2v)
+
+                    local L = MAX(
+                        ABS(thisu-uright)*tex.w,ABS(thisv-vright)*tex.h,
+                        ABS(thisv-vdown) *tex.h,ABS(thisu-udown) *tex.w
+                    )
+
+                    fragment_shader_data.mipmap_level = L
                 end
     
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,

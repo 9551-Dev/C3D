@@ -29,7 +29,12 @@ return {add=function(BUS)
                     this.last_updated = rt
                     this.current_sprite_index = this.current_sprite_index + 1
                 end
-                this.pixels = this.sprites[this.current_sprite_index][this.sprite_x_index]
+
+                local sprite = this.sprites[this.current_sprite_index][this.sprite_x_index]
+
+                this.pixels           = sprite.pixels
+                this.as_transparency  = sprite.as_transparency
+                this.transparency_map = sprite.transparency_map
             end)
             animated_texture_object:set_entry(c3d.registry.entry("autoplay"),function(this,enable)
                 if not this.running and enable then
@@ -70,6 +75,8 @@ return {add=function(BUS)
                     w=sprite_map.sprite_width,
                     h=sprite_map.sprite_height,
                     sprites_collum=sprite_map.sprites_y,
+                    mipmap_levels=sprite_map.tex.mipmap_levels,
+                    misses_mipmaps=sprite_map.tex.misses_mipmaps,
                     sprites=sprite_map.sprites,
                     duration=duration,
                     sprite_x_index=x,

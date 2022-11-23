@@ -30,8 +30,8 @@ return {add=function(BUS)
                 this.transform = transform
                 return this
             end)
-            camera_object:set_entry(c3d.registry.entry("lookat_transform"),function(this,fromx,fromy,fromz,atx,aty,atz)
-                this.transform = lookat_transform_matrix(fromx,fromy,fromz,atx,aty,atz)
+            camera_object:set_entry(c3d.registry.entry("lookat_transform"),function(this,fromx,fromy,fromz,atx,aty,atz,near_plane_offset)
+                this.transform = lookat_transform_matrix(fromx,fromy,fromz,atx,aty,atz,near_plane_offset)
                 return this
             end)
 

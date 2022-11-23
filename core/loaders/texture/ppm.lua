@@ -15,13 +15,12 @@ return {read=function(path_tex,BUS,options,option_results,final)
     local res = {
         w=map_color.w,
         h=map_color.h,
-        pixels=tbl.createNDarray(1),
-        as_transparency=tbl.createNDarray(1),
-        transparency_map=options.transparency
+        pixels={tbl.createNDarray(1)},
+        as_transparency={tbl.createNDarray(1)},
     }
 
-    local pxels = res.pixels
-    local trans = res.as_transparency
+    local pxels = res.pixels[1]
+    local trans = res.as_transparency[1]
 
     if options.quantize_amount then
         local mc = map_color
@@ -45,6 +44,9 @@ return {read=function(path_tex,BUS,options,option_results,final)
             pxels[y][x] = c
         end
     end
+
+    pxels.w = map_color.w
+    pxels.h = map_color.h
 
     return res
 end}
