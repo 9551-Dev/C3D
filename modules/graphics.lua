@@ -1,5 +1,6 @@
 local clr = require("common.color_util")
 local win = require("common.window_util")
+local tbl = require("common.table_util")
 
 local rasterer = require("core.graphics.rasterize")
 local scrender = require("core.graphics.screen_render")
@@ -56,6 +57,18 @@ return function(BUS)
 
             graphics_module:set_entry(c3d.registry.entry("load_texture"),function(image,settings)
                 return BUS.object.texture.new(image,settings)
+            end)
+            graphics_module:set_entry(c3d.registry.entry("blank_texture"),function(w,h,settings)
+                local pixels                = {w=w,h=h}
+                local transparency_behavior = {}
+                
+                local texture_data = {
+                    w=w,h=h,
+                    pixels={pixels},
+                    as_transparency={transparency_behavior}
+                }
+
+                return BUS.object.texture.new(texture_data,settings)
             end)
 
             graphics_module:set_entry(c3d.registry.entry("set_pixel_size"),function(size)

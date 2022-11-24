@@ -19,11 +19,14 @@ return {read=function(path_tex,BUS,options)
             map[k2][k1] = 2^tonumber(s,16)
         end
     end
+
+    map.w,map.h = #map[#map],#map
+
     local res = {
         w=#map[#map],
         h=#map,
-        pixels=map,
-        as_transparency=as_transparency,
+        pixels={map},
+        as_transparency={as_transparency},
     }
     return res
 end}

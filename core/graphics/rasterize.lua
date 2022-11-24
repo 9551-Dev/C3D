@@ -9,7 +9,6 @@ local int_vertex              = require("core.3D.geometry.interpolate_vertex")
 
 local memory_manager = require("core.mem_manager")
 
-local fragment_shader_data   = {}
 local empty_table = {}
 
 return {build=function(BUS)
@@ -81,6 +80,7 @@ return {build=function(BUS)
     
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
+                local fragment_shader_data = mem_handle.get_table()
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C
@@ -116,6 +116,9 @@ return {build=function(BUS)
                     )
 
                     fragment_shader_data.mipmap_level = L
+                else
+                    fragment_shader_data.mipmap_level = nil
+                    fragment_shader_data.tx,fragment_shader_data.ty = nil,nil
                 end
     
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,
@@ -183,7 +186,8 @@ return {build=function(BUS)
                 local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)
     
                 local z = 1/((1 - t3) * w1 + t3 * w2)
-    
+
+                local fragment_shader_data = mem_handle.get_table()
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C
@@ -218,6 +222,9 @@ return {build=function(BUS)
                     )
 
                     fragment_shader_data.mipmap_level = L
+                else
+                    fragment_shader_data.mipmap_level = nil
+                    fragment_shader_data.tx,fragment_shader_data.ty = nil,nil
                 end
     
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,

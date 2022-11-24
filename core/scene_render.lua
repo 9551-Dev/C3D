@@ -39,7 +39,7 @@ return {create=function(BUS,raster)
         local _triangle_pixel_size
         local _triangle
 
-        local function render_pixel(x,y,z,c,is_transparent)
+        local function render_pixel(x,y,z,c,is_transparent,fragment)
             local z = _force_z or z
 
             pixels_rasterized = pixels_rasterized + 1
@@ -63,7 +63,8 @@ return {create=function(BUS,raster)
                     if not dox or dox < z then
                         SCREEN_OBJECTS_Z[x_pos][y_pos] = z
                         if INTERACT_MODE then
-                            SCREEN_OBJECTS[y_pos][x_pos] = _triangle
+                            fragment.__triangle = _triangle
+                            SCREEN_OBJECTS[y_pos][x_pos] = fragment
                         end
                     end
                 end

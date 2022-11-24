@@ -8,6 +8,14 @@ local empty = {}
 
 return {add=function(BUS)
 
+    local function update_mipmaps(data)
+        for i=1,data.mipmap_levels or 1 do
+            local factor = 2^i
+            data.pixels[i+1]          = img_scale(data.pixels[1],         factor,data.w,data.h)
+            data.as_transparency[i+1] = img_scale(data.as_transparency[1],factor,data.w,data.h)
+        end
+    end
+
     return function()
         local texture = plugin.new("c3d:object->texture")
 
@@ -30,6 +38,24 @@ return {add=function(BUS)
                 end
                 return this
             end)
+            texture_object:set_entry(c3d.registry.entry("update"),function(this)
+                update_mipmaps(this)
+                return this
+            end)
+            texture_object:set_entry(c3d.registry.entry("set_pixel"),function(this,x,y,c)
+                local main_layer = this.pixels[1]
+
+                if not main_layer[y] then main_layer[y] = {} end
+                main_layer[y][x] = c
+                return this
+            end)
+            texture_object:set_entry(c3d.registry.entry("set_tpixel"),function(this,x,y,c)
+                local main_layer = this.as_transparency[1]
+
+                if not main_layer[y] then main_layer[y] = {} end
+                main_layer[y][x] = c
+                return this
+            end)
 
             texture_object:define_decoder(".cimg2",cimg2_decode)
             texture_object:define_decoder(".ppm",ppm_decode)
@@ -39,21 +65,19 @@ return {add=function(BUS)
                 local option_result = {}
                 local fin = {}
 
-                local data = texture_object:read_file(path,BUS,options or {},option_result,fin)
+                local data
+                if type(path) == "table" then data = path
+                else
+                    data = texture_object:read_file(path,BUS,options or {},option_result,fin)
+                end
                 
                 data.c3d = {}
-
                 data.c3d.option_result = option_result
                 fin.returns = data
 
                 if options and options.mipmap_levels and options.mipmap_levels > 0 then
                     data.mipmap_levels  = options.mipmap_levels
-
-                    for i=1,options.mipmap_levels or 1 do
-                        local factor = 2^i
-                        data.pixels[i+1]          = img_scale(data.pixels[1],         factor,data.w,data.h)
-                        data.as_transparency[i+1] = img_scale(data.as_transparency[1],factor,data.w,data.h)
-                    end
+                    update_mipmaps(data)
                 else
                     data.mipmap_levels  = 0
                     data.misses_mipmaps = true

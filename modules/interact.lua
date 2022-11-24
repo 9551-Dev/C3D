@@ -14,27 +14,41 @@ return function(BUS)
                 BUS.interactions.running = state
             end)
 
-            interact_module:set_entry(c3d.registry.entry("get_triangle"),function(x,y)
+            interact_module:set_entry(c3d.registry.entry("get_fragment"),function(x,y)
                 local map = bus_interactions.map
                 return map[floor(y)*3][floor(x)*2]
             end)
+            interact_module:set_entry(c3d.registry.entry("get_fragment_pixel"),function(x,y)
+                local map = bus_interactions.map
+                return map[floor(y)][floor(x)]
+            end)
+
+            interact_module:set_entry(c3d.registry.entry("get_triangle"),function(x,y)
+                local map = bus_interactions.map
+                local pixel_data = map[floor(y)*3][floor(x)*2]
+                if pixel_data then return pixel_data.__triangle end
+                return nil
+            end)
             interact_module:set_entry(c3d.registry.entry("get_object"),function(x,y)
                 local map = bus_interactions.map
-                local triangle = map[floor(y)*3][floor(x)*2]
-                if triangle then return triangle.object end
+                local pixel_data = map[floor(y)*3][floor(x)*2]
+                if pixel_data and pixel_data.__triangle then return pixel_data.__triangle.object end
                 return nil
             end)
 
             interact_module:set_entry(c3d.registry.entry("get_triangle_pixel"),function(x,y)
                 local map = bus_interactions.map
-                return map[floor(y)][floor(x)]
+                local pixel_data = map[floor(y)][floor(x)]
+                if pixel_data then return pixel_data.__triangle end
+                return nil
             end)
             interact_module:set_entry(c3d.registry.entry("get_object_pixel"),function(x,y)
                 local map = bus_interactions.map
-                local triangle = map[floor(y)][floor(x)]
-                if triangle then return triangle.object end
+                local pixel_data = map[floor(y)][floor(x)]
+                if pixel_data and pixel_data.__triangle then return pixel_data.__triangle.object end
                 return nil
             end)
+
         end
 
         interact:register()

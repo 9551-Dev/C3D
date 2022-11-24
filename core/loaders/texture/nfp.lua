@@ -30,11 +30,13 @@ return {read=function(path_tex,BUS,options)
         end
     end
 
+    map.w,map.h = width,height
+
     local res = {
         w=width,
         h=height,
-        pixels=map,
-        as_transparency=as_transparency,
+        pixels={map},
+        as_transparency={as_transparency},
     }
     return res
 end}

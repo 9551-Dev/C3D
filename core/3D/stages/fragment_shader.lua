@@ -11,22 +11,32 @@ local function default_fragment(frag)
         end
 
         local texture_pixels = frag.texture[level]
+        if not texture_pixels then
+            return colors.black,true
+        end
 
         local w = texture_pixels.w
         local h = texture_pixels.h
         local t = (tex.transparency_map or empty)[level]
 
         local z = frag.z_correct
-        local x = MAX(1,MIN(CEIL(frag.tx*z*w),w))
-        local y = MAX(1,MIN(CEIL(frag.ty*z*h),h))
+        local x =   MAX(1,MIN(CEIL(frag.tx*z*w),w))
+        local y = h-MAX(1,MIN(CEIL(frag.ty*z*h),h))+1
 
         local is_transparent = false
-        if t then is_transparent = t[h-y+1][x] end
+        if t and t[y] then is_transparent = t[y][x] end
 
-        return texture_pixels[h-y+1][x],is_transparent
+        local color_final
+        if texture_pixels and texture_pixels[y] then
+            color_final = texture_pixels[y][x]
+        end
+
+        frag.texture_x,frag.texture_y = x,y
+
+        return color_final,not color_final or is_transparent,frag
     end
 
-    return frag.color or colors.red
+    return frag.color or colors.red,frag
 end
 
 return function(fs)
