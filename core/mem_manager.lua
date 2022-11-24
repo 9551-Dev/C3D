@@ -4,6 +4,8 @@ return {get=function(BUS)
     local memory = BUS.mem
 
     function methods.get_table()
+        local memory,BUS = memory,BUS
+
         local n = BUS.m_n
         BUS.m_n = n + 1
 

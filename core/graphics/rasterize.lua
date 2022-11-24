@@ -22,6 +22,7 @@ return {build=function(BUS)
     local interpolate_vertex = int_vertex.init(BUS)
 
     local function draw_flat_top_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
+        local mem_handle = mem_handle
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
         local v2x,v2y = v2[1],v2[2]
@@ -129,6 +130,7 @@ return {build=function(BUS)
     end
     
     local function draw_flat_bottom_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
+        local mem_handle = mem_handle
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
         local v2x,v2y = v2[1],v2[2]
