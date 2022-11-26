@@ -2,8 +2,11 @@ local cull_triangle = require("core.3D.geometry.cull_face")
 local pst           = require("core.3D.math.transform_point_screen")
 local tbl           = require("common.table_util")
 
+local t1,t2,t3 = {},{},{}
+
 return {create=function(BUS,raster)
     local pipeline = require("core.3D.pipeline").create(BUS)
+    local rasterize_triangle = raster.triangle
 
     BUS.log("  - Inicialized scene renderer",BUS.log.info)
 
@@ -17,11 +20,10 @@ return {create=function(BUS,raster)
         bus_g.stats.transform_time = pipe_et-pipe_st
 
         local canv = bus_g.buffer
+        local depth_map = tbl.createNDarray(1)
         local psize = bus_g.pixel_size
         local w_orig = bus_g.w
         local h_orig = bus_g.h
-
-        local depth_map = tbl.createNDarray(1)
 
         local INTERACT_MODE  = BUS.interactions.running
         local SCREEN_OBJECTS   = tbl.createNDarray(1)
@@ -51,13 +53,14 @@ return {create=function(BUS,raster)
                     local x_pos = x - x_offset
                     local y_pos = y - y_offset
 
-                    local dmx = depth_map[x_pos][y_pos]
+                    local dmx = depth_map[x_pos]
+                    local dmv = dmx[y_pos]
                     local dox = SCREEN_OBJECTS_Z[x_pos][y_pos]
 
-                    if not dmx or dmx < z then
+                    if not dmv or dmv < z then
                         if not is_transparent then
                             canv[y_pos][x_pos] = c
-                            depth_map[x_pos][y_pos] = z
+                            dmx[y_pos] = z
                         end
                     end
                     if not dox or dox < z then
@@ -89,10 +92,10 @@ return {create=function(BUS,raster)
 
             if (not cull_invert and cull > 0) or (o.invert_culling and cull < 0) or o.disable_culling then
                 triangles_drawn = triangles_drawn + 1
-                raster.triangle(triangle.fs,o,
-                    pst(a,w,h),
-                    pst(b,w,h),
-                    pst(c,w,h),
+                rasterize_triangle(triangle.fs,o,
+                    pst(a,w,h,t1),
+                    pst(b,w,h,t2),
+                    pst(c,w,h,t3),
                     triangle.texture,_triangle_pixel_size,
                     render_pixel,
                     triangle.orig1,triangle.orig2,triangle.orig3

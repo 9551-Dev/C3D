@@ -11,6 +11,6 @@ return {init=function(BUS)
         local v10 = interpolate_vertex(v1,v3,alpha1)
         local v01 = interpolate_vertex(v2,v3,alpha2)
 
-        tris[n] = {v3,v01,v10,split=true,fs=fs,object=object,index=index,texture=triangle_texture,pixel_size=pixel_size,z_layer=z_layer,orig1=v1,orig2=v2,orig3=v3}
+        tris[n] = {v3,v01,v10,fs=fs,object=object,index=index,texture=triangle_texture,pixel_size=pixel_size,z_layer=z_layer,orig1=v1,orig2=v2,orig3=v3}
     end
 end}
