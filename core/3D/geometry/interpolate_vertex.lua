@@ -27,7 +27,7 @@ return {init=function(BUS)
 
         local v2frag = v2.frag
         if v1.frag and v2frag then
-            local new_frag = memory_handle.get_table()
+            local new_frag = {}
             for k,v in pairs(v1.frag) do
                 new_frag[k] = (1 - alpha) * v + alpha * v2frag[k]
             end

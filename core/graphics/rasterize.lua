@@ -10,6 +10,7 @@ local int_vertex              = require("core.3D.geometry.interpolate_vertex")
 local memory_manager = require("core.mem_manager")
 
 local empty_table = {}
+local EMPTY_FRAGMENT = {}
 
 return {build=function(BUS)
 
@@ -39,6 +40,7 @@ return {build=function(BUS)
 
         local C = object.color
         local TPIX = (tex or empty_table).pixels
+        local STNF = object.instantiate_fragment
     
         for y=y_start,y_end do
             local px0 = m0 * (y + 0.5 - v0y) + v0x
@@ -81,7 +83,7 @@ return {build=function(BUS)
     
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local fragment_shader_data = mem_handle.get_table()
+                local fragment_shader_data = STNF and mem_handle.get_table() or EMPTY_FRAGMENT
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C
@@ -147,6 +149,7 @@ return {build=function(BUS)
 
         local C = object.color
         local TPIX = (tex or empty_table).pixels
+        local STNF = object.instantiate_fragment
     
         for y=y_start,y_end do
             local px0 = m0 * (y + 0.5 - v0y) + v0x
@@ -189,7 +192,7 @@ return {build=function(BUS)
     
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local fragment_shader_data = mem_handle.get_table()
+                local fragment_shader_data = STNF and mem_handle.get_table() or EMPTY_FRAGMENT
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C

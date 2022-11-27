@@ -1,12 +1,14 @@
-local cull_triangle = require("core.3D.geometry.cull_face")
-local pst           = require("core.3D.math.transform_point_screen")
-local tbl           = require("common.table_util")
+local cull_triangle  = require("core.3D.geometry.cull_face")
+local pst            = require("core.3D.math.transform_point_screen")
+local tbl            = require("common.table_util")
+local memory_manager = require("core.mem_manager")
 
 local t1,t2,t3 = {},{},{}
 
 return {create=function(BUS,raster)
     local pipeline = require("core.3D.pipeline").create(BUS)
     local rasterize_triangle = raster.triangle
+    local mem_handle = memory_manager.get(BUS)
 
     BUS.log("  - Inicialized scene renderer",BUS.log.info)
 
@@ -40,6 +42,7 @@ return {create=function(BUS,raster)
         local _force_z
         local _triangle_pixel_size
         local _triangle
+        local instantiate_fragment
 
         local function render_pixel(x,y,z,c,is_transparent,fragment)
             local z = _force_z or z
@@ -66,8 +69,14 @@ return {create=function(BUS,raster)
                     if not dox or dox < z then
                         SCREEN_OBJECTS_Z[x_pos][y_pos] = z
                         if INTERACT_MODE then
-                            fragment.__triangle = _triangle
-                            SCREEN_OBJECTS[y_pos][x_pos] = fragment
+                            if instantiate_fragment then
+                                fragment.is_triangle = false
+                                fragment.__triangle = _triangle
+                                SCREEN_OBJECTS[y_pos][x_pos] = fragment
+                            else
+                                _triangle.is_triangle = true
+                                SCREEN_OBJECTS[y_pos][x_pos] = _triangle
+                            end
                         end
                     end
                 end
@@ -87,6 +96,7 @@ return {create=function(BUS,raster)
             _triangle_pixel_size = triangle.pixel_size or psize
             _force_z = triangle.z_layer
             _triangle = triangle
+            instantiate_fragment = o.instantiate_fragment
 
             local w,h = w_orig/_triangle_pixel_size,h_orig/_triangle_pixel_size
 
