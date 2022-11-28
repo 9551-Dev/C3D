@@ -58,7 +58,7 @@ return {add=function(BUS)
             -a[1],-a[2],-a[3]
         )
     end
-    local function lenght(a)
+    local function length(a)
         local x,y,z = a[1],a[2],a[3]
         return sqrt(x*x+y*y+z*z)
     end
@@ -121,11 +121,11 @@ return {add=function(BUS)
             local vector_object   = object_registry:new_entry("vector")
 
             vector_object:set_entry(c3d.registry.entry("normalize"),function(this)
-                local lenght = #this
+                local length = #this
                 return BUS.object.vector.new(
-                    this[1]/lenght,
-                    this[2]/lenght,
-                    this[3]/lenght
+                    this[1]/length,
+                    this[2]/length,
+                    this[3]/length
                 )
             end)
             vector_object:set_entry(c3d.registry.entry("dot"),function(this,other)
@@ -150,7 +150,7 @@ return {add=function(BUS)
             vector_object:set_entry(c3d.registry.entry("add"),       add)
             vector_object:set_entry(c3d.registry.entry("subtract"),  subtract)
             vector_object:set_entry(c3d.registry.entry("divide"),    divide)
-            vector_object:set_entry(c3d.registry.entry("get_lenght"),lenght)
+            vector_object:set_entry(c3d.registry.entry("get_length"),length)
             vector_object:set_entry(c3d.registry.entry("equals"),    equal)
             vector_object:set_entry(c3d.registry.entry("unm"),       unary)
 
@@ -168,7 +168,7 @@ return {add=function(BUS)
             vector_object:set_metadata("__mod",modulo)
             vector_object:set_metadata("__pow",power)
             vector_object:set_metadata("__unm",unary)
-            vector_object:set_metadata("__len",lenght)
+            vector_object:set_metadata("__len",length)
             vector_object:set_metadata("__eq",equal)
             vector_object:set_metadata("__tostring",function(this)
                 return ("vector: x%f, y%f, z%f"):format(this[1],this[2],this[3])
