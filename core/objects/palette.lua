@@ -13,7 +13,7 @@ return {add=function(BUS)
                 for k,v in ipairs(this.pal) do
                     this.term.setPaletteColor(2^(k-1),v[1],v[2],v[3])
                 end
-                return this.fin.returns
+                if this.fin then return this.fin.returns end
             end)
             palette_object:set_entry(c3d.registry.entry("add"),function(this,to_add)
                 local tpal = this.pal
