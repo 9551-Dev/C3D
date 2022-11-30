@@ -1,3 +1,5 @@
+local tbl_util = require("common.table_util")
+
 return {add=function(BUS)
     return function()
         local generic_shape = plugin.new("c3d:object->generic_shape")
@@ -15,7 +17,7 @@ return {add=function(BUS)
                 return self
             end)
             generic_shape_object:set_entry(c3d.registry.entry("push"),function(self)
-                return BUS.object.scene_object.new(self):clone()
+                return BUS.object.scene_object.new(tbl_util.deepcopy(self))
             end)
 
             generic_shape_object:constructor(function(geometry)
