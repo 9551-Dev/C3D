@@ -15,7 +15,7 @@ return {add=function(BUS)
                 return self
             end)
             generic_shape_object:set_entry(c3d.registry.entry("push"),function(self)
-                return BUS.object.scene_object.new(self)
+                return BUS.object.scene_object.new(self):clone()
             end)
 
             generic_shape_object:constructor(function(geometry)
