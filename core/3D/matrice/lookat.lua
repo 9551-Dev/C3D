@@ -16,7 +16,7 @@ local function normalize(x,y,z)
 end
 
 return function(fromx,fromy,fromz,atx,aty,atz,near_plane_offset)
-    local nx,ny,nz = normalize(fromx-atx,fromy-aty,fromz-atz)
+    local nx,ny,nz = normalize(atx-fromx,aty-fromy,atz-fromz)
     local ux,uy,uz = normalize(cross(0,-1,0,nx,ny,nz))
     local vx,vy,vz = normalize(cross(nx,ny,nz,ux,uy,uz))
 
@@ -24,8 +24,8 @@ return function(fromx,fromy,fromz,atx,aty,atz,near_plane_offset)
         ux,vx,nx,0,
         uy,vy,ny,0,
         uz,vz,nz,0,
-        -dot(-fromx,fromy,-fromz,ux,uy,uz),
-        -dot(-fromx,fromy,-fromz,vx,vy,vz),
-        -dot(-fromx,fromy,-fromz,nx,ny,nz),near_plane_offset or 1
+        -dot(fromx,fromy,fromz,ux,uy,uz),
+        -dot(fromx,fromy,fromz,vx,vy,vz),
+        -dot(fromx,fromy,fromz,nx,ny,nz),near_plane_offset or 1
     }
 end
