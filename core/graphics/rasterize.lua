@@ -62,11 +62,11 @@ return {build=function(BUS)
             local naming
             local num = 0
             local make_fragment = false
-            if o1frag then for k,v in pairs(o1frag) do
+            if o1frag then
                 temp_interpolants1 = mem_handle.get_table()
                 temp_interpolants2 = mem_handle.get_table()
                 naming = mem_handle.get_table()
-                if o2frag[k] and o3frag[k] then
+                for k,v in pairs(o1frag) do if o2frag[k] and o3frag[k] then
                     make_fragment = true
                     num = num + 1
                     temp_interpolants1[k] = (1 - t1) * v + t1 * o2frag[k]
@@ -171,11 +171,11 @@ return {build=function(BUS)
             local naming
             local make_fragment = false
             local num = 0
-            if o1frag then for k,v in pairs(o1frag) do
+            if o1frag then
                 temp_interpolants1 = mem_handle.get_table()
                 temp_interpolants2 = mem_handle.get_table()
                 naming = mem_handle.get_table()
-                if o2frag[k] and o3frag[k] then
+                for k,v in pairs(o1frag) do if o2frag[k] and o3frag[k] then
                     make_fragment = true
                     num = num + 1
                     temp_interpolants1[k] = (1 - t1) * v + t1 * o2frag[k]
