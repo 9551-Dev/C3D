@@ -18,7 +18,12 @@ local utils = {
 
 local runtime_env = setmetatable({
     c3d={},
-    utils=utils
+    utils=utils,
+    sleep = function(n)
+        local st = os.epoch("utc")
+        while (os.epoch("utc") - st) < n*1000 do
+        end
+    end
 },{__index=_ENV})
 
 local ok,err = pcall(require("main"),runtime_env,selfDir,...)
