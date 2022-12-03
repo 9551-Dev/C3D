@@ -27,7 +27,7 @@ return {build=function(BUS)
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
         local v2x,v2y = v2[1],v2[2]
-        
+
         local v0u,v0v = v0[5],v0[6]
         local v1u,v1v = v1[5],v1[6]
         local v2u,v2v = v2[5],v2[6]
@@ -41,13 +41,13 @@ return {build=function(BUS)
         local C = object.color
         local TPIX = (tex or empty_table).pixels
         local STNF = object.instantiate_fragment
-    
+
         for y=y_start,y_end do
             local px0 = m0 * (y + 0.5 - v0y) + v0x
             local px1 = m1 * (y + 0.5 - v1y) + v1x
             local x_start = MAX(CEIL(px0 - 0.5),1)
             local x_end   = MIN(CEIL(px1 - 0.5),w)
-    
+
             local sx_start = int_y(o1,o2,y)
             local sx_end   = int_y(o1,o3,y)
             local t1 = get_t(o1,o2,sx_start,y)
@@ -74,13 +74,13 @@ return {build=function(BUS)
                     naming[num] = k
                 end
             end end
-    
+
             for x=x_start,x_end do
                 local bary_a,bary_b,bary_c = barycentric_coordinates(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
-    
+
                 local div = sx_end - sx_start
                 local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)
-    
+
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
                 local fragment_shader_data = STNF and mem_handle.get_table() or EMPTY_FRAGMENT
@@ -123,15 +123,15 @@ return {build=function(BUS)
                     fragment_shader_data.mipmap_level = nil
                     fragment_shader_data.tx,fragment_shader_data.ty = nil,nil
                 end
-    
+
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,
                     fs(fragment_shader_data)
                 )
             end
         end
     end
-    
-    local function draw_flat_bottom_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
+
+    local function draw_flat_bottom_triangle(fs,object,v0,v1,v2,tex,fragment,w,h,stv1,stv2,stv3)
         local mem_handle = mem_handle
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
@@ -140,8 +140,8 @@ return {build=function(BUS)
         local v0u,v0v = v0[5],v0[6]
         local v1u,v1v = v1[5],v1[6]
         local v2u,v2v = v2[5],v2[6]
-        local o1frag,o2frag,o3frag = o1.frag,o2.frag,o3.frag
-        local o13,o14  = o1[3],o1[4]
+        local o1frag,o2frag,o3frag = v0.frag,v1.frag,v2.frag
+        local o13,o14  = v0[3],v0[4]
         local m0 = (v1x - v0x) / (v1y - v0y)
         local m1 = (v2x - v0x) / (v2y - v0y)
         local y_start = MAX(CEIL(v0y - 0.5),1)
@@ -150,21 +150,21 @@ return {build=function(BUS)
         local C = object.color
         local TPIX = (tex or empty_table).pixels
         local STNF = object.instantiate_fragment
-    
+
         for y=y_start,y_end do
             local px0 = m0 * (y + 0.5 - v0y) + v0x
             local px1 = m1 * (y + 0.5 - v0y) + v0x
             local x_start = MAX(CEIL(px0 - 0.5),1)
             local x_end   = MIN(CEIL(px1 - 0.5),w)
-    
-            local sx_start = int_y(o1,o2,y)
-            local sx_end   = int_y(o1,o3,y)
-            local t1 = get_t(o1,o2,sx_start,y)
-            local t2 = get_t(o1,o3,sx_end,y)
-            local w1 = (1 - t1) * o13 + t1 * o2[3]
-            local w2 = (1 - t2) * o13 + t2 * o3[3]
-            local z1 = (1 - t1) * o14 + t1 * o2[4]
-            local z2 = (1 - t2) * o14 + t2 * o3[4]
+
+            local sx_start = int_y(v0,v1,y)
+            local sx_end   = int_y(v0,v2,y)
+            local t1 = get_t(v0,v1,sx_start,y)
+            local t2 = get_t(v0,v2,sx_end,y)
+            local w1 = (1 - t1) * o13 + t1 * v1[3]
+            local w2 = (1 - t2) * o13 + t2 * v2[3]
+            local z1 = (1 - t1) * o14 + t1 * v1[4]
+            local z2 = (1 - t2) * o14 + t2 * v2[4]
 
             local temp_interpolants1
             local temp_interpolants2
@@ -183,13 +183,13 @@ return {build=function(BUS)
                     naming[num] = k
                 end
             end end
-    
+
             for x=x_start,x_end do
                 local bary_a,bary_b,bary_c =  barycentric_coordinates(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
-    
+
                 local div = sx_end - sx_start
                 local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)
-    
+
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
                 local fragment_shader_data = STNF and mem_handle.get_table() or EMPTY_FRAGMENT
@@ -231,7 +231,7 @@ return {build=function(BUS)
                     fragment_shader_data.mipmap_level = nil
                     fragment_shader_data.tx,fragment_shader_data.ty = nil,nil
                 end
-    
+
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,
                     fs(fragment_shader_data)
                 )
@@ -249,16 +249,16 @@ return {build=function(BUS)
             draw_flat_top_triangle(fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
         elseif p2[2] == p3[2] then
             if p3[1] < p2[1] then p2,p3 = p3,p2 end
-            draw_flat_bottom_triangle(fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+            draw_flat_bottom_triangle(fs,object,p1,p2,p3,tex,frag,w,h,stv1,stv2,stv3)
         else
             local alpha_split = (p2[2]-p1[2]) / (p3[2]-p1[2])
             local split_vertex = interpolate_vertex(p1,p3,alpha_split)
-            
+
             if p2[1] < split_vertex[1] then
-                draw_flat_bottom_triangle(fs,object,p1,p2,split_vertex,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+                draw_flat_bottom_triangle(fs,object,p1,p2,split_vertex,tex,frag,w,h,stv1,stv2,stv3)
                 draw_flat_top_triangle   (fs,object,p2,split_vertex,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
             else
-                draw_flat_bottom_triangle(fs,object,p1,split_vertex,p2,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+                draw_flat_bottom_triangle(fs,object,p1,split_vertex,p2,tex,frag,w,h,stv1,stv2,stv3)
                 draw_flat_top_triangle   (fs,object,split_vertex,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
             end
         end
