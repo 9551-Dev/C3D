@@ -77,7 +77,6 @@ return function(ENV,libdir,...)
             local ok,err = pcall(function() 
                 program_main(table.unpack(args,1,args.n))
             end)
-            ENV.package.path = old_path
             if ok then
                 log("Succesfully loaded program",log.success)
             else
