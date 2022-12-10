@@ -69,7 +69,6 @@ return function(ENV,libdir,...)
         
         log("Attempting to load given program",log.info)
         if type(program[1]) == "function" then
-            local old_path = package.path
             ENV.package.path = BUS.instance.scenepak
             BUS.plugin_internal.load_registered_modules()
             BUS.plugin_internal.load_registered_objects()
@@ -94,11 +93,16 @@ return function(ENV,libdir,...)
 
         if type(ENV.c3d.init) == "function" then
             log("Found c3d.init. re-registering plugins.",log.info)
-            ENV.c3d.init()
+            local ok,err = pcall(ENV.c3d.init,os.epoch("utc"))
+            if not ok then
+                log("[ C3D INIT LOAD ERROR ] -> "..err,log.error)
+            end
+
             BUS.plugin_internal.register_modules()
             BUS.plugin_internal.register_objects()
             BUS.plugin_internal.register_threads()
             log("Successfuly registered plugins",log.success)
+            log:dump()
         end
 
         local main   = update_thread.make(ENV,BUS,args)
