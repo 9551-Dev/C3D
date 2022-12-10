@@ -11,7 +11,7 @@ return {make=function(ENV,BUS)
                 if not v.filter or v.filter == ev[1] and v.c and v.started then
                     local ok,ret = coroutine.resume(v.c,table.unpack(ev,1,ev.n))
                     local dead = coroutine.status(v.c) == "dead"
-                    if ok then BUS.thread.coro[k].filter = ret end
+                    if ok and BUS.thread.coro[k] then BUS.thread.coro[k].filter = ret end
                     if not ok or dead then BUS.thread.coro[k] = nil end
                     if not ok and dead then
                         v.error = ret
