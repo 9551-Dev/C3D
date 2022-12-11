@@ -12,8 +12,8 @@ return {ev="mouse_scroll",run=function(BUS,caller,ev,dir,x,y)
         shift_held and 0     or 0-dir
     }
 
-    if type(caller.wheelmoved) == "function" then
-        caller.wheelmoved(
+    if type(caller.wheelmoved) == "function" or type(BUS.triggers.overrides.wheelmoved) == "function" then
+        (BUS.triggers.overrides.wheelmoved or caller.wheelmoved)(
             shift_held and 0-dir or 0,
             shift_held and 0     or 0-dir
         )

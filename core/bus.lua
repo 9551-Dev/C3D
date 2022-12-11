@@ -38,7 +38,8 @@ return {register_bus=function(ENV)
         sys={
             frame_time_min=0,
             init_time=os.epoch("utc"),
-            run_time=0
+            run_time=0,
+            autorender=true
         },
         perspective={
             near=0.1,
@@ -53,6 +54,9 @@ return {register_bus=function(ENV)
             modules=ENV.utils.table.createNDarray(1),
             objects=ENV.utils.table.createNDarray(1),
             threads=ENV.utils.table.createNDarray(1),
+
+            scheduled_overrides=ENV.utils.table.createNDarray(1),
+
             plugin_bus={}
         },
         registry={
@@ -62,9 +66,15 @@ return {register_bus=function(ENV)
             thread_registry=setmetatable({},{__tostring=function() return "thread_registry" end})
         },
         triggers={
-            on_full_load    ={},
+            overrides       ={},
             event_listeners ={},
-            paused_listeners={}
+            paused_listeners={},
+
+            on_full_load  ={},
+            post_frame    ={},
+            frame_finished={},
+            pre_frame     ={},
+            post_display  ={}
         },
         scene={},
         camera={},
@@ -115,9 +125,9 @@ return {register_bus=function(ENV)
             set_entry=function(this,registry_entry,value)
                 log("Created new entry in object registry -> "..this.__rest.name.." -> "..registry_entry.name,log.debug)
 
-                this.__rest.entries[registry_entry.id] = value
+                this.__rest.entries     [registry_entry.id] = value
                 this.__rest.entry_lookup[registry_entry.name] = registry_entry
-                this.__rest.name_lookup[registry_entry.id] = registry_entry.name
+                this.__rest.name_lookup [registry_entry.id] = registry_entry.name
             end,
             set_metadata=function(this,name,val)
                 rawset(this.__rest.metadata,name,val)

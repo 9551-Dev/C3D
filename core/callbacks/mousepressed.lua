@@ -24,7 +24,7 @@ return {ev="mouse_click",run=function(BUS,caller,ev,btn,x,y)
     end
 
     BUS.events[#BUS.events+1] = {"mousepressed",x,y,btn,registered[x][y][btn]}
-    if type(caller.mousepressed) == "function" then
-        caller.mousepressed(x,y,btn,registered[x][y][btn])
+    if type(caller.mousepressed) == "function" or type(BUS.triggers.overrides.mousepressed) == "function" then
+        (BUS.triggers.overrides.mousemoved or caller.mousepressed)(x,y,btn,registered[x][y][btn])
     end
 end}

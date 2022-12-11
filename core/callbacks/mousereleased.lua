@@ -25,7 +25,7 @@ return {ev="mouse_up",run=function(BUS,caller,ev,btn,x,y)
     end
 
     BUS.events[#BUS.events+1] = {"mousereleased",x,y,btn,registered[x][y][btn]}
-    if type(caller.mousereleased) == "function" then
-        caller.mousereleased(x,y,btn,registered[x][y][btn])
+    if type(caller.mousereleased) == "function" or type(BUS.triggers.overrides.mousereleased) == "function" then
+        (BUS.triggers.overrides.mousereleased or caller.mousereleased)(x,y,btn,registered[x][y][btn])
     end
 end}

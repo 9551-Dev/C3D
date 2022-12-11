@@ -23,8 +23,8 @@ function lib_cmgr.start(BUS,toggle,thread_pointer,main_thread,...)
     while coroutine.status(main_thread) ~= "dead" and type(e) == "nil" and toggle() do
         local ev = table.pack(os.pullEventRaw())
         if ev[1] == "terminate" then
-            if type(BUS.c3d.quit)  == "function" then
-                if not BUS.c3d.quit() then
+            if type(BUS.c3d.quit)  == "function" or type(BUS.triggers.overrides.quit) == "function" then
+                if not (BUS.triggers.overrides.quit or BUS.c3d.quit)() then
                     e = "Terminated"
                 end
             else e = "Terminated" end

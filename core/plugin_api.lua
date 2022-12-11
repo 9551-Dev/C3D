@@ -31,7 +31,7 @@ return {init=function(BUS)
             end
             BUS.c3d[module] = features
         end
-    end
+    end 
 
     function methods.register_objects()
         BUS.log("[ Registering loaded objects.. ]",BUS.log.info)
@@ -107,6 +107,19 @@ return {init=function(BUS)
                 BUS.log("Failed to finilize plugin load -> "..err,BUS.log.error)
             end
         end
+    end
+
+    function methods.load_overrides()
+        for k,this_order in tbl.iterate_order(BUS.plugin.scheduled_overrides) do
+            for override_type,val in pairs(this_order) do
+                BUS.triggers.overrides[override_type] = val
+            end
+        end
+    end
+
+    function methods.wake_trigger(registry_name,...)
+        local triggers = BUS.triggers[registry_name]
+        for i=1,#triggers do triggers[i](...) end
     end
 
     return methods

@@ -117,7 +117,8 @@ return function(ENV,libdir,...)
             BUS.plugin_internal.load_registered_threads()
         end
 
-        BUS.plugin_internal.finalize_load()
+        BUS.plugin_internal.finalize_load ()
+        BUS.plugin_internal.load_overrides()
         log("Finished plugin loading.",log.success)
 
         log("[ Resuming and getting data from the loaded program ]",log.info)
@@ -166,8 +167,8 @@ return function(ENV,libdir,...)
 
         if parent.getGraphicsMode and parent.getGraphicsMode() then parent.setGraphicsMode(0) end
 
-        if not ok and ENV.c3d.errorhandler then
-            if ENV.c3d.errorhandler(err) then
+        if not ok and (BUS.triggers.overrides.errorhandler or ENV.c3d.errorhandler) then
+            if (BUS.triggers.overrides.errorhandler or ENV.c3d.errorhandler)(err) then
                 log("[ C3D -> goodbye. ]",log.info)
                 log:dump()
                 return false,err,load_error and main or err_thread

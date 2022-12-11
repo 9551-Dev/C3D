@@ -41,7 +41,7 @@ return {make=function(ENV,BUS)
 
             if ev[1] == "mouse_drag" then mousemoved:check_change(BUS,ENV.c3d,ev[3],ev[4]) end
 
-            if ENV.c3d.on_event then ENV.c3d.on_event(unpack_ev(ev)) end
+            if BUS.triggers.overrides.on_event or ENV.c3d.on_event then (BUS.triggers.overrides.on_event or ENV.c3d.on_event)(unpack_ev(ev)) end
 
             local listeners = {}
             for k,v in pairs(BUS.triggers.event_listeners) do

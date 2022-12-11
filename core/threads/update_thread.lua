@@ -6,12 +6,12 @@ return {make=function(ENV,BUS,args)
     BUS.log:dump()
 
     return coroutine.create(function()
-        run(ENV.c3d,args)
-        local runner = ENV.c3d.run()
+        run(BUS.triggers.overrides.c3d or ENV.c3d,args)
+        local runner = (BUS.triggers.overrides.run or ENV.c3d.run)()
         local bgs  = BUS.graphics.stats
         local bsys = BUS.sys
 
-        while true do
+        local function generate_frame()
             local frame_start = os.epoch("utc")
 
             bsys.run_time = frame_start - bsys.init_time
@@ -35,6 +35,15 @@ return {make=function(ENV,BUS,args)
                     table.remove(BUS.frames,1)
                 else break end
             end
+        end
+
+        BUS.c3d.generate_frame = generate_frame
+
+        while true do
+            if BUS.sys.autorender then
+                generate_frame()
+            else sleep(0.1) end
+            BUS.plugin_internal.wake_trigger("post_frame",BUS.graphics.stats.frames_drawn)
         end
     end)
 end}

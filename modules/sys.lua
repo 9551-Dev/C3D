@@ -19,6 +19,10 @@ return function(BUS)
             system_module:set_entry(c3d.registry.entry("clamp_color"),function(color,limit)
                 return CEIL(color*limit)/limit
             end)
+
+            system_module:set_entry(c3d.registry.entry("environmental_override"),function(tp,val)
+                BUS.triggers.overrides[tp] = val
+            end)
         end
 
         sys:register()

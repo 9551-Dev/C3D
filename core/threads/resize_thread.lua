@@ -26,7 +26,9 @@ return {make=function(ENV,BUS,terminal_getter)
                         BUS.perspective.FOV
                     )
                 end
-                if type(ENV.c3d.resize) == "function" then ENV.c3d.resize(cx,cy) end
+                if type(ENV.c3d.resize) == "function" or type(BUS.triggers.overrides.resize) == "function" then
+                    (BUS.triggers.overrides.resize or ENV.c3d.resize)(cx,cy)
+                end
             end
             
             coroutine.yield()

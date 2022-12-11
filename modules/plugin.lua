@@ -40,7 +40,8 @@ return function(BUS,ENV)
     end
 
     function plugin.refinalize()
-        BUS.plugin_internal.finalize_load()
+        BUS.plugin_internal.finalize_load ()
+        BUS.plugin_internal.load_overrides()
     end
 
     return plugin

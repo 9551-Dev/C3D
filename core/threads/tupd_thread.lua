@@ -6,7 +6,7 @@ return {make=function(ENV,BUS)
     return coroutine.create(function()
         while true do
             local ev = table.pack(os.pullEventRaw())
-            local has_thread_error_handle = type(ENV.c3d.threaderror) == "function"
+            local has_thread_error_handle = type(ENV.c3d.threaderror) == "function" or type(BUS.triggers.overrides.threaderror) == "function"
             for k,v in pairs(BUS.thread.coro) do
                 if not v.filter or v.filter == ev[1] and v.c and v.started then
                     local ok,ret = coroutine.resume(v.c,table.unpack(ev,1,ev.n))
@@ -16,7 +16,7 @@ return {make=function(ENV,BUS)
                     if not ok and dead then
                         v.error = ret
                         if has_thread_error_handle then
-                            ENV.c3d.threaderror(v.object,ret)
+                            (BUS.triggers.overrides.threaderror or ENV.c3d.threaderror)(v.object,ret)
                         end
                     end
                 end

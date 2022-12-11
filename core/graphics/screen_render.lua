@@ -30,8 +30,9 @@ return {build=function(BUS,scene)
         local blit_line  = busg.display_source.blit
 
         local sust = os.epoch("utc")
-        if type(BUS.c3d.screen_render) == "function" then
-            BUS.c3d.screen_render(busg.display_source,busg.w,busg.h,canv)
+        BUS.plugin_internal.wake_trigger("frame_finished",canv,busg.w,busg.h)
+        if type(BUS.c3d.screen_render) == "function" or type(BUS.triggers.overrides.screen_render) == "function" then
+            (BUS.triggers.overrides.screen_render or BUS.c3d.screen_render)(busg.display_source,busg.w,busg.h,canv)
         else
             local char_line,fg_line,bg_line = {},{},{}
             for y=1,busg.h,3 do
