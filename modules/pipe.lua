@@ -1,12 +1,10 @@
 local triangle_asm = require("core.3D.stages.assemble_triangles")
-local geometry_sh  = require("core.3D.stages.geometry_shader")
 local vertex_sh    = require("core.3D.stages.vertex_shader")
 local vertex       = require("core.3D.stages.vertex")
 
 local name_lookup = {
     vertex          = vertex,
     triangle_asm    = triangle_asm,
-    geometry_shader = geometry_sh,
     vertex_shader   = vertex_sh,
 }
 
@@ -39,7 +37,6 @@ return function(BUS)
             local pipe_module     = module_registry:new_entry("pipe")
 
             pipe_module:set_entry(c3d.registry.entry("triangle_asm")  , function() return triangle_asm end)
-            pipe_module:set_entry(c3d.registry.entry("geometry_shader"),function() return geometry_sh  end)
             pipe_module:set_entry(c3d.registry.entry("vertex_shader"),  function() return vertex_sh    end)
             pipe_module:set_entry(c3d.registry.entry("vertex"),         function() return vertex       end)
 

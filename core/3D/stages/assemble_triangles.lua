@@ -3,8 +3,6 @@ local frustum_clip    = require("core.3D.geometry.clip_cull_frustum")
 
 local memory_handle = require("core.mem_manager")
 
-local tbl_util = require("common.table_util")
-
 local empty = {}
 
 local VERT_1 = {}
@@ -19,6 +17,7 @@ return function(object,prev,geo,prop,efx,out,BUS)
     local out_tris = out.tris
 
     local shader = efx.fs
+    local geometry_shader = efx.gs
 
     local tris = geo.tris
     local uvs = geo.uvs
@@ -89,7 +88,7 @@ return function(object,prev,geo,prop,efx,out,BUS)
         if ntexs then tex = triangle_textures[t_index] end
         if npxsz then pix_size = pixel_sizes[t_index] end
     
-        on = frustum_handle(object,out_tris,
+        on = frustum_handle(geometry_shader,object,out_tris,
             VERT_1,VERT_2,VERT_3,
         on,fragment_shader(shader),t_index,tex,pix_size,z_layer)
     end

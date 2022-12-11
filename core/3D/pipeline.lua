@@ -1,6 +1,5 @@
 local modules = {
     triangle_asm = require("core.3D.stages.assemble_triangles"),
-    geometry_sh  = require("core.3D.stages.geometry_shader"),
     vertex_sh    = require("core.3D.stages.vertex_shader"),
     vertex       = require("core.3D.stages.vertex")
 }
@@ -13,7 +12,6 @@ return {create=function(BUS)
         modules.vertex,
         modules.vertex_sh,
         modules.triangle_asm,
-        modules.geometry_sh,
     }
 
     BUS.log("  - Inicialized rendering pipeline",BUS.log.info)

@@ -21,7 +21,7 @@ return {init=function(BUS)
         return new_vertex
     end
 
-    return function(object,tri_list,a,b,c,n,fs,index,triangle_texture,pixel_size,z_layer)
+    return function(geo_shader,object,tri_list,a,b,c,n,fs,index,triangle_texture,pixel_size,z_layer)
         local v1x,v1y,v1z,v1w = a[1],a[2],a[3],a[4]
         local v2x,v2y,v2z,v2w = b[1],b[2],b[3],b[4]
         local v3x,v3y,v3z,v3w = c[1],c[2],c[3],c[4]
@@ -37,29 +37,28 @@ return {init=function(BUS)
 
         if v1z > 0 then
             if v2z > 0 then
-                n = n + 1
-                clip_2(object,n,tri_list,a,b,c,fs,index,triangle_texture,pixel_size,z_layer)
+                n = n + clip_2(object,n,tri_list,a,b,c,fs,index,triangle_texture,pixel_size,z_layer,geo_shader)
             elseif v3z > 0 then
-                n = n + 1
-                clip_2(object,n,tri_list,a,c,b,fs,index,triangle_texture,pixel_size,z_layer)
+                n = n + clip_2(object,n,tri_list,a,c,b,fs,index,triangle_texture,pixel_size,z_layer,geo_shader)
             else
-                n = n + 2
-                clip_1(object,n,tri_list,a,b,c,fs,index,triangle_texture,pixel_size,z_layer)
+                n = n +  clip_1(object,n,tri_list,a,b,c,fs,index,triangle_texture,pixel_size,z_layer,geo_shader)
             end
         elseif v2z > 0 then
             if v3z > 0 then
-                n = n + 1
-                clip_2(object,n,tri_list,b,c,a,fs,index,triangle_texture,pixel_size,z_layer)
+                n = n + clip_2(object,n,tri_list,b,c,a,fs,index,triangle_texture,pixel_size,z_layer,geo_shader)
             else
-                n = n + 2
-                clip_1(object,n,tri_list,b,a,c,fs,index,triangle_texture,pixel_size,z_layer)
+                n = n +  clip_1(object,n,tri_list,b,a,c,fs,index,triangle_texture,pixel_size,z_layer,geo_shader)
             end
         elseif v3z > 0 then
-            n = n + 2
-            clip_1(object,n,tri_list,c,a,b,fs,index,triangle_texture,pixel_size,z_layer)
+            n = n + clip_1(object,n,tri_list,c,a,b,fs,index,triangle_texture,pixel_size,z_layer,geo_shader)
         else
-            n = n + 1
-            tri_list[n] = {a,b,c,fs=fs,object=object,index=index,texture=triangle_texture,pixel_size=pixel_size,z_layer=z_layer,orig1=a,orig2=b,orig3=c}
+            local triangle = {a,b,c,fs=fs,object=object,index=index,texture=triangle_texture,pixel_size=pixel_size,z_layer=z_layer,orig1=a,orig2=b,orig3=c}
+            if geo_shader then triangle = geo_shader(triangle,index) end
+
+            if triangle then
+                n = n + 1
+                tri_list[n] =  triangle
+            end
         end
         return n
     end
