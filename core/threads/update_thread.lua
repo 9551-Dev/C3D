@@ -20,7 +20,8 @@ return {make=function(ENV,BUS,args)
                 if v.running then v:__update() end
             end
 
-            runner()
+            local state = runner()
+            if state then BUS.running = false end
             BUS.m_n = 0
             bgs.frames_drawn = bgs.frames_drawn + 1
             local current_time = os.epoch("utc")
