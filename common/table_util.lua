@@ -62,7 +62,7 @@ function tbls.deepcopy(tbl)
         instance_seen[tbl] = out
         for k,v in pairs(tbl) do
             local t = type(v) == "table"
-            if type(k) == "table" then k = tbls.deepcopy(k) end
+            if type(k) == "table" then k = copy(k) end
             if t and not instance_seen[v] then
                 local new_instance = copy(v)
                 instance_seen[v] = new_instance
