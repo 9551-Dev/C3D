@@ -141,6 +141,11 @@ return {register_bus=function(ENV)
             read_file=function(this,path,...)
                 local extension = path:match("^.+(%..+)$")
                 local file_path = fs.combine(BUS.instance.scenedir,path)
+
+                if not this.__rest.file_handlers[extension] then
+                    error("Tried to decode unsupported file format: "..tostring(extension or ""))
+                end
+
                 return this.__rest.file_handlers[extension](file_path,...)
             end
         },__tostring=function() return "object_registry_entry" end

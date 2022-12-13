@@ -1,5 +1,3 @@
-local EXPECT = require("cc.expect").expect
-
 local INT_BYTE_OFFSET = 0x30
 local PPM = {INTERNAL={STRING={}}}
 

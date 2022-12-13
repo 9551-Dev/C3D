@@ -27,6 +27,7 @@ return function(object,prev,geo,prop,efx,out,BUS)
     local normal_indices    = geo.normal_idx
     local triangle_textures = geo.texture_idx
     local pixel_sizes       = geo.pixel_sizes
+    local material_indexing = geo.material_indexing
 
     local nuvs  = next(uvs or empty) and next(uv_indices or empty)
     local nnorm = next(normals or empty) and next(normal_indices or empty)
@@ -35,6 +36,9 @@ return function(object,prev,geo,prop,efx,out,BUS)
 
     local pixel_size = object.pixel_size
     local texture = object.texture
+    local material = object.material
+    local material_textures
+    if material then material_textures = material.loaded_textures end
     local z_layer = object.z_layer
 
     local t_index = 0
@@ -85,8 +89,12 @@ return function(object,prev,geo,prop,efx,out,BUS)
 
         local tex = texture
         local pix_size = pixel_size
-        if ntexs then tex = triangle_textures[t_index] end
-        if npxsz then pix_size = pixel_sizes[t_index] end
+        if material then
+            tex = material_textures[material_indexing[t_index]]
+        else
+            if ntexs then tex = triangle_textures[t_index] end
+            if npxsz then pix_size = pixel_sizes[t_index] end
+        end
     
         on = frustum_handle(geometry_shader,object,out_tris,
             VERT_1,VERT_2,VERT_3,

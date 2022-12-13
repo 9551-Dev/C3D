@@ -9,13 +9,16 @@ local function split_string(str,delimiter)
 end
 
 local function decode(str)
-    local result = {vertices={},tris={},uvs={},normals={},normal_idx={},uv_idx={}}
-    local vertices,a     = result.vertices,0
-    local tris,b         = result.tris,0
-    local uvs,d          = result.uvs,0
-    local normals,n      = result.normals,0
-    local normal_idx,ndx = result.normal_idx,0
-    local uv_idx,udx     = result.uv_idx,0
+    local result = {vertices={},tris={},uvs={},normals={},normal_idx={},uv_idx={},material_indexing={}}
+    local vertices,a            = result.vertices,0
+    local tris,b                = result.tris,0
+    local uvs,d                 = result.uvs,0
+    local normals,n             = result.normals,0
+    local normal_idx,ndx        = result.normal_idx,0
+    local uv_idx,udx            = result.uv_idx,0
+    local material_indexing,mdx = result.material_indexing,0
+
+    local material_name
 
     for c in str:gmatch("[^\n]+") do
         local line_info = split_string(c,"% ")
@@ -35,6 +38,7 @@ local function decode(str)
             normals[n-1] = tonumber(line_info[3])
             normals[n]   = tonumber(line_info[4])
         elseif line_info[1] == "f" then
+            local triangles_added = 1
             for i=2,#line_info do
                 if i == 5 then
                     local b_orig = b
@@ -52,6 +56,8 @@ local function decode(str)
 
                     uv_idx[udx-1] = uv_idx[udx_orig-2]
                     uv_idx[udx]   = uv_idx[udx_orig]
+
+                    triangles_added = triangles_added + 1
                 end
 
 
@@ -72,6 +78,12 @@ local function decode(str)
 
                 tris[b] = tonumber(split[1])
             end
+            for i=1,triangles_added do
+                mdx = mdx + 1
+                material_indexing[mdx] = material_name
+            end
+        elseif line_info[1] == "usemtl" then
+            material_name = line_info[2]
         end
     end
 

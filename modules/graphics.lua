@@ -42,6 +42,9 @@ return function(BUS)
             graphics_module:set_entry(c3d.registry.entry("render_frame"),function()
                 sc_renderer.make_frame()
             end)
+            graphics_module:set_entry(c3d.registry.entry("generate_frame"),function()
+                BUS.c3d.generate_frame()
+            end)
 
             graphics_module:set_entry(c3d.registry.entry("get_bg"),function()
                 return BUS.graphics.bg_col
@@ -69,6 +72,10 @@ return function(BUS)
                 }
 
                 return BUS.object.texture.new(texture_data,settings)
+            end)
+
+            graphics_module:set_entry(c3d.registry.entry("load_material"),function(material_path,settings)
+                return BUS.object.material.new(material_path,settings)
             end)
 
             graphics_module:set_entry(c3d.registry.entry("set_pixel_size"),function(size)
