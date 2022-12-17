@@ -55,13 +55,14 @@ function tbls.createNDarray(n, tbl)
     return tbl
 end
 
-function tbls.deepcopy(tbl)
+function tbls.deepcopy(tbl,keep)
     local instance_seen = {}
+    if not keep then keep = {} end
     local function copy(tbl)
         local out = {}
         instance_seen[tbl] = out
         for k,v in pairs(tbl) do
-            local t = type(v) == "table"
+            local t = type(v) == "table" and not keep[k]
             if type(k) == "table" then k = copy(k) end
             if t and not instance_seen[v] then
                 local new_instance = copy(v)
