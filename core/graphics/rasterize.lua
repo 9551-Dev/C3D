@@ -10,7 +10,6 @@ local int_vertex              = require("core.3D.geometry.interpolate_vertex")
 local memory_manager = require("core.mem_manager")
 
 local empty_table = {}
-local EMPTY_FRAGMENT = {}
 
 return {build=function(BUS)
 
@@ -22,7 +21,7 @@ return {build=function(BUS)
 
     local interpolate_vertex = int_vertex.init(BUS)
 
-    local function draw_flat_top_triangle(fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
+    local function draw_flat_top_triangle(t_data,fs,object,v0,v1,v2,tex,o1,o2,o3,fragment,w,h,stv1,stv2,stv3)
         local mem_handle = mem_handle
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
@@ -79,11 +78,11 @@ return {build=function(BUS)
                 local bary_a,bary_b,bary_c = barycentric_coordinates(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
 
                 local div = sx_end - sx_start
-                local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)
+                local t3 = (x - sx_start) / div
 
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local fragment_shader_data = STNF and mem_handle.get_table() or EMPTY_FRAGMENT
+                local fragment_shader_data = STNF and mem_handle.get_table() or t_data
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C
@@ -131,7 +130,7 @@ return {build=function(BUS)
         end
     end
 
-    local function draw_flat_bottom_triangle(fs,object,v0,v1,v2,tex,fragment,w,h,stv1,stv2,stv3)
+    local function draw_flat_bottom_triangle(t_data,fs,object,v0,v1,v2,tex,fragment,w,h,stv1,stv2,stv3)
         local mem_handle = mem_handle
         local v0x,v0y = v0[1],v0[2]
         local v1x,v1y = v1[1],v1[2]
@@ -188,11 +187,11 @@ return {build=function(BUS)
                 local bary_a,bary_b,bary_c =  barycentric_coordinates(x,y,v0x,v0y,v1x,v1y,v2x,v2y)
 
                 local div = sx_end - sx_start
-                local t3 = (x - sx_start) / ((div == 0) and 5e-10 or div)
+                local t3 = (x - sx_start) / div
 
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local fragment_shader_data = STNF and mem_handle.get_table() or EMPTY_FRAGMENT
+                local fragment_shader_data = STNF and mem_handle.get_table() or t_data
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C
@@ -238,7 +237,7 @@ return {build=function(BUS)
             end
         end
     end
-    return {triangle=function(fs,object,p1,p2,p3,tex,pixel_size,frag,stv1,stv2,stv3)
+    return {triangle=function(t_data,fs,object,p1,p2,p3,tex,pixel_size,frag,stv1,stv2,stv3)
         local w,h   = graphics_bus.w/pixel_size,graphics_bus.h/pixel_size
         local origp1,origp2,origp3 = p1,p2,p3
         if p2[2] < p1[2] then p1,p2 = p2,p1 end
@@ -246,20 +245,20 @@ return {build=function(BUS)
         if p2[2] < p1[2] then p1,p2 = p2,p1 end
         if p1[2] == p2[2] then
             if p2[1] < p1[1] then p1,p2 = p2,p1 end
-            draw_flat_top_triangle(fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+            draw_flat_top_triangle(t_data,fs,object,p1,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
         elseif p2[2] == p3[2] then
             if p3[1] < p2[1] then p2,p3 = p3,p2 end
-            draw_flat_bottom_triangle(fs,object,p1,p2,p3,tex,frag,w,h,stv1,stv2,stv3)
+            draw_flat_bottom_triangle(t_data,fs,object,p1,p2,p3,tex,frag,w,h,stv1,stv2,stv3)
         else
             local alpha_split = (p2[2]-p1[2]) / (p3[2]-p1[2])
             local split_vertex = interpolate_vertex(p1,p3,alpha_split)
 
             if p2[1] < split_vertex[1] then
-                draw_flat_bottom_triangle(fs,object,p1,p2,split_vertex,tex,frag,w,h,stv1,stv2,stv3)
-                draw_flat_top_triangle   (fs,object,p2,split_vertex,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+                draw_flat_bottom_triangle(t_data,fs,object,p1,p2,split_vertex,tex,frag,w,h,stv1,stv2,stv3)
+                draw_flat_top_triangle   (t_data,fs,object,p2,split_vertex,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
             else
-                draw_flat_bottom_triangle(fs,object,p1,split_vertex,p2,tex,frag,w,h,stv1,stv2,stv3)
-                draw_flat_top_triangle   (fs,object,split_vertex,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
+                draw_flat_bottom_triangle(t_data,fs,object,p1,split_vertex,p2,tex,frag,w,h,stv1,stv2,stv3)
+                draw_flat_top_triangle   (t_data,fs,object,split_vertex,p2,p3,tex,origp1,origp2,origp3,frag,w,h,stv1,stv2,stv3)
             end
         end
     end}

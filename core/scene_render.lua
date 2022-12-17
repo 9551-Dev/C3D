@@ -102,7 +102,7 @@ return {create=function(BUS,raster)
 
             if (not cull_invert and cull > 0) or (o.invert_culling and cull < 0) or o.disable_culling then
                 triangles_drawn = triangles_drawn + 1
-                rasterize_triangle(triangle.fs,o,
+                rasterize_triangle(triangle,triangle.fs,o,
                     pst(a,w,h,t1),
                     pst(b,w,h,t2),
                     pst(c,w,h,t3),
