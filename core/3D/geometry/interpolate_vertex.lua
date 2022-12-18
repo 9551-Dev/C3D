@@ -29,7 +29,8 @@ return {init=function(BUS)
         if v1.frag and v2frag then
             local new_frag = {}
             for k,v in pairs(v1.frag) do
-                new_frag[k] = (1 - alpha) * v + alpha * v2frag[k]
+                local second = v2frag[k]
+                if second then new_frag[k] = (1 - alpha) * v + alpha * v2frag[k] end
             end
             out.frag = new_frag
         end
