@@ -22,7 +22,9 @@ return {make=function(ENV,BUS,args)
 
             local state = runner()
             if state then BUS.running = false end
-            BUS.m_n = 0
+
+            for k,v in pairs(BUS.mem) do v.n = 0 end
+
             bgs.frames_drawn = bgs.frames_drawn + 1
             local current_time = os.epoch("utc")
             local frame_time = current_time-frame_start

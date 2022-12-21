@@ -6,8 +6,11 @@ return function(BUS)
 
     local memory_handle = memory_manager.get(BUS)
 
-    function registry.get_table()
-        return memory_handle.get_table()
+    local memory_bus = BUS.memory
+
+    function registry.get_table(category)
+        if not memory_bus[category] then memory_handle.init_category(category) end
+        return memory_handle.get_table(category or 4)
     end
 
     function registry.get_module_registry()

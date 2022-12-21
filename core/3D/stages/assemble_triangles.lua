@@ -70,9 +70,9 @@ return function(object,prev,geo,prop,efx,out,BUS)
             local normb = normal_indices[i+1]*3
             local normc = normal_indices[i+2]*3
 
-            local normal_1 = mem_manager.get_table()
-            local normal_2 = mem_manager.get_table()
-            local normal_3 = mem_manager.get_table()
+            local normal_1 = mem_manager.get_table(1)
+            local normal_2 = mem_manager.get_table(1)
+            local normal_3 = mem_manager.get_table(1)
 
             normal_1[1],normal_1[2],normal_1[3] = normals[norma-2],normals[norma-1],normals[norma]
             normal_2[1],normal_2[2],normal_2[3] = normals[normb-2],normals[normb-1],normals[normb]

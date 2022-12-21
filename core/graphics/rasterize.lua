@@ -64,9 +64,9 @@ return {build=function(BUS)
             local num = 0
             local make_fragment = false
             if o1frag then
-                temp_interpolants1 = mem_handle.get_table()
-                temp_interpolants2 = mem_handle.get_table()
-                naming = mem_handle.get_table()
+                temp_interpolants1 = mem_handle.get_table(2)
+                temp_interpolants2 = mem_handle.get_table(2)
+                naming = mem_handle.get_table(2)
                 for k,v in pairs(o1frag) do if o2frag[k] and o3frag[k] then
                     make_fragment = true
                     num = num + 1
@@ -84,7 +84,7 @@ return {build=function(BUS)
 
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local instantiated_fragment = STNF and mem_handle.get_table() or t_data
+                local instantiated_fragment = STNF and mem_handle.get_table(3) or t_data
 
                 local fragment_shader_data = FRAGMENT_DATA
                 fragment_shader_data.texture   = TPIX
@@ -100,7 +100,7 @@ return {build=function(BUS)
 
 
                 local frag_data
-                if make_fragment then frag_data = mem_handle.get_table() end
+                if make_fragment then frag_data = mem_handle.get_table(2) end
                 for i=1,num do
                     local nm = naming[i]
                     frag_data[nm] = ((1 - t3) * temp_interpolants1[nm] + t3 * temp_interpolants2[nm])*z
@@ -176,9 +176,9 @@ return {build=function(BUS)
             local make_fragment = false
             local num = 0
             if o1frag then
-                temp_interpolants1 = mem_handle.get_table()
-                temp_interpolants2 = mem_handle.get_table()
-                naming = mem_handle.get_table()
+                temp_interpolants1 = mem_handle.get_table(2)
+                temp_interpolants2 = mem_handle.get_table(2)
+                naming = mem_handle.get_table(2)
                 for k,v in pairs(o1frag) do if o2frag[k] and o3frag[k] then
                     make_fragment = true
                     num = num + 1
@@ -196,7 +196,7 @@ return {build=function(BUS)
 
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local instantiated_fragment = STNF and mem_handle.get_table() or t_data
+                local instantiated_fragment = STNF and mem_handle.get_table(3) or t_data
 
                 local fragment_shader_data = FRAGMENT_DATA
                 fragment_shader_data.texture   = TPIX
@@ -210,7 +210,7 @@ return {build=function(BUS)
                 fragment_shader_data.v3        = stv3
 
                 local frag_data
-                if make_fragment then frag_data = mem_handle.get_table() end
+                if make_fragment then frag_data = mem_handle.get_table(2) end
                 for i=1,num do
                     local nm = naming[i]
                     frag_data[nm] = ((1 - t3) * temp_interpolants1[nm] + t3 * temp_interpolants2[nm])*z

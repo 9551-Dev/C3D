@@ -9,7 +9,7 @@ return {init=function(BUS)
         local v15 = v1[5]
         local v17 = v1[7]
 
-        local out = memory_handle.get_table()
+        local out = memory_handle.get_table(1)
 
         out[1] = (1 - alpha) * v1[1] + alpha * v2[1]
         out[2] = (1 - alpha) * v1[2] + alpha * v2[2]
