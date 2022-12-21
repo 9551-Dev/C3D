@@ -36,7 +36,7 @@ local function default_fragment(frag)
         return color_final,not color_final or is_transparent,frag
     end
 
-    return frag.color or colors.red,false,frag
+    return frag.color or colors.red,false,frag.instance
 end
 
 return function(fs)

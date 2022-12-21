@@ -11,6 +11,8 @@ local memory_manager = require("core.mem_manager")
 
 local empty_table = {}
 
+local FRAGMENT_DATA = {}
+
 return {build=function(BUS)
 
     BUS.log("  - Inicialized triangle rasterizer",BUS.log.info)
@@ -82,7 +84,9 @@ return {build=function(BUS)
 
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local fragment_shader_data = STNF and mem_handle.get_table() or t_data
+                local instantiated_fragment = STNF and mem_handle.get_table() or t_data
+
+                local fragment_shader_data = FRAGMENT_DATA
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C
@@ -92,6 +96,7 @@ return {build=function(BUS)
                 fragment_shader_data.v1        = stv1
                 fragment_shader_data.v2        = stv2
                 fragment_shader_data.v3        = stv3
+                fragment_shader_data.instance = instantiated_fragment
 
 
                 local frag_data
@@ -106,7 +111,7 @@ return {build=function(BUS)
                     local thisu,thisv = int_uv(bary_a,bary_b,bary_c,v0u,v0v,v1u,v1v,v2u,v2v)
                     fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
 
-                    local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v0x,v0y,v1x,v1y,v2x,v2y)
+                    --[[local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v0x,v0y,v1x,v1y,v2x,v2y)
                     local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x,y+1,v0x,v0y,v1x,v1y,v2x,v2y)
 
                     local uright,vright = int_uv(bary_aright,bary_bright,bary_cright,v0u,v0v,v1u,v1v,v2u,v2v)
@@ -115,12 +120,12 @@ return {build=function(BUS)
                     local L = MAX(
                         SQRT((ABS(thisu-uright)*tex.w)^2+(ABS(thisv-vright)*tex.h)^2),
                         SQRT((ABS(thisv-vdown) *tex.h)^2+(ABS(thisu-udown) *tex.w)^2)
-                    )
+                    )]]
 
-                    fragment_shader_data.mipmap_level = L
+                    fragment_shader_data.mipmap_level = 1
                 else
-                    fragment_shader_data.mipmap_level = nil
-                    fragment_shader_data.tx,fragment_shader_data.ty = nil,nil
+                    fragment_shader_data.mipmap_level = 1
+                    fragment_shader_data.tx,fragment_shader_data.ty = 0,0
                 end
 
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,
@@ -191,7 +196,9 @@ return {build=function(BUS)
 
                 local z = 1/((1 - t3) * w1 + t3 * w2)
 
-                local fragment_shader_data = STNF and mem_handle.get_table() or t_data
+                local instantiated_fragment = STNF and mem_handle.get_table() or t_data
+
+                local fragment_shader_data = FRAGMENT_DATA
                 fragment_shader_data.texture   = TPIX
                 fragment_shader_data.tex       = tex
                 fragment_shader_data.color     = C
@@ -214,7 +221,7 @@ return {build=function(BUS)
                     local thisu,thisv = int_uv(bary_a,bary_b,bary_c,v0u,v0v,v1u,v1v,v2u,v2v)
                     fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
 
-                    local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v0x,v0y,v1x,v1y,v2x,v2y)
+                    --[[local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v0x,v0y,v1x,v1y,v2x,v2y)
                     local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x,y+1,v0x,v0y,v1x,v1y,v2x,v2y)
 
                     local uright,vright = int_uv(bary_aright,bary_bright,bary_cright,v0u,v0v,v1u,v1v,v2u,v2v)
@@ -223,16 +230,16 @@ return {build=function(BUS)
                     local L = MAX(
                         ABS(thisu-uright)*tex.w,ABS(thisv-vright)*tex.h,
                         ABS(thisv-vdown) *tex.h,ABS(thisu-udown) *tex.w
-                    )
+                    )]]
 
-                    fragment_shader_data.mipmap_level = L
+                    fragment_shader_data.mipmap_level = 1
                 else
-                    fragment_shader_data.mipmap_level = nil
-                    fragment_shader_data.tx,fragment_shader_data.ty = nil,nil
+                    fragment_shader_data.mipmap_level = 1
+                    fragment_shader_data.tx,fragment_shader_data.ty = 0,0
                 end
 
                 fragment(x,y,(1 - t3) * z1 + t3 * z2,
-                    fs(fragment_shader_data)
+                    fs(fragment_shader_data,instantiated_fragment)
                 )
             end
         end
