@@ -16,7 +16,7 @@ function PPM.INTERNAL.READ_STRING_UNTIL_SEP(stream,pos)
     stream.seek("set",pos)
     local byte = stream.read()
     if not byte then return false end
-    while byte ~= 0x20 and byte ~= 0xA do
+    while byte ~= 0x20 and byte ~= 0xA and byte ~= 0xD and byte ~= 0x80 and byte ~= 0xA0 do
         str = str .. string.char(byte)
         byte = stream.read()
     end
@@ -67,7 +67,7 @@ function PPM.INTERNAL.DECODE(image)
     local out = PPM.INTERNAL.createNDarray(1)
 
     local header = PPM.INTERNAL.READ_STRING_UNTIL_SEP(image.stream,0)
-    if not (header == "P6") then error("Invalid header/PPM file",2) end
+    if not (header == "P6" or header == "P6") then error("Invalid header/PPM file: "..("%q"):format(header),2) end
     comment(image)
     local width  = PPM.INTERNAL.READ_INT(image.stream,image.stream.seek("cur"))
     local height = PPM.INTERNAL.READ_INT(image.stream,image.stream.seek("cur"))
