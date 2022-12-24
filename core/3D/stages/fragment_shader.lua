@@ -12,7 +12,7 @@ local function default_fragment(frag)
 
         local texture_pixels = frag.texture[level]
         if not texture_pixels then
-            return colors.black,true
+            return colors.black,true,frag.instance
         end
 
         local w = texture_pixels.w
@@ -33,7 +33,7 @@ local function default_fragment(frag)
 
         frag.texture_x,frag.texture_y = x,y
 
-        return color_final,not color_final or is_transparent,frag
+        return color_final,not color_final or is_transparent,frag.instance
     end
 
     return frag.color or colors.red,false,frag.instance
