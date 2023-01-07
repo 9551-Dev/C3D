@@ -5,7 +5,7 @@ return {init=function(BUS)
 
     local memory_handle = memory_manager.get(BUS)
 
-    return function(v1,v2,alpha,swap)
+    return function(v1,v2,alpha)
         local v15 = v1[5]
         local v17 = v1[7]
 
@@ -24,6 +24,17 @@ return {init=function(BUS)
             out[7] = (1 - alpha) * v17   + alpha * (v2[7] or 0)
             out[8] = (1 - alpha) * v1[8] + alpha * (v2[8] or 0)
         else out[7],out[8] = 0,0 end
+
+        if v1.norm and v2.norm then
+            local new_normal = memory_handle.get_table(1)
+
+            local n1,n2 = v1.norm,v2.norm
+            new_normal[1] = (1 - alpha) * n1[1] + alpha * n2[1]
+            new_normal[2] = (1 - alpha) * n1[2] + alpha * n2[2]
+            new_normal[3] = (1 - alpha) * n1[3] + alpha * n2[3]
+
+            out.norm = new_normal
+        end
 
         local v2frag = v2.frag
         if v1.frag and v2frag then
