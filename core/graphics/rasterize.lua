@@ -43,8 +43,8 @@ return {build=function(BUS)
         local texture         = triangle_data.texture
         local fragment_shader = triangle_data.fs
 
-        local tex_width  = texture.w
-        local tex_height = texture.h
+        local tex_width  = texture and texture.w
+        local tex_height = texture and texture.h
         fragment_shader_data.color   = object.color
         fragment_shader_data.texture = (texture or empty_table).pixels
         fragment_shader_data.tex     =  texture
@@ -96,9 +96,9 @@ return {build=function(BUS)
                 if fragment_count > 0 then frag_data = memory_handle.get_table(2) end
                 for i=1,fragment_count do
                     frag_data[fragment_shader_names[i]] =
-                        fragment_shader_values_1[i]*bary_a +
+                        (fragment_shader_values_1[i]*bary_a +
                         fragment_shader_values_2[i]*bary_b +
-                        fragment_shader_values_3[i]*bary_c
+                        fragment_shader_values_3[i]*bary_c)*z
                 end
                 fragment_shader_data.data = frag_data
 
@@ -152,8 +152,8 @@ return {build=function(BUS)
         local texture         = triangle_data.texture
         local fragment_shader = triangle_data.fs
 
-        local tex_width  = texture.w
-        local tex_height = texture.h
+        local tex_width  = texture and texture.w
+        local tex_height = texture and texture.h
         fragment_shader_data.color   = object.color
         fragment_shader_data.texture = (texture or empty_table).pixels
         fragment_shader_data.tex     =  texture
@@ -205,9 +205,9 @@ return {build=function(BUS)
                 if fragment_count > 0 then frag_data = memory_handle.get_table(2) end
                 for i=1,fragment_count do
                     frag_data[fragment_shader_names[i]] =
-                        fragment_shader_values_1[i]*bary_a +
+                        (fragment_shader_values_1[i]*bary_a +
                         fragment_shader_values_2[i]*bary_b +
-                        fragment_shader_values_3[i]*bary_c
+                        fragment_shader_values_3[i]*bary_c)*z
                 end
                 fragment_shader_data.data = frag_data
 
