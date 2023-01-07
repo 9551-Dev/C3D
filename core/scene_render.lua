@@ -45,7 +45,7 @@ return {create=function(BUS,raster)
         local instantiate_fragment
 
         local function render_pixel(x,y,z,c,is_transparent,fragment)
-            local z = _force_z or z
+            z = _force_z or z
 
             pixels_rasterized = pixels_rasterized + 1
 
@@ -102,11 +102,11 @@ return {create=function(BUS,raster)
 
             if (not cull_invert and cull > 0) or (o.invert_culling and cull < 0) or o.disable_culling then
                 triangles_drawn = triangles_drawn + 1
-                rasterize_triangle(triangle,triangle.fs,o,
+                rasterize_triangle(triangle,
                     pst(a,w,h,t1),
                     pst(b,w,h,t2),
                     pst(c,w,h,t3),
-                    triangle.texture,_triangle_pixel_size,
+                    _triangle_pixel_size,
                     render_pixel,
                     triangle.orig1,triangle.orig2,triangle.orig3
                 )
@@ -114,9 +114,9 @@ return {create=function(BUS,raster)
         end
         local rastet = os.epoch("utc")
 
-        bus_g.stats.triangles_drawn = triangles_drawn
+        bus_g.stats.triangles_drawn   = triangles_drawn
         bus_g.stats.pixels_rasterized = pixels_rasterized
-        bus_g.stats.rasterize_time = rastet-rastst
+        bus_g.stats.rasterize_time    = rastet-rastst
         if INTERACT_MODE then BUS.interactions.map = SCREEN_OBJECTS end
     end}
 end}
