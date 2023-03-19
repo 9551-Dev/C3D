@@ -206,6 +206,7 @@ return function(ENV,libdir,...)
     ENV.c3d.plugin.load(require("core.objects.sprite_sheet")    .add(BUS))
     ENV.c3d.plugin.load(require("core.objects.raw_mesh")        .add(BUS))
     ENV.c3d.plugin.load(require("core.objects.material")        .add(BUS))
+    ENV.c3d.plugin.load(require("core.objects.pipeline")        .add(BUS))
     BUS.plugin_internal.register_objects()
     
     log("[ Loading internal modules.. ]",log.info)

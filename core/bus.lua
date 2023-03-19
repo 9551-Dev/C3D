@@ -19,6 +19,10 @@ return {register_bus=function(ENV)
             },
             auto_resize=true
         },
+        pipe = {
+            default   = {id=ENV.utils.generic.uuid4()},
+            pipelines = {}
+        },
         thread={
             channel={},
             coro={}

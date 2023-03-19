@@ -68,6 +68,8 @@ return {add=function(BUS)
                     pos_mat=trans_matrice(0,0,0)
                 }
 
+                geometry.pipeline = BUS.pipe.default
+                
                 if not geometry.effects then geometry.effects = {} end
 
                 geometry.ID = id
