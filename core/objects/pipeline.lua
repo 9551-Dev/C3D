@@ -1,9 +1,5 @@
 local utils = require("common.generic")
 
-local function slope(x1,y1,x2,y2)
-    return (y2-y1)/(x2-x1)
-end
-
 return {add=function(BUS)
 
     return function()
@@ -253,16 +249,19 @@ return {add=function(BUS)
                     local offset_bottom = math.floor(vertex_b_y+0.5) + 0.5 - left_point_y
 
                     local x_left,x_right = vertex_a_x + delta_left_top * offset_top,vertex_a_x + delta_right_top * offset_top
+
                     if delta_left_top then
                         for y=math.floor(vertex_a_y+0.5),math.floor(vertex_b_y+0.5)-1 do
 
-                            
                             for x=math.ceil(x_left-0.5),math.ceil(x_right-0.5)-1 do
+                                local div    = ((left_point_y -right_point_y) *(vertex_a_x-right_point_x) + (right_point_x-left_point_x) *(vertex_a_y-right_point_y))
+                                local bary_a = ((left_point_y -right_point_y) *(x         -right_point_x) + (right_point_x-left_point_x) *(y-right_point_y)) / div
+                                local bary_b = ((right_point_y-vertex_a_y    )*(x         -right_point_x) + (vertex_a_x   -right_point_x)*(y-right_point_y)) / div
+                                local bary_c = 1-bary_a-bary_b
 
-                                --local depth = p1[3]*bary_a+left_point[3]*bary_b+right_point[3]*bary_c
+                                local depth = vertex_a_z*bary_a+left_point_z*bary_b+right_point_z*bary_c
 
-                                --frag(x,y,depth,depth,depth)
-                                pixel_draw(x,y,(i+2)/3)
+                                pixel_draw(x,y,depth,(i+2)/3)
                             end
                         
                             x_left,x_right = x_left+delta_left_top,x_right+delta_right_top
@@ -276,12 +275,16 @@ return {add=function(BUS)
                         for y=math.floor(vertex_b_y+0.5),math.ceil(vertex_c_y-0.5) do
 
                             for x=math.ceil(x_left-0.5),math.ceil(x_right-0.5)-1 do
+                                local div    = ((right_point_y-vertex_c_y)  *(left_point_x-vertex_c_x) + (vertex_c_x  -right_point_x)*(left_point_y-vertex_c_y))
+                                local bary_a = ((right_point_y-vertex_c_y)  *(x           -vertex_c_x) + (vertex_c_x  -right_point_x)*(y-vertex_c_y)) / div
+                                local bary_b = ((vertex_c_y   -left_point_y)*(x           -vertex_c_x) + (left_point_x-vertex_c_x)   *(y-vertex_c_y)) / div
+                                local bary_c = 1-bary_a-bary_b
 
-                                --local depth = left_point[3]*bary_a+right_point[3]*bary_b+p3[3]*bary_c
+                                local depth = left_point_z*bary_a+right_point_z*bary_b+vertex_c_z*bary_c
 
-                                --frag(x,y,depth,depth,depth)
-                                pixel_draw(x,y,(i+2)/3)
+                                pixel_draw(x,y,depth,(i+2)/3)
                             end
+
 
                             x_left,x_right = x_left+delta_left_bottom,x_right+delta_right_bottom
                         end

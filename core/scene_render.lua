@@ -23,8 +23,15 @@ return {create=function(BUS,raster)
         local w_orig = bus_g.w
         local h_orig = bus_g.h
 
-        local function draw_pixel(x,y,id)
-            canv[y][x] = 2^id
+        local depth_map = tbl.createNDarray(1)
+
+        local function draw_pixel(x,y,depth,id)
+            if not depth_map[y][x] then depth_map[y][x] = depth end
+
+            if depth_map[y][x] >= depth then
+                canv[y][x] = 2^id
+                depth_map[y][x] = depth
+            end
         end
 
         local INTERACT_MODE  = BUS.interactions.running
@@ -52,6 +59,7 @@ return {create=function(BUS,raster)
 
             pipelines[pipeline_id]:render(model,w_orig,h_orig,camera_position,camera_rotation,camera_transform,perspective,draw_pixel)
         end
+
         local rastet = os.epoch("utc")
 
         bus_g.stats.triangles_drawn   = triangles_drawn
