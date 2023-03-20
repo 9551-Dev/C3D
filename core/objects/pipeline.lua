@@ -1,5 +1,21 @@
 local utils = require("common.generic")
 
+local function slope(x1,y1,x2,y2)
+    return (y2-y1)/(x2-x1)
+end
+
+local function bary(x,y,p1,p2,p3,d)
+    local p23y_delta,p13x_delta,p32x_delta = p2[2]-p3[2],p1[1]-p3[1],p3[1]-p2[1]
+
+    local xp3_delta,yp3_delta = x-p3[1],y-p3[2]
+
+    local div = (p23y_delta*p13x_delta + p32x_delta*(p1[2]-p3[2]))
+    local dot_a = (p23y_delta*xp3_delta    + p32x_delta*yp3_delta) / div
+    local dot_b = ((p3[2]-p1[2])*xp3_delta + p13x_delta*yp3_delta) / div
+
+    return dot_a,dot_b,1-dot_a-dot_b
+end
+
 return {add=function(BUS)
 
     return function()
@@ -9,7 +25,9 @@ return {add=function(BUS)
             local object_registry = c3d.registry.get_object_registry()
             local pipeline_object = object_registry:new_entry("pipeline")
 
-            pipeline_object:set_entry(c3d.registry.entry("render"),function(this,model,cam_position,cam_rotation,cam_transform,pixel_draw)
+            pipeline_object:set_entry(c3d.registry.entry("render"),function(this,model,w,h,cam_position,cam_rotation,cam_transform,matrix_perspective,pixel_draw)
+                local cam_position,cam_rotation,cam_transform,matrix_perspective = cam_position,cam_rotation,cam_transform,matrix_perspective
+
                 local geometry          = model.geometry
                 local triangles_indices = geometry.tris
                 local vertices          = geometry.vertices
@@ -47,6 +65,11 @@ return {add=function(BUS)
                     vertex_a_y = vertex_a_x*matrix_position[2]+vertex_a_y*matrix_position[6]+vertex_a_z*matrix_position[10]+vertex_a_w*matrix_position[14]
                     vertex_a_z = vertex_a_x*matrix_position[3]+vertex_a_y*matrix_position[7]+vertex_a_z*matrix_position[11]+vertex_a_w*matrix_position[15]
                     vertex_a_w = vertex_a_x*matrix_position[4]+vertex_a_y*matrix_position[8]+vertex_a_z*matrix_position[12]+vertex_a_w*matrix_position[16]
+                        --perspective
+                    vertex_a_x = vertex_a_x*matrix_perspective[1]+vertex_a_y*matrix_perspective[5]+vertex_a_z*matrix_perspective[9] +vertex_a_w*matrix_perspective[13]
+                    vertex_a_y = vertex_a_x*matrix_perspective[2]+vertex_a_y*matrix_perspective[6]+vertex_a_z*matrix_perspective[10]+vertex_a_w*matrix_perspective[14]
+                    vertex_a_z = vertex_a_x*matrix_perspective[3]+vertex_a_y*matrix_perspective[7]+vertex_a_z*matrix_perspective[11]+vertex_a_w*matrix_perspective[15]
+                    vertex_a_w = vertex_a_x*matrix_perspective[4]+vertex_a_y*matrix_perspective[8]+vertex_a_z*matrix_perspective[12]+vertex_a_w*matrix_perspective[16]
 
                     -- transform_B
                         --scale
@@ -64,6 +87,11 @@ return {add=function(BUS)
                     vertex_b_y = vertex_b_x*matrix_position[2]+vertex_b_y*matrix_position[6]+vertex_b_z*matrix_position[10]+vertex_b_w*matrix_position[14]
                     vertex_b_z = vertex_b_x*matrix_position[3]+vertex_b_y*matrix_position[7]+vertex_b_z*matrix_position[11]+vertex_b_w*matrix_position[15]
                     vertex_b_w = vertex_b_x*matrix_position[4]+vertex_b_y*matrix_position[8]+vertex_b_z*matrix_position[12]+vertex_b_w*matrix_position[16]
+                        --perspective
+                    vertex_b_x = vertex_b_x*matrix_perspective[1]+vertex_b_y*matrix_perspective[5]+vertex_b_z*matrix_perspective[9] +vertex_b_w*matrix_perspective[13]
+                    vertex_b_y = vertex_b_x*matrix_perspective[2]+vertex_b_y*matrix_perspective[6]+vertex_b_z*matrix_perspective[10]+vertex_b_w*matrix_perspective[14]
+                    vertex_b_z = vertex_b_x*matrix_perspective[3]+vertex_b_y*matrix_perspective[7]+vertex_b_z*matrix_perspective[11]+vertex_b_w*matrix_perspective[15]
+                    vertex_b_w = vertex_b_x*matrix_perspective[4]+vertex_b_y*matrix_perspective[8]+vertex_b_z*matrix_perspective[12]+vertex_b_w*matrix_perspective[16]
 
                     -- transform_C
                         --scale
@@ -81,6 +109,12 @@ return {add=function(BUS)
                     vertex_c_y = vertex_c_x*matrix_position[2]+vertex_c_y*matrix_position[6]+vertex_c_z*matrix_position[10]+vertex_c_w*matrix_position[14]
                     vertex_c_z = vertex_c_x*matrix_position[3]+vertex_c_y*matrix_position[7]+vertex_c_z*matrix_position[11]+vertex_c_w*matrix_position[15]
                     vertex_c_w = vertex_c_x*matrix_position[4]+vertex_c_y*matrix_position[8]+vertex_c_z*matrix_position[12]+vertex_c_w*matrix_position[16]
+                        --perspective
+                    vertex_c_x = vertex_c_x*matrix_perspective[1]+vertex_c_y*matrix_perspective[5]+vertex_c_z*matrix_perspective[9] +vertex_c_w*matrix_perspective[13]
+                    vertex_c_y = vertex_c_x*matrix_perspective[2]+vertex_c_y*matrix_perspective[6]+vertex_c_z*matrix_perspective[10]+vertex_c_w*matrix_perspective[14]
+                    vertex_c_z = vertex_c_x*matrix_perspective[3]+vertex_c_y*matrix_perspective[7]+vertex_c_z*matrix_perspective[11]+vertex_c_w*matrix_perspective[15]
+                    vertex_c_w = vertex_c_x*matrix_perspective[4]+vertex_c_y*matrix_perspective[8]+vertex_c_z*matrix_perspective[12]+vertex_c_w*matrix_perspective[16]
+                    
                         --camera transform
                     if cam_transform then
                         --custom camera transform
@@ -135,7 +169,101 @@ return {add=function(BUS)
                         vertex_c_w = vertex_c_x*cam_rotation[4]+vertex_c_y*cam_rotation[8]+vertex_c_z*cam_rotation[12]+vertex_c_w*cam_rotation[16]
                     end
 
+                    --transformation into NDC space
+                        -- A
+                    local vertex_a_z_inverse = 1/vertex_a_z
+                    vertex_a_x = ( vertex_a_x*vertex_a_z_inverse+1)*w/2
+                    vertex_a_y = (-vertex_a_y*vertex_a_z_inverse+1)*h/2
+                    vertex_a_z = vertex_a_z_inverse
+                    vertex_a_w = vertex_a_w
+                        -- B
+                    local vertex_b_z_inverse = 1/vertex_b_z
+                    vertex_b_x = ( vertex_b_x*vertex_b_z_inverse+1)*w/2
+                    vertex_b_y = (-vertex_b_y*vertex_b_z_inverse+1)*h/2
+                    vertex_b_z = vertex_b_z_inverse
+                    vertex_b_w = vertex_b_w
+                        -- C
+                    local vertex_c_z_inverse = 1/vertex_c_z
+                    vertex_c_x = ( vertex_c_x*vertex_c_z_inverse+1)*w/2
+                    vertex_c_y = (-vertex_c_y*vertex_c_z_inverse+1)*h/2
+                    vertex_c_z = vertex_c_z_inverse
+                    vertex_c_w = vertex_c_w
+
                     -- draw
+
+                        -- height sort
+                    if vertex_a_y > vertex_c_y then
+                        vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w,vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w =
+                            vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w,vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w
+                    end
+                    if vertex_a_y > vertex_b_y then
+                        vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w,vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w =
+                            vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w,vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w
+                    end
+                    if vertex_b_y > vertex_c_y then
+                        vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w,vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w =
+                            vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w,vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w
+                    end
+
+                    -- split point interpolation
+                    local split_alpha   = (vertex_b_y-vertex_a_y)/(vertex_c_y-vertex_a_y)
+                    local right_point_x = (1-split_alpha)*vertex_a_x + split_alpha*vertex_c_x
+                    local right_point_y = (1-split_alpha)*vertex_a_y + split_alpha*vertex_c_y
+                    local right_point_z = (1-split_alpha)*vertex_a_z + split_alpha*vertex_c_z
+                    local right_point_w = (1-split_alpha)*vertex_a_w + split_alpha*vertex_c_w
+
+                    local left_point_x, left_point_y, left_point_z, left_point_w = vertex_b_x,vertex_b_y,vertex_b_z,right_point_w
+
+                    -- left-right point sort
+                    if left_point_x > right_point_x then
+                        left_point_x,left_point_y,left_point_z,left_point_w,right_point_x,right_point_y,right_point_z,right_point_w =
+                            right_point_x,right_point_y,right_point_z,right_point_w,left_point_x,left_point_y,left_point_z,left_point_w
+                    end
+
+                    local delta_left_top  = 1/slope(vertex_a_x,vertex_a_y,left_point_x, left_point_y)
+                    local delta_right_top = 1/slope(vertex_a_x,vertex_a_y,right_point_x,right_point_y)
+
+                    local delta_left_bottom  = 1/slope(vertex_c_x,vertex_c_y,left_point_x, left_point_y)
+                    local delta_right_bottom = 1/slope(vertex_c_x,vertex_c_y,right_point_x,right_point_y)
+
+                    -- flat bottom
+                    local offset_top    = math.floor(vertex_a_y+0.5) + 0.5 - vertex_a_y
+                    local offset_bottom = math.floor(vertex_b_y+0.5) + 0.5 - left_point_y
+
+                    local x_left,x_right = vertex_a_x + delta_left_top * offset_top,vertex_a_x + delta_right_top * offset_top
+                    if delta_left_top then
+                        for y=math.floor(vertex_a_y+0.5),math.floor(vertex_b_y+0.5)-1 do
+
+                            
+                            for x=math.ceil(x_left-0.5),math.ceil(x_right-0.5)-1 do
+
+                                --local depth = p1[3]*bary_a+left_point[3]*bary_b+right_point[3]*bary_c
+
+                                --frag(x,y,depth,depth,depth)
+                                pixel_draw(x,y,(i+2)/3)
+                            end
+                        
+                            x_left,x_right = x_left+delta_left_top,x_right+delta_right_top
+                        end
+                    end
+
+
+                    -- flat top
+                    x_left,x_right = left_point_x + delta_left_bottom * offset_bottom,right_point_x + delta_right_bottom * offset_bottom
+                    if delta_left_bottom then
+                        for y=math.floor(vertex_b_y+0.5),math.ceil(vertex_c_y-0.5) do
+
+                            for x=math.ceil(x_left-0.5),math.ceil(x_right-0.5)-1 do
+
+                                --local depth = left_point[3]*bary_a+right_point[3]*bary_b+p3[3]*bary_c
+
+                                --frag(x,y,depth,depth,depth)
+                                pixel_draw(x,y,(i+2)/3)
+                            end
+
+                            x_left,x_right = x_left+delta_left_bottom,x_right+delta_right_bottom
+                        end
+                    end
                 end
             end)
 

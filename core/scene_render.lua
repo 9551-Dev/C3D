@@ -23,7 +23,8 @@ return {create=function(BUS,raster)
         local w_orig = bus_g.w
         local h_orig = bus_g.h
 
-        local function draw_pixel()
+        local function draw_pixel(x,y,id)
+            canv[y][x] = 2^id
         end
 
         local INTERACT_MODE  = BUS.interactions.running
@@ -44,10 +45,12 @@ return {create=function(BUS,raster)
         local camera_rotation  = camera.rotation
         local camera_position  = camera.position
 
+        local perspective = BUS.perspective.matrix
+
         for id,model in pairs(scene) do
             local pipeline_id = model.pipeline.id
 
-            pipelines[pipeline_id]:render(model,camera_position,camera_rotation,camera_transform,draw_pixel)
+            pipelines[pipeline_id]:render(model,w_orig,h_orig,camera_position,camera_rotation,camera_transform,perspective,draw_pixel)
         end
         local rastet = os.epoch("utc")
 
