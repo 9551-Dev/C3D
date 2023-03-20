@@ -4,18 +4,6 @@ local function slope(x1,y1,x2,y2)
     return (y2-y1)/(x2-x1)
 end
 
-local function bary(x,y,p1,p2,p3,d)
-    local p23y_delta,p13x_delta,p32x_delta = p2[2]-p3[2],p1[1]-p3[1],p3[1]-p2[1]
-
-    local xp3_delta,yp3_delta = x-p3[1],y-p3[2]
-
-    local div = (p23y_delta*p13x_delta + p32x_delta*(p1[2]-p3[2]))
-    local dot_a = (p23y_delta*xp3_delta    + p32x_delta*yp3_delta) / div
-    local dot_b = ((p3[2]-p1[2])*xp3_delta + p13x_delta*yp3_delta) / div
-
-    return dot_a,dot_b,1-dot_a-dot_b
-end
-
 return {add=function(BUS)
 
     return function()
@@ -216,16 +204,22 @@ return {add=function(BUS)
 
                         -- height sort
                     if vertex_a_y > vertex_c_y then
-                        vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w,vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w =
-                            vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w,vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w
+                        vertex_a_x,vertex_c_x = vertex_c_x,vertex_a_x
+                        vertex_a_y,vertex_c_y = vertex_c_y,vertex_a_y
+                        vertex_a_z,vertex_c_z = vertex_c_z,vertex_a_z
+                        vertex_a_w,vertex_c_w = vertex_c_w,vertex_a_w
                     end
                     if vertex_a_y > vertex_b_y then
-                        vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w,vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w =
-                            vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w,vertex_a_x,vertex_a_y,vertex_a_z,vertex_a_w
+                        vertex_a_x,vertex_b_x = vertex_b_x,vertex_a_x
+                        vertex_a_y,vertex_b_y = vertex_b_y,vertex_a_y
+                        vertex_a_z,vertex_b_z = vertex_b_z,vertex_a_z
+                        vertex_a_w,vertex_b_w = vertex_b_w,vertex_a_w
                     end
                     if vertex_b_y > vertex_c_y then
-                        vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w,vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w =
-                            vertex_c_x,vertex_c_y,vertex_c_z,vertex_c_w,vertex_b_x,vertex_b_y,vertex_b_z,vertex_b_w
+                        vertex_c_x,vertex_b_x = vertex_b_x,vertex_c_x
+                        vertex_c_y,vertex_b_y = vertex_b_y,vertex_c_y
+                        vertex_c_z,vertex_b_z = vertex_b_z,vertex_c_z
+                        vertex_c_w,vertex_b_w = vertex_b_w,vertex_c_w
                     end
 
                     -- split point interpolation
@@ -235,19 +229,24 @@ return {add=function(BUS)
                     local right_point_z = (1-split_alpha)*vertex_a_z + split_alpha*vertex_c_z
                     local right_point_w = (1-split_alpha)*vertex_a_w + split_alpha*vertex_c_w
 
-                    local left_point_x, left_point_y, left_point_z, left_point_w = vertex_b_x,vertex_b_y,vertex_b_z,right_point_w
+                    local left_point_x = vertex_b_x
+                    local left_point_y = vertex_b_y
+                    local left_point_z = vertex_b_z
+                    local left_point_w = right_point_w
 
                     -- left-right point sort
                     if left_point_x > right_point_x then
-                        left_point_x,left_point_y,left_point_z,left_point_w,right_point_x,right_point_y,right_point_z,right_point_w =
-                            right_point_x,right_point_y,right_point_z,right_point_w,left_point_x,left_point_y,left_point_z,left_point_w
+                        left_point_x,right_point_x = right_point_x,left_point_x
+                        left_point_y,right_point_y = right_point_y,left_point_y
+                        left_point_z,right_point_z = right_point_z,left_point_z
+                        left_point_w,right_point_w = right_point_w,left_point_w
                     end
 
-                    local delta_left_top  = 1/slope(vertex_a_x,vertex_a_y,left_point_x, left_point_y)
-                    local delta_right_top = 1/slope(vertex_a_x,vertex_a_y,right_point_x,right_point_y)
+                    local delta_left_top  = 1/((left_point_y -vertex_a_y)/(left_point_x -vertex_a_x))
+                    local delta_right_top = 1/((right_point_y-vertex_a_y)/(right_point_x-vertex_a_x))
 
-                    local delta_left_bottom  = 1/slope(vertex_c_x,vertex_c_y,left_point_x, left_point_y)
-                    local delta_right_bottom = 1/slope(vertex_c_x,vertex_c_y,right_point_x,right_point_y)
+                    local delta_left_bottom  = 1/((left_point_y -vertex_c_y)/(left_point_x -vertex_c_x))
+                    local delta_right_bottom = 1/((right_point_y-vertex_c_y)/(right_point_x-vertex_c_x))
 
                     -- flat bottom
                     local offset_top    = math.floor(vertex_a_y+0.5) + 0.5 - vertex_a_y
