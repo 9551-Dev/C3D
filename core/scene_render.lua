@@ -3,8 +3,6 @@ local pst            = require("core.3D.math.transform_point_screen")
 local tbl            = require("common.table_util")
 local memory_manager = require("core.mem_manager")
 
-local t1,t2,t3 = {},{},{}
-
 return {create=function(BUS,raster)
     local mem_handle = memory_manager.get(BUS)
 
@@ -18,19 +16,18 @@ return {create=function(BUS,raster)
 
         bus_g.stats.transform_time = pipe_et-pipe_st
 
-        local canv = bus_g.buffer
+        local color_buffer = bus_g.buffer
+        local data_buffer  = bus_g.data_buffer
+
         local psize = bus_g.pixel_size
         local w_orig = bus_g.w
         local h_orig = bus_g.h
 
-        local depth_map = tbl.createNDarray(1)
 
         local function draw_pixel(x,y,depth,id)
-            if not depth_map[y][x] then depth_map[y][x] = depth end
-
-            if depth_map[y][x] >= depth then
-                canv[y][x] = 2^id
-                depth_map[y][x] = depth
+            if data_buffer[y][x].depth >= depth then
+                color_buffer[y][x]       = 2^id
+                data_buffer [y][x].depth = depth
             end
         end
 

@@ -8,6 +8,8 @@ local sc_init  = require("core.graphics.screen_init")
 
 local scene_renderer = require("core.scene_render")
 
+local NONNIL = {}
+
 local MAX,CEIL = math.max,math.ceil
 
 return function(BUS)
@@ -29,12 +31,20 @@ return function(BUS)
 
             graphics_module:set_entry(c3d.registry.entry("clear_buffer"),function(c)
                 local bg = BUS.graphics
-                local buff = bg.buffer
+
+                local buff        = bg.buffer
+                local data_buffer = bg.data_buffer
 
                 for y=1,bg.h do
-                    local buffy = buff[y]
+                    local buffy       = buff       [y]
+                    local data_buff_y = data_buffer[y]
+
                     for x=1,bg.w do
                         buffy[x] = c
+
+                        if not data_buff_y[x] then data_buff_y[x] = {} end
+                        local data = data_buff_y[x]
+                        data.depth = math.huge
                     end
                 end
             end)

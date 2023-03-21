@@ -63,7 +63,10 @@ return function(ENV,libdir,...)
         BUS.log:dump()
 
         for x,y in ENV.utils.table.map_iterator(BUS.graphics.w,BUS.graphics.h) do
-            BUS.graphics.buffer[y][x] = colors.black
+            BUS.graphics.buffer     [y][x] = colors.black
+            BUS.graphics.data_buffer[y][x] = {
+                depth = math.huge
+            }
         end
         log("Filled screenbuffer",log.debug)
         
