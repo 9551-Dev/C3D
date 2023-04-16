@@ -1,5 +1,12 @@
 # C3D
 
+# IMPORTANT NOTE
+C3D is currently under reconstruction to allow for a much higher performance and a more featurefilled and customizable api!
+This rebuild is a complete rewrite of the pipeline and major changes to the api and internals. All the work that has been done on that so far can be found in the dev branch
+the maste branch should be still fully working and up to what the documentation claims
+
+# 
+
 Documentation: https://c3d.madefor.cc
 
 C3D is an advanced 3D Renderer for ComputerCraft.
