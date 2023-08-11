@@ -9,6 +9,9 @@ the master branch should be still fully working and up to what the documentation
 i will only push the branches once V2 is fully complete (which it is still not even close to being, pipeline is still fully missing)
 however the currently planned stuff/finished/in-progress stuff can be viewed at https://github.com/users/9551-Dev/projects/2/views/1
 if you have a feature request or wanna comment or any feature feel free to make an issue on this repository
+
+11.08.23 - for some people development can be viewed at https://github.com/9551-Dev/libC3D-dev
+if you wish to get access to this repository and have a good reason to you can message me
 # 
 
 Documentation: https://c3d.madefor.cc
