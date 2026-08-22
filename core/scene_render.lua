@@ -36,7 +36,7 @@ return {create=function(BUS,raster)
         local triangles_drawn = 0
         local pixels_rasterized = 0
 
-        
+
         local rastst = os.epoch("utc")
 
         local _force_z
@@ -56,6 +56,7 @@ return {create=function(BUS,raster)
                     local x_pos = x - x_offset
                     local y_pos = y - y_offset
 
+                    -- what the fuck are these names???
                     local dmx = depth_map[x_pos]
                     local dmv = dmx[y_pos]
                     local dox = SCREEN_OBJECTS_Z[x_pos][y_pos]
@@ -66,6 +67,11 @@ return {create=function(BUS,raster)
                             dmx[y_pos] = z
                         end
                     end
+
+                    -- THIS IS WHAT IM TALKING ABOUT
+                    -- dox (pixels buffered depth) is LESS than object depth
+                    -- then overwrite, what the FUCK, kill me, scrapping this
+                    -- pipeline in V2 is an act of mercy for myself
                     if not dox or dox < z then
                         SCREEN_OBJECTS_Z[x_pos][y_pos] = z
                         if INTERACT_MODE then

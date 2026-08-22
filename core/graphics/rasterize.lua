@@ -37,7 +37,7 @@ return {build=function(BUS)
         local y_end   = MIN(CEIL (v3y - 0.5)-1,h)
 
         local fragment_shader_data = FRAGMENT_DATA
-        
+
         local object = triangle_data.object
 
         local texture         = triangle_data.texture
@@ -77,55 +77,61 @@ return {build=function(BUS)
         for y=y_start,y_end do
             local px0 = m0 * (y + 0.5 - v1y) + v1x
             local px1 = m1 * (y + 0.5 - v2y) + v2x
-            local x_start = MAX(CEIL(px0 - 0.5),1)
-            local x_end   = MIN(CEIL(px1 - 0.5),w)
+            local x_start = MAX(CEIL(MIN(px0, px1) - 0.5),1)
+            local x_end   = MIN(CEIL(MAX(px0, px1) - 0.5)-1,w)
 
             for x=x_start,x_end do
-                local bary_a,bary_b,bary_c = barycentric_coordinates(x,y,v1x,v1y,v2x,v2y,v3x,v3y)
+                local bary_a,bary_b,bary_c = barycentric_coordinates(x+0.5,y+0.5,v1x,v1y,v2x,v2y,v3x,v3y)
 
-                local z = 1/(v1[3]*bary_a+v2[3]*bary_b+v3[3]*bary_c)
+                local z = v1[3]*bary_a+v2[3]*bary_b+v3[3]*bary_c
 
-                local instantiated_fragment = STNF and memory_handle.get_table(3) or triangle_data
-                fragment_shader_data.x         = x
-                fragment_shader_data.y         = y
-                fragment_shader_data.z_correct = z
-                fragment_shader_data.instance = instantiated_fragment
+                -- i hate this code so fucking much
+                -- why does everything run on custom transposed matrices
+                -- and fucking inverted depth, jesus christ
+                if z < 0 then
+                    z = 1/z
+                    local instantiated_fragment = STNF and memory_handle.get_table(3) or triangle_data
+                    fragment_shader_data.x         = x
+                    fragment_shader_data.y         = y
+                    fragment_shader_data.z_correct = z
+                    fragment_shader_data.instance = instantiated_fragment
 
 
-                local frag_data
-                if fragment_count > 0 then frag_data = memory_handle.get_table(2) end
-                for i=1,fragment_count do
-                    frag_data[fragment_shader_names[i]] =
-                        (fragment_shader_values_1[i]*bary_a +
-                        fragment_shader_values_2[i]*bary_b +
-                        fragment_shader_values_3[i]*bary_c)*z
-                end
-                fragment_shader_data.data = frag_data
+                    local frag_data
+                    if fragment_count > 0 then frag_data = memory_handle.get_table(2) end
+                    for i=1,fragment_count do
+                        frag_data[fragment_shader_names[i]] =
+                            (fragment_shader_values_1[i]*bary_a +
+                            fragment_shader_values_2[i]*bary_b +
+                            fragment_shader_values_3[i]*bary_c)*z
+                    end
+                    fragment_shader_data.data = frag_data
 
-                if texture then
-                    local thisu,thisv = interpolate_uv(bary_a,bary_b,bary_c,v1u,v1v,v2u,v2v,v3u,v3v)
-                    fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
+                    if texture then
+                        local thisu,thisv = interpolate_uv(bary_a,bary_b,bary_c,v1u,v1v,v2u,v2v,v3u,v3v)
+                        fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
 
-                    local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v1x,v1y,v2x,v2y,v3x,v3y)
-                    local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x,y+1,v1x,v1y,v2x,v2y,v3x,v3y)
+                        local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1.5,y+0.5,v1x,v1y,v2x,v2y,v3x,v3y)
+                        local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x+0.5,y+1.5,v1x,v1y,v2x,v2y,v3x,v3y)
 
-                    local uright,vright = interpolate_uv(bary_aright,bary_bright,bary_cright,v1u,v1v,v2u,v2v,v3u,v3v)
-                    local udown ,vdown  = interpolate_uv(bary_adown,bary_bdown,bary_cdown,v1u,v1v,v2u,v2v,v3u,v3v)
+                        local uright,vright = interpolate_uv(bary_aright,bary_bright,bary_cright,v1u,v1v,v2u,v2v,v3u,v3v)
+                        local udown ,vdown  = interpolate_uv(bary_adown,bary_bdown,bary_cdown,v1u,v1v,v2u,v2v,v3u,v3v)
 
-                    local L = MAX(
-                        SQRT((ABS(thisu-uright)*tex_width)^2 +(ABS(thisv-vright)*tex_height)^2),
-                        SQRT((ABS(thisv-vdown) *tex_height)^2+(ABS(thisu-udown) *tex_width)^2)
+                        local L = MAX(
+                            SQRT((ABS(thisu-uright)*tex_width)^2 +(ABS(thisv-vright)*tex_height)^2),
+                            SQRT((ABS(thisv-vdown) *tex_height)^2+(ABS(thisu-udown) *tex_width)^2)
+                        )
+
+                        fragment_shader_data.mipmap_level = L
+                    else
+                        fragment_shader_data.mipmap_level = 1
+                        fragment_shader_data.tx,fragment_shader_data.ty = 0,0
+                    end
+
+                    screen_fragment(x,y,v1[4]*bary_a+v2[4]*bary_b+v3[4]*bary_c,
+                        fragment_shader(fragment_shader_data)
                     )
-
-                    fragment_shader_data.mipmap_level = L
-                else
-                    fragment_shader_data.mipmap_level = 1
-                    fragment_shader_data.tx,fragment_shader_data.ty = 0,0
                 end
-
-                screen_fragment(x,y,v1[4]*bary_a+v2[4]*bary_b+v3[4]*bary_c,
-                    fragment_shader(fragment_shader_data)
-                )
             end
         end
     end
@@ -146,7 +152,7 @@ return {build=function(BUS)
         local y_end   = MIN(FLOOR(v3y + 0.5)-1,h)
 
         local fragment_shader_data = FRAGMENT_DATA
-        
+
         local object = triangle_data.object
 
         local texture         = triangle_data.texture
@@ -187,54 +193,60 @@ return {build=function(BUS)
         for y=y_start,y_end do
             local px0 = m0 * (y + 0.5 - v1y) + v1x
             local px1 = m1 * (y + 0.5 - v1y) + v1x
-            local x_start = MAX(CEIL(px0 - 0.5),1)
-            local x_end   = MIN(CEIL(px1 - 0.5),w)
+            local x_start = MAX(CEIL(MIN(px0, px1) - 0.5),1)
+            local x_end   = MIN(CEIL(MAX(px0, px1) - 0.5)-1,w)
 
             for x=x_start,x_end do
-                local bary_a,bary_b,bary_c =  barycentric_coordinates(x,y,v1x,v1y,v2x,v2y,v3x,v3y)
+                local bary_a,bary_b,bary_c =  barycentric_coordinates(x+0.5,y+0.5,v1x,v1y,v2x,v2y,v3x,v3y)
 
-                local z = 1/(v1[3]*bary_a+v2[3]*bary_b+v3[3]*bary_c)
+                local z = v1[3]*bary_a+v2[3]*bary_b+v3[3]*bary_c
 
-                local instantiated_fragment = STNF and memory_handle.get_table(3) or triangle_data
-                fragment_shader_data.x         = x
-                fragment_shader_data.y         = y
-                fragment_shader_data.z_correct = z
-                fragment_shader_data.instance = instantiated_fragment
+                -- i hate this code so fucking much
+                -- why does everything run on custom transposed matrices
+                -- and fucking inverted depth, jesus christ
+                if z < 0 then
+                    z = 1/z
+                    local instantiated_fragment = STNF and memory_handle.get_table(3) or triangle_data
+                    fragment_shader_data.x         = x
+                    fragment_shader_data.y         = y
+                    fragment_shader_data.z_correct = z
+                    fragment_shader_data.instance = instantiated_fragment
 
-                local frag_data
-                if fragment_count > 0 then frag_data = memory_handle.get_table(2) end
-                for i=1,fragment_count do
-                    frag_data[fragment_shader_names[i]] =
-                        (fragment_shader_values_1[i]*bary_a +
-                        fragment_shader_values_2[i]*bary_b +
-                        fragment_shader_values_3[i]*bary_c)*z
-                end
-                fragment_shader_data.data = frag_data
+                    local frag_data
+                    if fragment_count > 0 then frag_data = memory_handle.get_table(2) end
+                    for i=1,fragment_count do
+                        frag_data[fragment_shader_names[i]] =
+                            (fragment_shader_values_1[i]*bary_a +
+                            fragment_shader_values_2[i]*bary_b +
+                            fragment_shader_values_3[i]*bary_c)*z
+                    end
+                    fragment_shader_data.data = frag_data
 
-                if texture then
-                    local thisu,thisv = interpolate_uv(bary_a,bary_b,bary_c,v1u,v1v,v2u,v2v,v3u,v3v)
-                    fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
+                    if texture then
+                        local thisu,thisv = interpolate_uv(bary_a,bary_b,bary_c,v1u,v1v,v2u,v2v,v3u,v3v)
+                        fragment_shader_data.tx,fragment_shader_data.ty = thisu,thisv
 
-                    local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1  ,y,v1x,v1y,v2x,v2y,v3x,v3y)
-                    local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x,y+1,v1x,v1y,v2x,v2y,v3x,v3y)
+                        local bary_aright,bary_bright,bary_cright = barycentric_coordinates(x+1.5,y+0.5,v1x,v1y,v2x,v2y,v3x,v3y)
+                        local bary_adown,bary_bdown,bary_cdown    = barycentric_coordinates(x+0.5,y+1.5,v1x,v1y,v2x,v2y,v3x,v3y)
 
-                    local uright,vright = interpolate_uv(bary_aright,bary_bright,bary_cright,v1u,v1v,v2u,v2v,v3u,v3v)
-                    local udown ,vdown  = interpolate_uv(bary_adown,bary_bdown,bary_cdown,v1u,v1v,v2u,v2v,v3u,v3v)
+                        local uright,vright = interpolate_uv(bary_aright,bary_bright,bary_cright,v1u,v1v,v2u,v2v,v3u,v3v)
+                        local udown ,vdown  = interpolate_uv(bary_adown,bary_bdown,bary_cdown,v1u,v1v,v2u,v2v,v3u,v3v)
 
-                    local L = MAX(
-                        SQRT((ABS(thisu-uright)*tex_width)^2 +(ABS(thisv-vright)*tex_height)^2),
-                        SQRT((ABS(thisv-vdown) *tex_height)^2+(ABS(thisu-udown) *tex_width)^2)
+                        local L = MAX(
+                            SQRT((ABS(thisu-uright)*tex_width)^2 +(ABS(thisv-vright)*tex_height)^2),
+                            SQRT((ABS(thisv-vdown) *tex_height)^2+(ABS(thisu-udown) *tex_width)^2)
+                        )
+
+                        fragment_shader_data.mipmap_level = L
+                    else
+                        fragment_shader_data.mipmap_level = 1
+                        fragment_shader_data.tx,fragment_shader_data.ty = 0,0
+                    end
+
+                    screen_fragment(x,y,v1[4]*bary_a+v2[4]*bary_b+v3[4]*bary_c,
+                        fragment_shader(fragment_shader_data)
                     )
-
-                    fragment_shader_data.mipmap_level = L
-                else
-                    fragment_shader_data.mipmap_level = 1
-                    fragment_shader_data.tx,fragment_shader_data.ty = 0,0
                 end
-
-                screen_fragment(x,y,v1[4]*bary_a+v2[4]*bary_b+v3[4]*bary_c,
-                    fragment_shader(fragment_shader_data)
-                )
             end
         end
     end
